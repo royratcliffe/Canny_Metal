@@ -1,5 +1,5 @@
 /*!
- * \file crc_poly.h
+ * \file crc32.h
  *
  * Defines an abstract family of CRC peripheral operation functions. Imagine a
  * high-speed CRC computing peripheral that computes arbitrary CRC sums given
