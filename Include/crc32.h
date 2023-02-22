@@ -7,12 +7,6 @@
  * the initial value, polynomial and bit reversing requirements. Subsequently,
  * use by sending a data pointer with a data length in bytes. The peripheral
  * returns a CRC result.
- *
- * The CRC family of STM32 functions listed below present a very thin wrapping
- * around the HAL functions. They attempt to hide the HAL internal type
- * definitions and manifest constants as part of the private implementation. The
- * interface itself does not expose the HAL header. HAL error codes become pass
- * and fail, and all the FreeRTOS-oriented generic types and constants.
  */
 
 #pragma once
@@ -87,4 +81,12 @@ BaseType_t xCRCRev(CRCRevIn_t xRevIn, CRCRevOut_t xRevOut);
  */
 BaseType_t xCRC32C();
 
+/*!
+ * \brief Calculates 32-bit CRC.
+ *
+ * This peripheral-based CRC calculator merely writes 32-bit values to a
+ * peripheral data register.
+ *
+ * Performs a naughty `const` cast. The HAL interface accepts a mutable pointer.
+ */
 uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes);
