@@ -13,8 +13,9 @@
 #include "stm32l4xx_hal.h"
 
 /*
- * Activate the CRC. Include crc.h, typically under Core/Inc, in order to access
- * the external CRC handle `hcrc`.
+ * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
+ * Configuration panel. Include `crc.h`, typically under Core/Inc, in order to
+ * access the external CRC handle `hcrc`.
  *
  *		extern CRC_HandleTypeDef hcrc;
  */
