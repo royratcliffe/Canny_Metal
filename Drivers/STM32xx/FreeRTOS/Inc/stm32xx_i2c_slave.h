@@ -11,7 +11,9 @@
 
 #include "FreeRTOS.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
 typedef I2C_HandleTypeDef *I2CHandle_t;
+#endif
 
 #ifndef i2cslaveBUFFER_LENGTH_BYTES
 #define i2cslaveBUFFER_LENGTH_BYTES 256U
