@@ -32,7 +32,8 @@ typedef I2C_HandleTypeDef *I2CHandle_t;
 typedef void *I2CSlaveHandle_t;
 
 /*!
- * The transmit data does *not* carry a `const` qualifier because it points to FreeRTOS-allocated memory which the slave task frees on transmit completion.
+ * The transmit data does *not* carry a `const` qualifier because it points to
+ * FreeRTOS-allocated memory which the slave task frees on transmit completion.
  */
 typedef size_t (*I2CSlaveHandler_t)(const void *pvRxData, size_t xDataLengthBytes, void **ppvTxData);
 
