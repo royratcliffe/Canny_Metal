@@ -8,6 +8,8 @@
  * and fail, and all the FreeRTOS-oriented generic types and constants.
  */
 
+#ifdef HAL_CRC_MODULE_ENABLED
+
 #include "crc32.h"
 
 #include "stm32xx_mcu.h"
@@ -19,7 +21,12 @@
  *
  *		extern CRC_HandleTypeDef hcrc;
  *
+ * The Core auto-generated sources declare the CRC handle in header:
+ *
  *		#include "crc.h"
+ *
+ * Compilation fails however unless the hardware abstraction layer enables its
+ * CRC module.
  */
 extern CRC_HandleTypeDef hcrc;
 
@@ -112,3 +119,5 @@ uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes)
 {
 	return HAL_CRC_Calculate(&hcrc, (void *)pvData, xDataLengthBytes);
 }
+
+#endif
