@@ -1,5 +1,5 @@
 /*!
- * \file crc32_stm32.c
+ * \file stm32xx_crc.c
  *
  * The CRC family of STM32 functions listed below present a very thin wrapping
  * around the HAL functions. They attempt to hide the HAL internal type
