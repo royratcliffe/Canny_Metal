@@ -12,6 +12,8 @@ typedef I2C_TypeDef *I2C_t;
 
 typedef I2C_HandleTypeDef *I2CHandle_t;
 
+typedef void (*I2CHandler_t)(I2CHandle_t xI2C);
+
 /*!
  * Note that the `xI2C` parameter refers to the I2C peripheral base address;
  * it does not refer to the HAL structure.
