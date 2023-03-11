@@ -10,7 +10,7 @@
 
 #include "crc32.h"
 
-#include "stm32l4xx_hal.h"
+#include "stm32xx_mcu.h"
 
 /*
  * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
@@ -18,8 +18,10 @@
  * access the external CRC handle `hcrc`.
  *
  *		extern CRC_HandleTypeDef hcrc;
+ *
+ *		#include "crc.h"
  */
-#include "crc.h"
+extern CRC_HandleTypeDef hcrc;
 
 /*!
  * \brief Sets up the polynomial.
