@@ -31,6 +31,11 @@ enum CRCRevOut
 
 typedef enum CRCRevOut CRCRevOut_t;
 
+/*!
+ * \brief Creates a CRC-focused mutex.
+ */
+void vCRCCreateMutex();
+
 BaseType_t xCRCGive();
 
 BaseType_t xCRCTake(TickType_t xTicksToWait);

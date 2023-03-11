@@ -8,20 +8,21 @@
 
 static SemaphoreHandle_t xSemaphore = NULL;
 
+void vCRCCreateMutex()
+{
+	xSemaphore = xSemaphoreCreateMutex();
+	configASSERT(xSemaphore);
+}
+
 /*!
  * \brief Takes the CRC unit.
  *
  * Assumes a firmware environment where multiple tasks access the CRC unit. Uses
  * a mutex for priority inheritance, but cannot use from within interrupt
- * service routines. Lazily constructs the semaphore.
+ * service routines.
  */
 BaseType_t xCRCTake(TickType_t xTicksToWait)
 {
-	if (xSemaphore == NULL)
-	{
-		xSemaphore = xSemaphoreCreateMutex();
-		configASSERT(xSemaphore);
-	}
 	return xSemaphoreTake(xSemaphore, xTicksToWait);
 }
 
