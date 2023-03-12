@@ -31,4 +31,8 @@ typedef void (*I2CHandler_t)(I2CHandle_t xI2C);
 
 typedef void (*I2CAddrHandler_t)(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_t usAddrMatchCode);
 
+uint8_t ucI2CCardinal(I2CHandle_t xI2C);
+
+uint8_t ucI2COrdinal(I2CHandle_t xI2C);
+
 #endif // ifdef HAL_I2C_MODULE_ENABLED
