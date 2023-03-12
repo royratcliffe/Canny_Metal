@@ -29,4 +29,6 @@ typedef I2C_HandleTypeDef *I2CHandle_t;
 
 typedef void (*I2CHandler_t)(I2CHandle_t xI2C);
 
+typedef void (*I2CAddrHandler_t)(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_t usAddrMatchCode);
+
 #endif // ifdef HAL_I2C_MODULE_ENABLED
