@@ -7,13 +7,11 @@
 
 #pragma once
 
-#include "stm32xx_mcu.h"
+#include "stm32xx_i2c.h"
 
 #ifdef HAL_I2C_MODULE_ENABLED
 
 #include "FreeRTOS.h"
-
-typedef I2C_HandleTypeDef *I2CHandle_t;
 
 #ifndef i2cslaveBUFFER_LENGTH_BYTES
 #define i2cslaveBUFFER_LENGTH_BYTES 256U
