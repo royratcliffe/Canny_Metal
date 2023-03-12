@@ -9,11 +9,11 @@
 
 #include "stm32xx_mcu.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "FreeRTOS.h"
 
-#ifdef HAL_I2C_MODULE_ENABLED
 typedef I2C_HandleTypeDef *I2CHandle_t;
-#endif
 
 #ifndef i2cslaveBUFFER_LENGTH_BYTES
 #define i2cslaveBUFFER_LENGTH_BYTES 256U
@@ -63,3 +63,5 @@ void vI2CSlaveStop(I2CSlaveHandle_t xI2CSlave);
 void vI2CSlaveUseDMA(I2CSlaveHandle_t xI2CSlave);
 
 void vI2CSlaveAddressHandler(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddress, I2CSlaveHandler_t xHandler);
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED

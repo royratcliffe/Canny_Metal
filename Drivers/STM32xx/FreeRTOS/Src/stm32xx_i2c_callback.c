@@ -7,6 +7,8 @@
 
 #include "stm32xx_i2c_callback.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "hand_side.h"
 
 static struct hand_side *pSlaveTxCpltForI2C[stm32xx_i2cMAX_INSTANCES];
@@ -48,3 +50,5 @@ void vI2CRegisterSlaveTxCplt(I2CHandle_t xI2C, I2CHandler_t xHandler)
 #endif
 	push_hand_side(ppSlaveTxCpltForI2C, xI2C, xHandler);
 }
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED

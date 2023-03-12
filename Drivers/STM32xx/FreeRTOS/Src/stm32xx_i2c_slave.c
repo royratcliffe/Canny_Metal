@@ -7,6 +7,8 @@
 
 #include "stm32xx_i2c_slave.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "task.h"
 
 #include <string.h>
@@ -113,3 +115,5 @@ void vI2CSlaveAddressHandler(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddress, I2CS
 	struct I2CSlave *pxI2CSlave = xI2CSlave;
 	pxI2CSlave->xHandlers[ucAddress] = xHandler;
 }
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED
