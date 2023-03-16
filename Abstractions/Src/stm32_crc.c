@@ -1,5 +1,9 @@
+// Abstractions stm32_crc.c
+// SPDX-FileCopyrightText: Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
+
 /*!
- * \file stm32_crc.c
+ * \file
  */
 
 #include "stm32_crc.h"

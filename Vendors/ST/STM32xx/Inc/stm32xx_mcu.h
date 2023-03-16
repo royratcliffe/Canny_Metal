@@ -1,5 +1,9 @@
+// Vendors/ST/STM32xx stm32xx_mcu.h
+// SPDX-FileCopyrightText: Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
+
 /*!
- * \file stm32xx_mcu.h
+ * \file
  *
  * Indirectly includes the HAL driver, assuming that the compiler has also
  * defined the `USE_HAL_DRIVER` manifest constant.

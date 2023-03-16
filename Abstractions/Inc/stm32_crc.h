@@ -1,5 +1,9 @@
+// Abstractions stm32_crc.h
+// SPDX-FileCopyrightText: Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
+
 /*!
- * \file stm32_crc.h
+ * \file
  *
  * Defines an abstract family of CRC peripheral operation functions. Imagine a
  * high-speed CRC computing peripheral that computes arbitrary CRC sums given
