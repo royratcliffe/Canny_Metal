@@ -1,8 +1,8 @@
 /*!
- * \file crc32.c
+ * \file stm32_crc.c
  */
 
-#include "crc32.h"
+#include "stm32_crc.h"
 
 #include "semphr.h"
 

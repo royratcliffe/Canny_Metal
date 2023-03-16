@@ -1,5 +1,5 @@
 /*!
- * \file crc32_stm32.c
+ * \file stm32xx_crc.c
  *
  * The CRC family of STM32 functions listed below present a very thin wrapping
  * around the HAL functions. They attempt to hide the HAL internal type
@@ -8,9 +8,11 @@
  * and fail, and all the FreeRTOS-oriented generic types and constants.
  */
 
-#include "crc32.h"
+#include "stm32xx_mcu.h"
 
-#include "stm32l4xx_hal.h"
+#ifdef HAL_CRC_MODULE_ENABLED
+
+#include "stm32_crc.h"
 
 /*
  * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
@@ -18,8 +20,15 @@
  * access the external CRC handle `hcrc`.
  *
  *		extern CRC_HandleTypeDef hcrc;
+ *
+ * The Core auto-generated sources declare the CRC handle in header:
+ *
+ *		#include "crc.h"
+ *
+ * Compilation fails however unless the hardware abstraction layer enables its
+ * CRC module.
  */
-#include "crc.h"
+extern CRC_HandleTypeDef hcrc;
 
 /*!
  * \brief Sets up the polynomial.
@@ -110,3 +119,5 @@ uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes)
 {
 	return HAL_CRC_Calculate(&hcrc, (void *)pvData, xDataLengthBytes);
 }
+
+#endif // ifdef HAL_CRC_MODULE_ENABLED
