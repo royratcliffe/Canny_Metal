@@ -1,0 +1,13 @@
+PROJECT_NAME           = "Canny Metal"
+
+PROJECT_NUMBER         = 0.1.0
+
+INPUT                  = Inc Src
+
+OUTPUT_DIRECTORY       = Doc
+
+OPTIMIZE_OUTPUT_FOR_C  = YES
+
+EXTRACT_ALL            = YES
+
+SOURCE_BROWSER         = YES
