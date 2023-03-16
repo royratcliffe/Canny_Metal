@@ -116,7 +116,7 @@ BaseType_t xCRCRev(CRCRevIn_t xRevIn, CRCRevOut_t xRevOut)
 BaseType_t xCRC32C()
 {
 	vCRCInit(0xffffffff);
-	return xCRCPoly32(0x1EDC6F41) && xCRCRev(CRCRevInByte, CRCRevOutEnabled);
+	return xCRCPoly32(0x1EDC6F41) && xCRCRev(eCRCRevInByte, eCRCRevOutEnabled);
 }
 
 uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes)
