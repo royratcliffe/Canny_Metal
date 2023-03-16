@@ -6,14 +6,14 @@
  * \file
  *
  * Indirectly includes the HAL driver, assuming that the compiler has also
- * defined the `USE_HAL_DRIVER` manifest constant.
+ * defined the \c USE_HAL_DRIVER manifest constant.
  *
  * The list of STM32 microprocessors and microcontrollers is large. The defines
  * below do not entirely encompass the currently existing range. ST continuously
  * expands its variants. Please add your own particular version.
  *
  * Should the "defined" block below run selectively with mutual exclusion using
- * `elif` pre-precessor directives? The design below makes them overlap in order
+ * \c elif pre-precessor directives? The design below makes them overlap in order
  * to trigger multiple-defintion errors if the compiler defines more than one
  * manifest constant simultaneously; choose one only.
  */
