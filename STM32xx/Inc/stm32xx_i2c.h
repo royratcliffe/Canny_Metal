@@ -8,6 +8,16 @@
 
 #define stm32xx_i2cMAX_INSTANCES 4U
 
+typedef I2C_TypeDef *I2C_t;
+
+/*!
+ * Note that the \c xI2C parameter refers to the I2C peripheral base address;
+ * it does not refer to the HAL structure.
+ */
+uint8_t ucCardinalForI2C(I2C_t xI2C);
+
+uint8_t ucOrdinalForI2C(I2C_t xI2C);
+
 /*
  * The STM32 headers do not define \c I2C_HandleTypeDef unless the project
  * enables the I2C module. Hence make its dependencies likewise compile-time
