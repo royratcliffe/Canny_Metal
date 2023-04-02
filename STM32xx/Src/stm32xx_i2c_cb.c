@@ -10,6 +10,8 @@
 
 #include "list_ex.h"
 
+static List_t xMasterTxCpltForI2C[stm32xx_i2cMAX_INSTANCES];
+static List_t xMasterRxCpltForI2C[stm32xx_i2cMAX_INSTANCES];
 static List_t xSlaveTxCpltForI2C[stm32xx_i2cMAX_INSTANCES];
 static List_t xSlaveRxCpltForI2C[stm32xx_i2cMAX_INSTANCES];
 static List_t xAddrForI2C[stm32xx_i2cMAX_INSTANCES];
@@ -20,6 +22,8 @@ static List_t xAbortForI2C[stm32xx_i2cMAX_INSTANCES];
 static void __attribute__((constructor)) prvListInitialise() {
   for (size_t xCardinal = 0U; xCardinal < stm32xx_i2cMAX_INSTANCES;
        xCardinal++) {
+    vListInitialise(xMasterTxCpltForI2C + xCardinal);
+    vListInitialise(xMasterRxCpltForI2C + xCardinal);
     vListInitialise(xSlaveTxCpltForI2C + xCardinal);
     vListInitialise(xSlaveRxCpltForI2C + xCardinal);
     vListInitialise(xAddrForI2C + xCardinal);
@@ -28,6 +32,74 @@ static void __attribute__((constructor)) prvListInitialise() {
     vListInitialise(xAbortForI2C + xCardinal);
   }
 }
+
+/*!
+ * \defgroup halI2C_MasterTxCpltCallback Master Transmit Complete Callback
+ * \{
+ */
+
+#if USE_HAL_I2C_REGISTER_CALLBACKS
+static void prvMasterTxCplt(I2CHandle_t xI2C)
+#else
+void HAL_I2C_MasterTxCpltCallback(I2CHandle_t xI2C)
+#endif
+{
+  BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    ((I2CHandler_t)pxOwner)(xI2C);
+    return pdPASS;
+  }
+  vListYield(xMasterTxCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
+}
+
+ListItem_t *pxI2CRegisterMasterTxCpltHandler(I2CHandle_t xI2C,
+                                             I2CHandler_t xHandler,
+                                             TickType_t xDelay) {
+  List_t *pxForI2C = xMasterTxCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
+#if USE_HAL_I2C_REGISTER_CALLBACKS
+  if (listLIST_IS_EMPTY(pxForI2C))
+    HAL_I2C_RegisterCallback(xI2C, HAL_I2C_MASTER_TX_COMPLETE_CB_ID,
+                             prvMasterTxCplt);
+#endif
+  return pxListInsertNew(pxForI2C, xHandler, xDelay);
+}
+
+/*!
+ * \}
+ */
+
+/*!
+ * \defgroup halI2C_MasterRxCpltCallback Master Receive Complete Callback
+ * \{
+ */
+
+#if USE_HAL_I2C_REGISTER_CALLBACKS
+static void prvMasterRxCplt(I2CHandle_t xI2C)
+#else
+void HAL_I2C_MasterRxCpltCallback(I2CHandle_t xI2C)
+#endif
+{
+  BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    ((I2CHandler_t)pxOwner)(xI2C);
+    return pdPASS;
+  }
+  vListYield(xMasterRxCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
+}
+
+ListItem_t *pxI2CRegisterMasterRxCpltHandler(I2CHandle_t xI2C,
+                                             I2CHandler_t xHandler,
+                                             TickType_t xDelay) {
+  List_t *pxForI2C = xMasterRxCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
+#if USE_HAL_I2C_REGISTER_CALLBACKS
+  if (listLIST_IS_EMPTY(pxForI2C))
+    HAL_I2C_RegisterCallback(xI2C, HAL_I2C_MASTER_RX_COMPLETE_CB_ID,
+                             prvMasterRxCplt);
+#endif
+  return pxListInsertNew(pxForI2C, xHandler, xDelay);
+}
+
+/*!
+ * \}
+ */
 
 /*!
  * \defgroup halI2C_SlaveTxCpltCallback Slave Transmit Complete Callback

@@ -11,6 +11,14 @@
 
 typedef void (*I2CHandler_t)(I2CHandle_t xI2C);
 
+ListItem_t *pxI2CRegisterMasterTxCpltHandler(I2CHandle_t xI2C,
+                                             I2CHandler_t xHandler,
+                                             TickType_t xDelay);
+
+ListItem_t *pxI2CRegisterMasterRxCpltHandler(I2CHandle_t xI2C,
+                                             I2CHandler_t xHandler,
+                                             TickType_t xDelay);
+
 ListItem_t *pxI2CRegisterSlaveTxCpltHandler(I2CHandle_t xI2C,
                                             I2CHandler_t xHandler,
                                             TickType_t xDelay);
