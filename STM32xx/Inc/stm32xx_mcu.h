@@ -16,6 +16,11 @@
 
 #pragma once
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wundef"
+#endif
+
 #if defined(STM32L452xx)
 #define STM32xx L4
 #define STM32L4xx 52
@@ -28,4 +33,8 @@
 
 #if STM32xx == L4
 #include "stm32l4xx.h"
+#endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
