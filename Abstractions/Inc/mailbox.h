@@ -6,15 +6,15 @@
 
 #include "FreeRTOS.h"
 
-#ifndef mailboxTHREAD_LOCAL_STORAGE_INDEX
-#define mailboxTHREAD_LOCAL_STORAGE_INDEX 0
-#endif
-
 /*
  * The mailbox buffer size amounts to a small number of bytes by default.
  * 256 bytes suffices when using packed messaging.
  */
 #define mailboxBUFFER_SIZE_BYTES 256U
+
+#define mailboxSTACK_DEPTH 1024U
+
+#define mailboxPRIORITY 24U
 
 /*!
  * \brief Handle of mailbox.
@@ -29,5 +29,17 @@
 typedef struct Mailbox *MailboxHandle_t;
 
 MailboxHandle_t xMailboxNew();
+
+BaseType_t xMailboxSpawnWith(MailboxHandle_t xMailbox, TaskFunction_t xTaskCode,
+                             const char *pcName,
+                             const configSTACK_DEPTH_TYPE usStackDepth,
+                             UBaseType_t uxPriority);
+
 BaseType_t xMailboxSpawn(MailboxHandle_t xMailbox, TaskFunction_t xTaskCode,
                          const char *const pcName);
+
+size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData,
+                    size_t xDataLengthBytes, TickType_t xTicksToWait);
+
+size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData,
+                       size_t xBufferLengthBytes, TickType_t xTicksToWait);
