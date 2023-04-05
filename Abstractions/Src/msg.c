@@ -134,18 +134,8 @@ size_t xMsgUnpackReceiveMessage(MsgUnpackHandle_t xMsgUnpack,
   return xReceivedBytes;
 }
 
-enum MsgUnpackNext {
-  eMsgUnpackNextMemError = -2,
-  eMsgUnpackNextParseError,
-  eMsgUnpackNextContinue,
-  eMsgUnpackNextExtraBytes,
-  eMsgUnpackNextSuccess
-};
-
 BaseType_t xMsgUnpackNext(MsgUnpackHandle_t xMsgUnpack) {
-  return msgpack_unpacker_next(&xMsgUnpack->xUnpacker,
-                               &xMsgUnpack->xUnpacked) ==
-         MSGPACK_UNPACK_SUCCESS;
+  return msgpack_unpacker_next(&xMsgUnpack->xUnpacker, &xMsgUnpack->xUnpacked);
 }
 
 /*!

@@ -47,6 +47,14 @@ size_t xMsgPackSendMessage(MsgPackHandle_t xMsgPack,
 #define msgINITIAL_BUFFER_SIZE_BYTES 256U
 #endif
 
+enum msgUnpackNext {
+  eMsgUnpackNextMemError = -2,
+  eMsgUnpackNextParseError,
+  eMsgUnpackNextContinue,
+  eMsgUnpackNextExtraBytes,
+  eMsgUnpackNextSuccess
+};
+
 typedef struct MsgUnpack *MsgUnpackHandle_t;
 
 enum MsgUnpackType { eMsgUnpackTypeStr, eMsgUnpackType };
@@ -57,7 +65,9 @@ void vMsgUnpackDestroy(MsgUnpackHandle_t xMsgUnpack);
 size_t xMsgUnpackReceiveMessage(MsgUnpackHandle_t xMsgUnpack,
                                 MessageBufferHandle_t xMessageBuffer,
                                 TickType_t xTicksToWait);
+
 BaseType_t xMsgUnpackNext(MsgUnpackHandle_t xMsgUnpack);
+
 BaseType_t xMsgUnpackType(MsgUnpackHandle_t xMsgUnpack);
 BaseType_t xMsgUnpackBool(MsgUnpackHandle_t xMsgUnpack, BaseType_t *pxBool);
 BaseType_t xMsgUnpackUInt32(MsgUnpackHandle_t xMsgUnpack, uint32_t *pxUInt32);
