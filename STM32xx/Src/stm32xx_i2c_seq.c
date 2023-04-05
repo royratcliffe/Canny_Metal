@@ -76,7 +76,7 @@ static HAL_StatusTypeDef prvSlaveReceiveIT(struct I2CSeq *pxI2CSeq,
 I2CSeqHandle_t xI2CSeqCreate(I2CHandle_t xI2C) {
   I2CSeqHandle_t xI2CSeq = pvPortMalloc(sizeof(*xI2CSeq));
   configASSERT(xI2CSeq);
-  memset(xI2CSeq, 0, sizeof(*xI2CSeq));
+  (void)memset(xI2CSeq, 0, sizeof(*xI2CSeq));
   xI2CSeq->xI2C = xI2C;
   return xI2CSeq;
 }

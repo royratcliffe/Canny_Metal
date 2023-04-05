@@ -156,7 +156,7 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
 I2CSlaveHandle_t xI2CSlaveCreate(I2CHandle_t xI2C) {
   I2CSlaveHandle_t xI2CSlave = pvPortMalloc(sizeof(*xI2CSlave));
   configASSERT(xI2CSlave);
-  memset(xI2CSlave, 0, sizeof(*xI2CSlave));
+  (void)memset(xI2CSlave, 0, sizeof(*xI2CSlave));
   xI2CSlave->xI2C = xI2C;
   return xI2CSlave;
 }
