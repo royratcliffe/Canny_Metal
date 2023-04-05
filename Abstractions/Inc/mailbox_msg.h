@@ -7,6 +7,11 @@
 #include "mailbox.h"
 #include "msg.h"
 
+/*!
+ * \brief Message extension type for a mailbox handle.
+ *
+ * Extension type is a signed 8-bit integer of arbitrary but unique value.
+ */
 #ifndef msgEXT_TYPE_MAILBOX
 #define msgEXT_TYPE_MAILBOX 'M'
 #endif
