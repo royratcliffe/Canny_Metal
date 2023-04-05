@@ -32,6 +32,7 @@ BaseType_t xMsgUnpackMailbox(MsgUnpackHandle_t xMsgUnpack,
                          msgEXT_TYPE_MAILBOX) ||
       xExtLengthBytes != sizeof(*pxMailbox))
     return pdFAIL;
-  (void)memcpy(pxMailbox, pvExt, sizeof(*pxMailbox));
+  if (pxMailbox)
+    (void)memcpy(pxMailbox, pvExt, sizeof(*pxMailbox));
   return pdPASS;
 }
