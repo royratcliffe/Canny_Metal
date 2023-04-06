@@ -37,6 +37,11 @@ BaseType_t xMsgUnpackMailbox(MsgUnpackHandle_t xMsgUnpack,
   return pdPASS;
 }
 
+/*
+ * Is this a good idea? Failure means either of two things: either no unpack
+ * next success, or mailbox extension type failure. The interface has no way to
+ * discern the difference.
+ */
 BaseType_t xMsgUnpackNextMailbox(MsgUnpackHandle_t xMsgUnpack,
                                  MailboxHandle_t *pxMailbox) {
   return xMsgUnpackNext(xMsgUnpack) == eMsgUnpackNextSuccess &&
