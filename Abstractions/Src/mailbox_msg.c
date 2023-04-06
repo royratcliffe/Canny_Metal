@@ -36,3 +36,9 @@ BaseType_t xMsgUnpackMailbox(MsgUnpackHandle_t xMsgUnpack,
     (void)memcpy(pxMailbox, pvExt, sizeof(*pxMailbox));
   return pdPASS;
 }
+
+BaseType_t xMsgUnpackNextMailbox(MsgUnpackHandle_t xMsgUnpack,
+                                 MailboxHandle_t *pxMailbox) {
+  return xMsgUnpackNext(xMsgUnpack) == eMsgUnpackNextSuccess &&
+         xMsgUnpackMailbox(xMsgUnpack, pxMailbox);
+}

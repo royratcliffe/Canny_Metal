@@ -25,3 +25,13 @@ BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox,
 BaseType_t xMsgPackMailbox(MsgPackHandle_t xMsgPack, MailboxHandle_t xMailbox);
 BaseType_t xMsgUnpackMailbox(MsgUnpackHandle_t xMsgUnpack,
                              MailboxHandle_t *pxMailbox);
+
+/*!
+ * \brief Unpacks the next mailbox handle.
+ * \param[in] xMsgUnpack Message unpacker handle.
+ * \param[out] pxMailbox Pointer to unpacked mailbox handle.
+ * \returns \c pdPASS if successfully unpacked a valid mailbox handle. Fails
+ * with \c pdFAIL if the next unpack attempt does not succeed.
+ */
+BaseType_t xMsgUnpackNextMailbox(MsgUnpackHandle_t xMsgUnpack,
+                                 MailboxHandle_t *pxMailbox);
