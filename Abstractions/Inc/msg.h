@@ -57,7 +57,7 @@ enum msgUnpackNext {
 
 typedef struct MsgUnpack *MsgUnpackHandle_t;
 
-enum MsgUnpackType { eMsgUnpackTypeStr, eMsgUnpackType };
+enum msgUnpackType { eMsgUnpackTypeStr, eMsgUnpackType };
 
 MsgUnpackHandle_t xMsgUnpackCreate(size_t xInitialBufferSizeBytes);
 MsgUnpackHandle_t xMsgUnpackNew();
