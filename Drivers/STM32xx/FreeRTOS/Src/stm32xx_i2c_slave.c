@@ -176,7 +176,13 @@ void vI2CSlaveStop(I2CSlaveHandle_t xI2CSlave) {
   xI2CSlave->xTask = NULL;
 }
 
-void vI2CSlaveDelete(I2CSlaveHandle_t xI2CSlave) { vPortFree(xI2CSlave); }
+void vI2CSlaveDelete(I2CSlaveHandle_t xI2CSlave) {
+  for (uint8_t ucAddr = 0x00U;
+       ucAddr < sizeof(xI2CSlave->pxDevices) / sizeof(xI2CSlave->pxDevices[0]);
+       ucAddr++)
+    vPortFree(xI2CSlave->pxDevices[ucAddr]);
+  vPortFree(xI2CSlave);
+}
 
 /*!
  * \param[in] ucAddr 7-bit slave address of virtual device without shift.
