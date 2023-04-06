@@ -32,6 +32,8 @@ BaseType_t xMsgUnpackMailbox(MsgUnpackHandle_t xMsgUnpack,
  * \param[out] pxMailbox Pointer to unpacked mailbox handle.
  * \returns \c pdPASS if successfully unpacked a valid mailbox handle. Fails
  * with \c pdFAIL if the next unpack attempt does not succeed.
+ *
+ * Always unpacks the next object.
  */
 BaseType_t xMsgUnpackNextMailbox(MsgUnpackHandle_t xMsgUnpack,
                                  MailboxHandle_t *pxMailbox);

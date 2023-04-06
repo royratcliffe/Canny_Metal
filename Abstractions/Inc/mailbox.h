@@ -25,12 +25,8 @@
 /*!
  * \brief Handle of mailbox.
  *
- * The mailbox sends and receives messages via a task handle. Senders can pass
- * messages if a sender knows the task. The messaging mechanism relies on task
- * notification, specifically on notification without overwrite.
- *
- * Define \c configNUM_THREAD_LOCAL_STORAGE_POINTERS in the firmware's FreeRTOS
- * configuration with at least one local pointer.
+ * The mailbox sends and receives messages via a message handle. Senders can
+ * pass messages to tasks if a sender knows the mailbox.
  */
 typedef struct Mailbox *MailboxHandle_t;
 
@@ -49,9 +45,13 @@ size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData,
 
 /*!
  * \brief Notifies mailbox message sent.
- * \returns \c pdPASS if the mailbox has spawned and its associated task exists.
+ * \returns \c pdPASS if the mailbox has spawned, i.e. its associated task
+ * exists.
  *
- * Notify "sent" after sending one or more mailbox messages.
+ * Notify "sent" after sending one or more mailbox messages in order to prompt
+ * the mailbox task. Mailbox receivers may periodically receive without specific
+ * notification. The sent notification adds extra responsiveness and also makes
+ * it easier for receivers to mesh with interrupt-level notifications.
  */
 BaseType_t xMailboxSent(MailboxHandle_t xMailbox);
 

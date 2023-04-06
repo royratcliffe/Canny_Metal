@@ -52,7 +52,7 @@ BaseType_t xMailboxSpawn(MailboxHandle_t xMailbox, TaskFunction_t xTaskCode,
 /*!
  * \brief Sends a message.
  *
- * Always pass messages by value, never by reference unless with great
+ * Always pass messages by value, not by reference unless with great
  * caution.
  *
  * The message includes the sending mailbox.
