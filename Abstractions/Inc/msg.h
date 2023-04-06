@@ -44,7 +44,7 @@ size_t xMsgPackSendMessage(MsgPackHandle_t xMsgPack,
  */
 
 #ifndef msgINITIAL_BUFFER_SIZE_BYTES
-#define msgINITIAL_BUFFER_SIZE_BYTES 256U
+#define msgINITIAL_BUFFER_SIZE_BYTES 16U
 #endif
 
 enum msgUnpackNext {
