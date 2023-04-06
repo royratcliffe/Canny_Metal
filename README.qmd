@@ -1,0 +1,5 @@
+# Canny Metal
+
+Canny Metal is a FreeRTOS playground for open-source embedded software components on various vendor hardware, including Cortex-M series such as Raspberry PI's [RP2040][rp2040] and ST Microelectronics' STM32 family.
+
+[rp2040]:https://www.raspberrypi.com/documentation/microcontrollers/rp2040.html
