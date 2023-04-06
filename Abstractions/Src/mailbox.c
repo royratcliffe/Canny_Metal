@@ -62,6 +62,16 @@ size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData,
   return xMessageBufferSend(xMailbox, pvTxData, xDataLengthBytes, xTicksToWait);
 }
 
+BaseType_t xMailboxSent(MailboxHandle_t xMailbox) {
+#ifdef mailboxSENT_NOTIFIED
+  if (xMailbox->xTask == NULL)
+    return pdFAIL;
+  return xTaskNotify(xMailbox->xTask, mailboxSENT_NOTIFIED, eSetBits);
+#else
+  return pdFAIL;
+#endif
+}
+
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData,
                        size_t xBufferLengthBytes, TickType_t xTicksToWait) {
   return xMessageBufferReceive(xMailbox, pvRxData, xBufferLengthBytes,

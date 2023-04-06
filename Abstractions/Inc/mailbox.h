@@ -16,6 +16,12 @@
 
 #define mailboxPRIORITY 24U
 
+#if configUSE_TASK_NOTIFICATIONS == 1
+#ifndef mailboxSENT_NOTIFIED
+#define mailboxSENT_NOTIFIED (1UL << ('M' - 'A'))
+#endif
+#endif
+
 /*!
  * \brief Handle of mailbox.
  *
@@ -40,6 +46,14 @@ BaseType_t xMailboxSpawn(MailboxHandle_t xMailbox, TaskFunction_t xTaskCode,
 
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData,
                     size_t xDataLengthBytes, TickType_t xTicksToWait);
+
+/*!
+ * \brief Notifies mailbox message sent.
+ * \returns \c pdPASS if the mailbox has spawned and its associated task exists.
+ *
+ * Notify "sent" after sending one or more mailbox messages.
+ */
+BaseType_t xMailboxSent(MailboxHandle_t xMailbox);
 
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData,
                        size_t xBufferLengthBytes, TickType_t xTicksToWait);
