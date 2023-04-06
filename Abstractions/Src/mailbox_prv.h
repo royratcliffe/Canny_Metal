@@ -8,6 +8,7 @@
 
 #include "FreeRTOS.h"
 #include "message_buffer.h"
+#include "task.h"
 
 struct Mailbox {
   MessageBufferHandle_t xMessageBuffer;

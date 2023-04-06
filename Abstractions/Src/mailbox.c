@@ -8,8 +8,6 @@
 
 #include "mailbox_prv.h"
 
-#include "task.h"
-
 #include <memory.h>
 #include <stdio.h>
 
