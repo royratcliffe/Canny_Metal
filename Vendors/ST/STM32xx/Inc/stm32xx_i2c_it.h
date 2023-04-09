@@ -41,9 +41,7 @@
  * hardware abstraction layer's \c const incorrect declaration. The layer does
  * \e not modify the data at \c pvData.
  */
-HAL_StatusTypeDef xI2CMasterTransmitIT(I2CHandle_t xI2C, uint8_t ucAddr,
-                                       const void *pvData,
-                                       size_t xDataLengthBytes,
+HAL_StatusTypeDef xI2CMasterTransmitIT(I2CHandle_t xI2C, uint8_t ucAddr, const void *pvData, size_t xDataLengthBytes,
                                        TickType_t xTicksToWait);
 
 /*
@@ -60,8 +58,7 @@ HAL_StatusTypeDef xI2CMasterWaitTransmitCplt(TickType_t xTicksToWait);
  */
 void vI2CMasterNotifyTransmitCpltFromISR(TaskHandle_t xTask);
 
-HAL_StatusTypeDef xI2CMasterReceiveIT(I2CHandle_t xI2C, uint8_t ucAddr,
-                                      void *pvBuffer, size_t xBufferLengthBytes,
+HAL_StatusTypeDef xI2CMasterReceiveIT(I2CHandle_t xI2C, uint8_t ucAddr, void *pvBuffer, size_t xBufferLengthBytes,
                                       TickType_t xTicksToWait);
 
 void vI2CMasterNotifyReceiveCpltFromISR(TaskHandle_t xTask);
