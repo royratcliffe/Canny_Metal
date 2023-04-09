@@ -11,7 +11,9 @@
 typedef I2C_TypeDef *I2C_t;
 
 /*!
- * Note that the \c xI2C parameter refers to the I2C peripheral base address;
+ * \brief Cardinal integer for underlying I2C instance.
+ *
+ * \note Note that the \c xI2C parameter refers to the I2C peripheral base address;
  * it does not refer to the HAL structure.
  */
 uint8_t ucCardinalForI2C(I2C_t xI2C);
