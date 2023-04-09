@@ -75,7 +75,7 @@ void vI2CSeqCopyFrom(I2CSeqHandle_t xI2CSeq, const void *pvData);
 /*!
  * \brief Copies transferred bytes only.
  */
-void vI2CSeqCopyTo(I2CSeqHandle_t xI2CSeq, void *pvData);
+void vI2CSeqCopyTo(I2CSeqHandle_t xI2CSeq, void *pvBuffer);
 
 /*!
  * Note that the buffer is mutable if allocated.
