@@ -27,6 +27,15 @@
  *
  * You can send the \e same message binding to multiple mailboxes. Sending does
  * \e not change the binding.
+ *
+ * Send a meesage to a mailbox as follows.
+ * \code
+ * // Send a packed message. Wait indefinitely for the message to enter the
+ * // mailbox's message buffer. Notify the receiver once the message has been
+ * // recorded.
+ * xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
+ * xMailboxSent(xMailbox);
+ * \endcode
  */
 BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding, TickType_t xTicksToWait);
 
