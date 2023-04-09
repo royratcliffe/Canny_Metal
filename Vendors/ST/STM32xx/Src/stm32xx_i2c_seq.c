@@ -135,7 +135,7 @@ void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes)
 }
 
 void vI2CSeqCopyFrom(I2CSeqHandle_t xI2CSeq, const void *pvData) {
-  memcpy(xI2CSeq->pvBuffer, pvData, xI2CSeq->xBufferLengthBytes);
+  (void)memcpy(xI2CSeq->pvBuffer, pvData, xI2CSeq->xBufferLengthBytes);
 }
 
 void vI2CSeqCopyTo(I2CSeqHandle_t xI2CSeq, void *pvBuffer) {
