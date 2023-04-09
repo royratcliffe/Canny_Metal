@@ -41,6 +41,7 @@
  *             xMsgBindStr(xMsgBinding, "pong");
  *             xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
  *             xMailboxSent(xMailbox);
+ *             continue;
  *           }
  *         }
  *       }
