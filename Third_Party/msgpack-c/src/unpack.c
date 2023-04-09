@@ -491,6 +491,9 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker* mpac, size_t size)
             CTX_REFERENCED(mpac) = false;
         } else {
             decr_count(mpac->buffer);
+            // Avoid analyser error:
+            // leak of 'tmp' [CWE-401] [-Werror=analyzer-malloc-leak]
+            mpac->buffer = NULL;
         }
 
         mpac->buffer = tmp;
