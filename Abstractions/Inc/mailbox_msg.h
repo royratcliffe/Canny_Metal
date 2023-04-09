@@ -28,7 +28,7 @@
  * You can send the \e same message binding to multiple mailboxes. Sending does
  * \e not change the binding.
  *
- * Send a meesage to a mailbox as follows.
+ * Send a message to a mailbox as follows.
  * \code
  * // Send a packed message. Wait indefinitely for the message to enter the
  * // mailbox's message buffer. Notify the receiver once the message has been
