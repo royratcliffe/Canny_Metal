@@ -39,13 +39,13 @@ size_t xMsgBindingBuffer(MsgBindingHandle_t xMsgBinding, const void **ppvBuffer)
 
 size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait);
 
-BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xBool);
+BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xValue);
 
-BaseType_t xMsgBindInt(MsgBindingHandle_t xMsgBinding, int i);
+BaseType_t xMsgBindInt(MsgBindingHandle_t xMsgBinding, int lValue);
 
-BaseType_t xMsgBindUInt(MsgBindingHandle_t xMsgBinding, unsigned int u);
+BaseType_t xMsgBindUInt(MsgBindingHandle_t xMsgBinding, unsigned int ulValue);
 
-BaseType_t xMsgBindFloat(MsgBindingHandle_t xMsgBinding, float f);
+BaseType_t xMsgBindFloat(MsgBindingHandle_t xMsgBinding, float lValue);
 
 /*!
  * The body should have UTF-8 encoding.

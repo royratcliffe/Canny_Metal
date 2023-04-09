@@ -74,30 +74,30 @@ BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier) {
   }
 }
 
-BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxBool) {
+BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_BOOLEAN) return pdFAIL;
-  if (pxBool) *pxBool = xMsgUnifier->xUnpacked.data.via.boolean != false;
+  if (pxValue) *pxValue = xMsgUnifier->xUnpacked.data.via.boolean != false;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyUInt32(MsgUnifierHandle_t xMsgUnifier, uint32_t *pulUInt32) {
+BaseType_t xMsgUnifyUInt32(MsgUnifierHandle_t xMsgUnifier, uint32_t *pulValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_POSITIVE_INTEGER) return pdFAIL;
-  if (pulUInt32) *pulUInt32 = xMsgUnifier->xUnpacked.data.via.u64;
+  if (pulValue) *pulValue = xMsgUnifier->xUnpacked.data.via.u64;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyInt32(MsgUnifierHandle_t xMsgUnifier, int32_t *plInt32) {
+BaseType_t xMsgUnifyInt32(MsgUnifierHandle_t xMsgUnifier, int32_t *plValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_NEGATIVE_INTEGER) return pdFAIL;
   /*
    * Does the following assignment reverse the sign extension?
    */
-  if (plInt32) *plInt32 = xMsgUnifier->xUnpacked.data.via.i64;
+  if (plValue) *plValue = xMsgUnifier->xUnpacked.data.via.i64;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyFloat32(MsgUnifierHandle_t xMsgUnifier, float *plFloat32) {
+BaseType_t xMsgUnifyFloat32(MsgUnifierHandle_t xMsgUnifier, float *plValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_FLOAT32) return pdFAIL;
-  if (plFloat32) *plFloat32 = xMsgUnifier->xUnpacked.data.via.f64;
+  if (plValue) *plValue = xMsgUnifier->xUnpacked.data.via.f64;
   return pdPASS;
 }
 
