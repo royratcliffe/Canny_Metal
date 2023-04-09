@@ -30,10 +30,13 @@
  *
  * Send a message to a mailbox as follows.
  * \code
- * // Send a packed message. Wait indefinitely for the message to enter the
- * // mailbox's message buffer. Notify the receiver once the message has been
- * // recorded.
+ * // Ping the echo mailbox. Bind a task handle followed by a string.
+ * // Send the message then notify.
+ * MsgBindingHandle_t xMsgBinding = xMsgBindingNew();
+ * xMsgBindMailbox(xMsgBinding, NULL);
+ * xMsgBindStr(xMsgBinding, "ping");
  * xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
+ * vMsgBindingDestroy(xMsgBinding);
  * xMailboxSent(xMailbox);
  * \endcode
  */
