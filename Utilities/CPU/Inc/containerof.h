@@ -1,5 +1,5 @@
 /*!
- * \file container_of.h
+ * \file containerof.h
  */
 
 #pragma once
@@ -12,11 +12,13 @@
  * \param type Type of container structure.
  * \param member Name of container's member.
  *
- * Utilises GCC's `offsetof` built-in function to displace the member pointer
+ * Utilises GCC's \c offsetof built-in function to displace the member pointer
  * backwards by the difference between the container's address and the member's
  * address. Subtracting a size from a void pointer decrements the pointer by one
  * byte for each displacement unit.
  */
-#define CONTAINER_OF(ptr, type, member) ({ \
-	((type *)((void *)(ptr) - offsetof(type, member))); \
-})
+#define CONTAINER_OF(ptr, type, member)                                        \
+  ({                                                                           \
+    void *void_ptr = (void *)(ptr);                                            \
+    ((type *)(void_ptr - offsetof(type, member)));                             \
+  })
