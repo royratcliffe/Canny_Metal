@@ -11,6 +11,7 @@
 #include "msgpack/unpack_define.h"
 #include "msgpack/util.h"
 #include <stdlib.h>
+#include <limits.h>
 
 #ifdef _msgpack_atomic_counter_header
 #include _msgpack_atomic_counter_header
