@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
+#include "stm32xx_i2c.h"
 
 /*!
  * \brief I2C sequencer opaque handle.
@@ -22,7 +21,7 @@ typedef struct I2CSeq *I2CSeqHandle_t;
 /*!
  * \brief Creates a new dynamic I2C sequencer.
  */
-I2CSeqHandle_t xI2CSeqCreate();
+I2CSeqHandle_t xI2CSeqCreate(I2CHandle_t xI2C);
 
 /*!
  * \brief Deletes a previously-created I2C sequencer.
@@ -101,5 +100,7 @@ int xI2CSeqFirstFrame(I2CSeqHandle_t xI2CSeq);
 int xI2CSeqNextFrame(I2CSeqHandle_t xI2CSeq);
 
 int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq);
+
+int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq);
 
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq);

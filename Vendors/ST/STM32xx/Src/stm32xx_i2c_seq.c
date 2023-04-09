@@ -3,7 +3,6 @@
  */
 
 #include "stm32xx_i2c_seq.h"
-#include "stm32xx_i2c.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -35,8 +34,8 @@ struct I2CSeq {
   void *pvBuffer;
 
   size_t xBufferLengthBytes;
-  HAL_StatusTypeDef (*pxTransfer[2U])(struct I2CSeq *pxI2CSeq,
-                                      uint32_t ulOptions);
+  HAL_StatusTypeDef (*pxTransfer[2U])(struct I2CSeq *pxI2CSeq, uint32_t ulOptions);
+  HAL_StatusTypeDef (*pxNoOptionTransfer[2U])(struct I2CSeq *pxI2CSeq);
   uint8_t ucTransferDirection;
 
   /*!
@@ -47,30 +46,40 @@ struct I2CSeq {
   uint8_t ucAddr;
 };
 
-static HAL_StatusTypeDef prvMasterTransmitIT(struct I2CSeq *pxI2CSeq,
-                                             uint32_t ulOptions) {
-  return HAL_I2C_Master_Seq_Transmit_IT(
-      pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U, pxI2CSeq->pvBuffer,
-      pxI2CSeq->xBufferLengthBytes, ulOptions);
+static HAL_StatusTypeDef prvMasterTransmitIT(struct I2CSeq *pxI2CSeq, uint32_t ulOptions) {
+  return HAL_I2C_Master_Seq_Transmit_IT(pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U, pxI2CSeq->pvBuffer,
+                                        pxI2CSeq->xBufferLengthBytes, ulOptions);
 }
 
-static HAL_StatusTypeDef prvMasterReceiveIT(struct I2CSeq *pxI2CSeq,
-                                            uint32_t ulOptions) {
-  return HAL_I2C_Master_Seq_Receive_IT(pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U,
-                                       pxI2CSeq->pvBuffer,
+static HAL_StatusTypeDef prvMasterReceiveIT(struct I2CSeq *pxI2CSeq, uint32_t ulOptions) {
+  return HAL_I2C_Master_Seq_Receive_IT(pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U, pxI2CSeq->pvBuffer,
                                        pxI2CSeq->xBufferLengthBytes, ulOptions);
 }
 
-static HAL_StatusTypeDef prvSlaveTransmitIT(struct I2CSeq *pxI2CSeq,
-                                            uint32_t ulOptions) {
-  return HAL_I2C_Slave_Seq_Transmit_IT(pxI2CSeq->xI2C, pxI2CSeq->pvBuffer,
-                                       pxI2CSeq->xBufferLengthBytes, ulOptions);
+static HAL_StatusTypeDef prvSlaveTransmitIT(struct I2CSeq *pxI2CSeq, uint32_t ulOptions) {
+  return HAL_I2C_Slave_Seq_Transmit_IT(pxI2CSeq->xI2C, pxI2CSeq->pvBuffer, pxI2CSeq->xBufferLengthBytes, ulOptions);
 }
 
-static HAL_StatusTypeDef prvSlaveReceiveIT(struct I2CSeq *pxI2CSeq,
-                                           uint32_t ulOptions) {
-  return HAL_I2C_Slave_Seq_Receive_IT(pxI2CSeq->xI2C, pxI2CSeq->pvBuffer,
-                                      pxI2CSeq->xBufferLengthBytes, ulOptions);
+static HAL_StatusTypeDef prvSlaveReceiveIT(struct I2CSeq *pxI2CSeq, uint32_t ulOptions) {
+  return HAL_I2C_Slave_Seq_Receive_IT(pxI2CSeq->xI2C, pxI2CSeq->pvBuffer, pxI2CSeq->xBufferLengthBytes, ulOptions);
+}
+
+static HAL_StatusTypeDef prvMasterNoOptionTransmitIT(struct I2CSeq *pxI2CSeq) {
+  return HAL_I2C_Master_Transmit_IT(pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U, pxI2CSeq->pvBuffer,
+                                    pxI2CSeq->xBufferLengthBytes);
+}
+
+static HAL_StatusTypeDef prvMasterNoOptionReceiveIT(struct I2CSeq *pxI2CSeq) {
+  return HAL_I2C_Master_Receive_IT(pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U, pxI2CSeq->pvBuffer,
+                                   pxI2CSeq->xBufferLengthBytes);
+}
+
+static HAL_StatusTypeDef prvSlaveNoOptionTransmitIT(struct I2CSeq *pxI2CSeq) {
+  return HAL_I2C_Slave_Transmit_IT(pxI2CSeq->xI2C, pxI2CSeq->pvBuffer, pxI2CSeq->xBufferLengthBytes);
+}
+
+static HAL_StatusTypeDef prvSlaveNoOptionReceiveIT(struct I2CSeq *pxI2CSeq) {
+  return HAL_I2C_Slave_Receive_IT(pxI2CSeq->xI2C, pxI2CSeq->pvBuffer, pxI2CSeq->xBufferLengthBytes);
 }
 
 I2CSeqHandle_t xI2CSeqCreate(I2CHandle_t xI2C) {
@@ -88,48 +97,40 @@ void vI2CSeqDelete(I2CSeqHandle_t xI2CSeq) {
   }
 }
 
-void vI2CSeqTransferDirection(I2CSeqHandle_t xI2CSeq,
-                              uint8_t ucTransferDirection) {
+void vI2CSeqTransferDirection(I2CSeqHandle_t xI2CSeq, uint8_t ucTransferDirection) {
   xI2CSeq->ucTransferDirection = ucTransferDirection & 0x01U;
 }
 
-void vI2CSeqTransmit(I2CSeqHandle_t xI2CSeq) {
-  xI2CSeq->ucTransferDirection = I2C_DIRECTION_TRANSMIT;
-}
+void vI2CSeqTransmit(I2CSeqHandle_t xI2CSeq) { xI2CSeq->ucTransferDirection = I2C_DIRECTION_TRANSMIT; }
 
-void vI2CSeqReceive(I2CSeqHandle_t xI2CSeq) {
-  xI2CSeq->ucTransferDirection = I2C_DIRECTION_RECEIVE;
-}
+void vI2CSeqReceive(I2CSeqHandle_t xI2CSeq) { xI2CSeq->ucTransferDirection = I2C_DIRECTION_RECEIVE; }
 
-uint8_t ucI2CSeqTransferDirection(I2CSeqHandle_t xI2CSeq) {
-  return xI2CSeq->ucTransferDirection;
-}
+uint8_t ucI2CSeqTransferDirection(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->ucTransferDirection; }
 
-void vI2CSeqAddr(I2CSeqHandle_t xI2CSeq, uint8_t ucAddr) {
-  xI2CSeq->ucAddr = ucAddr & 0x7fU;
-}
+void vI2CSeqAddr(I2CSeqHandle_t xI2CSeq, uint8_t ucAddr) { xI2CSeq->ucAddr = ucAddr & 0x7fU; }
 
 uint8_t ucI2CSeqAddr(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->ucAddr; }
 
 void vI2CSeqMasterIT(I2CSeqHandle_t xI2CSeq) {
   xI2CSeq->pxTransfer[I2C_DIRECTION_TRANSMIT] = prvMasterTransmitIT;
   xI2CSeq->pxTransfer[I2C_DIRECTION_RECEIVE] = prvMasterReceiveIT;
+  xI2CSeq->pxNoOptionTransfer[I2C_DIRECTION_TRANSMIT] = prvMasterNoOptionTransmitIT;
+  xI2CSeq->pxNoOptionTransfer[I2C_DIRECTION_RECEIVE] = prvMasterNoOptionReceiveIT;
 }
 
 void vI2CSeqSlaveIT(I2CSeqHandle_t xI2CSeq) {
   xI2CSeq->pxTransfer[I2C_DIRECTION_TRANSMIT] = prvSlaveReceiveIT;
   xI2CSeq->pxTransfer[I2C_DIRECTION_RECEIVE] = prvSlaveTransmitIT;
+  xI2CSeq->pxNoOptionTransfer[I2C_DIRECTION_TRANSMIT] = prvSlaveNoOptionReceiveIT;
+  xI2CSeq->pxNoOptionTransfer[I2C_DIRECTION_RECEIVE] = prvSlaveNoOptionTransmitIT;
 }
 
-void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq,
-                              size_t xBufferLengthBytes) {
+void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes) {
   if (xI2CSeq->pvBuffer) {
-    if (xI2CSeq->xBufferLengthBytes == xBufferLengthBytes)
-      return;
+    if (xI2CSeq->xBufferLengthBytes == xBufferLengthBytes) return;
     vPortFree(xI2CSeq->pvBuffer);
   }
-  xI2CSeq->pvBuffer =
-      pvPortMalloc(xI2CSeq->xBufferLengthBytes = xBufferLengthBytes);
+  xI2CSeq->pvBuffer = pvPortMalloc(xI2CSeq->xBufferLengthBytes = xBufferLengthBytes);
   configASSERT(xI2CSeq->pvBuffer);
 }
 
@@ -143,30 +144,22 @@ void vI2CSeqCopyTo(I2CSeqHandle_t xI2CSeq, void *pvData) {
 
 void *pvI2CSeqBuffer(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->pvBuffer; }
 
-size_t xI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq) {
-  return xI2CSeq->xBufferLengthBytes;
-}
+size_t xI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->xBufferLengthBytes; }
 
-size_t xI2CSeqXferBytes(I2CSeqHandle_t xI2CSeq) {
-  return xI2CSeq->xBufferLengthBytes - xI2CSeq->xI2C->XferSize;
-}
+size_t xI2CSeqXferBytes(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->xBufferLengthBytes - xI2CSeq->xI2C->XferSize; }
 
 int xI2CSeqFrame(I2CSeqHandle_t xI2CSeq, uint32_t ulOptions) {
   return xI2CSeq->pxTransfer[xI2CSeq->ucTransferDirection](xI2CSeq, ulOptions);
 }
 
-int xI2CSeqFirstFrame(I2CSeqHandle_t xI2CSeq) {
-  return xI2CSeqFrame(xI2CSeq, I2C_FIRST_FRAME);
+int xI2CSeqFirstFrame(I2CSeqHandle_t xI2CSeq) { return xI2CSeqFrame(xI2CSeq, I2C_FIRST_FRAME); }
+
+int xI2CSeqNextFrame(I2CSeqHandle_t xI2CSeq) { return xI2CSeqFrame(xI2CSeq, I2C_NEXT_FRAME); }
+
+int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq) { return xI2CSeqFrame(xI2CSeq, I2C_LAST_FRAME); }
+
+int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq) {
+  return xI2CSeq->pxNoOptionTransfer[xI2CSeq->ucTransferDirection](xI2CSeq);
 }
 
-int xI2CSeqNextFrame(I2CSeqHandle_t xI2CSeq) {
-  return xI2CSeqFrame(xI2CSeq, I2C_NEXT_FRAME);
-}
-
-int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq) {
-  return xI2CSeqFrame(xI2CSeq, I2C_LAST_FRAME);
-}
-
-uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq) {
-  return HAL_I2C_GetError(xI2CSeq->xI2C);
-}
+uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq) { return HAL_I2C_GetError(xI2CSeq->xI2C); }
