@@ -14,10 +14,11 @@ HAL_StatusTypeDef xI2CMasterTransmitIT(I2CHandle_t xI2C, uint8_t ucAddr,
       xI2C, ucAddr << 1U, (void *)pvData, xDataLengthBytes);
   if (xStatus != HAL_OK)
     return xStatus;
-  if (xTaskNotifyWaitExpected(stm32xxI2C_MASTER_TX_CPLT_NOTIFIED,
-                              xTicksToWait) == 0UL)
-    return HAL_TIMEOUT;
-  return xStatus;
+  return xI2CMasterWaitTransmitCplt(xTicksToWait);
+}
+
+HAL_StatusTypeDef xI2CMasterWaitTransmitCplt(TickType_t xTicksToWait) {
+  return xTaskNotifyWaitExpected(stm32xxI2C_MASTER_TX_CPLT_NOTIFIED, xTicksToWait) ? HAL_OK : HAL_TIMEOUT;
 }
 
 void vI2CMasterNotifyTransmitCpltFromISR(TaskHandle_t xTask) {

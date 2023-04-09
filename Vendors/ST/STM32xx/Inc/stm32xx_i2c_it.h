@@ -46,6 +46,12 @@ HAL_StatusTypeDef xI2CMasterTransmitIT(I2CHandle_t xI2C, uint8_t ucAddr,
                                        size_t xDataLengthBytes,
                                        TickType_t xTicksToWait);
 
+/*
+ * \brief Waits for I2C master transmit completion.
+ * \returns \c HAL_OK on successful completion or \c HAL_TIMEOUT if ticks to wait expires.
+ */
+HAL_StatusTypeDef xI2CMasterWaitTransmitCplt(TickType_t xTicksToWait);
+
 /*!
  * \brief Notifies master transmit complete.
  *
