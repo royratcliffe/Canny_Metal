@@ -158,6 +158,24 @@ int xI2CSeqNextFrame(I2CSeqHandle_t xI2CSeq) { return xI2CSeqFrame(xI2CSeq, I2C_
 
 int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq) { return xI2CSeqFrame(xI2CSeq, I2C_LAST_FRAME); }
 
+/*!
+ * \brief Performs a no-option frame transfer.
+ *
+ * \code
+ *   I2CSeqHandle_t xI2CSeq = xI2CSeqCreate(xI2C);
+ *   vI2CSeqMasterIT(xI2CSeq);
+ *   vI2CSeqTransmit(xI2CSeq);
+ *   vI2CSeqAddr(xI2CSeq, ucAddr);
+ *   vI2CSeqBufferLengthBytes(xI2CSeq, sizeof(ucData));
+ *   vI2CSeqCopyFrom(xI2CSeq, ucData);
+ *   HAL_StatusTypeDef xStatus = xI2CSeqNoOptionFrame(xI2CSeq);
+ *   // Retain the sequencer until the transmit completes.
+ *   // Important because the interrupt service routine accesses
+ *   // its buffer during transmit.
+ *   xStatus = xI2CMasterWaitTransmitCplt(portMAX_DELAY);
+ *   vI2CSeqDelete(xI2CSeq);
+ * \endcode
+ */
 int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq) {
   return xI2CSeq->pxNoOptionTransfer[xI2CSeq->ucTransferDirection](xI2CSeq);
 }
