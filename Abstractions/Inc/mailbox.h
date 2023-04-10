@@ -142,9 +142,15 @@ BaseType_t xMailboxSetLinkValue(MailboxHandle_t xMailbox, TickType_t xValue);
 
 TickType_t xMailboxGetLinkValue(MailboxHandle_t xMailbox);
 
-MailboxHandle_t xMailboxLinkYield(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox));
+MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox));
 
-MailboxHandle_t xMailboxLinked(MailboxHandle_t xMailbox);
+/*!
+ * \brief Mailbox linking the given mailbox.
+ * \returns \c NULL if not linked, else the linking mailbox.
+ *
+ * Follows the mailbox link from the many to the one side of the association.
+ */
+MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox);
 
 /*!
  * \brief Sends a message.

@@ -73,11 +73,11 @@ void vMailboxUnlink(MailboxHandle_t xMailbox) {
 }
 
 void vMailboxUnlinkAll(MailboxHandle_t xMailbox) {
-  BaseType_t xYield(MailboxHandle_t xMailbox) {
-    vMailboxUnlink(xMailbox);
+  BaseType_t prvYield(MailboxHandle_t xLinked) {
+    vMailboxUnlink(xLinked);
     return pdFAIL;
   }
-  (void)xMailboxLinkYield(xMailbox, xYield);
+  (void)xMailboxYieldLinked(xMailbox, prvYield);
 }
 
 BaseType_t xMailboxSetLinkOwner(MailboxHandle_t xMailbox, void *pvOwner) {
@@ -102,7 +102,7 @@ TickType_t xMailboxGetLinkValue(MailboxHandle_t xMailbox) {
   return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked);
 }
 
-MailboxHandle_t xMailboxLinkYield(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox)) {
+MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox)) {
   if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return NULL;
   for (const ListItem_t *pxHeadEntry = listGET_HEAD_ENTRY(&xMailbox->xLinking),
                         *pxEndMarker = listGET_END_MARKER(&xMailbox->xLinking), *pxNextEntry;
@@ -118,7 +118,7 @@ MailboxHandle_t xMailboxLinkYield(MailboxHandle_t xMailbox, BaseType_t (*pxYield
   return NULL;
 }
 
-MailboxHandle_t xMailboxLinked(MailboxHandle_t xMailbox) {
+MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox) {
   if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return NULL;
   List_t *pxLinking = listLIST_ITEM_CONTAINER(&xMailbox->xLinked);
   return pxLinking != NULL ? CONTAINER_OF(pxLinking, struct Mailbox, xLinking) : NULL;
