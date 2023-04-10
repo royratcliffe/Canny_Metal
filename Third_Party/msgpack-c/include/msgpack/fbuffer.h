@@ -10,13 +10,12 @@
 #ifndef MSGPACK_FBUFFER_H
 #define MSGPACK_FBUFFER_H
 
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /**
  * @defgroup msgpack_fbuffer FILE* buffer
@@ -24,16 +23,14 @@ extern "C" {
  * @{
  */
 
-static inline int msgpack_fbuffer_write(void* data, const char* buf, size_t len)
-{
-    assert(buf || len == 0);
-    if(!buf) return 0;
+static inline int msgpack_fbuffer_write(void *data, const char *buf, size_t len) {
+  assert(buf || len == 0);
+  if (!buf) return 0;
 
-    return (1 == fwrite(buf, len, 1, (FILE *)data)) ? 0 : -1;
+  return (1 == fwrite(buf, len, 1, (FILE *)data)) ? 0 : -1;
 }
 
 /** @} */
-
 
 #ifdef __cplusplus
 }

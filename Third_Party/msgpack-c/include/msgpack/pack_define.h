@@ -15,4 +15,3 @@
 #include <string.h>
 
 #endif /* msgpack/pack_define.h */
-
