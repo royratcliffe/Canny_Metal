@@ -10,8 +10,6 @@
 
 #ifdef HAL_I2C_MODULE_ENABLED
 
-#include "stm32xx_i2c_seq.h"
-
 #include "FreeRTOS.h"
 
 #ifndef i2cslaveBUFFER_LENGTH_BYTES
