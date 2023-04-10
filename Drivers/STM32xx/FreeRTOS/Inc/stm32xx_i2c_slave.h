@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include "stm32xx_mcu.h"
+#include "stm32xx_i2c.h"
 
 #include "stm32xx_i2c_seq.h"
 
-#include "FreeRTOS.h"
+#ifdef HAL_I2C_MODULE_ENABLED
 
-typedef I2C_HandleTypeDef *I2CHandle_t;
+#include "FreeRTOS.h"
 
 #ifndef i2cslaveBUFFER_LENGTH_BYTES
 #define i2cslaveBUFFER_LENGTH_BYTES 256U
@@ -79,3 +79,5 @@ void vI2CSlaveDeviceError(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
 /*!
  * \}
  */
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED

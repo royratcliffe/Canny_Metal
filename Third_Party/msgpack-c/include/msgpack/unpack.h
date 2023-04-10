@@ -66,7 +66,7 @@ typedef struct msgpack_unpacker {
 
 
 #ifndef MSGPACK_UNPACKER_INIT_BUFFER_SIZE
-#define MSGPACK_UNPACKER_INIT_BUFFER_SIZE (64*1024)
+#define MSGPACK_UNPACKER_INIT_BUFFER_SIZE 64
 #endif
 
 /**
@@ -98,7 +98,7 @@ void msgpack_unpacker_free(msgpack_unpacker* mpac);
 
 
 #ifndef MSGPACK_UNPACKER_RESERVE_SIZE
-#define MSGPACK_UNPACKER_RESERVE_SIZE (32*1024)
+#define MSGPACK_UNPACKER_RESERVE_SIZE 32
 #endif
 
 /**

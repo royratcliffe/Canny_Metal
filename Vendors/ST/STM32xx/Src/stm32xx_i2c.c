@@ -33,3 +33,11 @@ uint8_t ucOrdinalForI2C(I2C_t xI2C) {
    */
   return 1U + ucCardinalForI2C(xI2C);
 }
+
+#ifdef HAL_I2C_MODULE_ENABLED
+
+uint8_t ucI2CCardinal(I2CHandle_t xI2C) { return ucCardinalForI2C(xI2C->Instance); }
+
+uint8_t ucI2COrdinal(I2CHandle_t xI2C) { return ucOrdinalForI2C(xI2C->Instance); }
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED

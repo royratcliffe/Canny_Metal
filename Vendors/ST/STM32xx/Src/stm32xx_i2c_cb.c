@@ -44,6 +44,7 @@ void HAL_I2C_MasterTxCpltCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }
@@ -74,6 +75,7 @@ void HAL_I2C_MasterRxCpltCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }
@@ -104,6 +106,7 @@ void HAL_I2C_SlaveTxCpltCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }
@@ -134,6 +137,7 @@ void HAL_I2C_SlaveRxCpltCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }
@@ -164,6 +168,7 @@ void HAL_I2C_AddrCallback(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CAddrHandler_t)pxOwner)(xI2C, ucTransferDirection, usAddrMatchCode);
     return pdPASS;
   }
@@ -194,6 +199,7 @@ void HAL_I2C_ListenCpltCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }
@@ -224,6 +230,7 @@ void HAL_I2C_ErrorCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }
@@ -254,6 +261,7 @@ void HAL_I2C_AbortCallback(I2CHandle_t xI2C)
 #endif
 {
   BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
     ((I2CHandler_t)pxOwner)(xI2C);
     return pdPASS;
   }

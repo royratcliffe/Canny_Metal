@@ -51,6 +51,15 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
   return xReceivedBytes;
 }
 
+/*
+ * The implementation breaks unpacker encapsulation. The interface provides no
+ * access to the used part of the buffer. Used therefore implies gone forever.
+ * Resurrect the bits by accessing the unpacker members directly.
+ */
+size_t xMsgUnifierRelay(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait) {
+  return xMessageBufferSend(xMessageBuffer, xMsgUnifier->xUnpacker.buffer, xMsgUnifier->xUnpacker.used, xTicksToWait);
+}
+
 BaseType_t xMsgUnify(MsgUnifierHandle_t xMsgUnifier) {
   return msgpack_unpacker_next(&xMsgUnifier->xUnpacker, &xMsgUnifier->xUnpacked);
 }
@@ -74,30 +83,30 @@ BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier) {
   }
 }
 
-BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxBool) {
+BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_BOOLEAN) return pdFAIL;
-  if (pxBool) *pxBool = xMsgUnifier->xUnpacked.data.via.boolean != false;
+  if (pxValue) *pxValue = xMsgUnifier->xUnpacked.data.via.boolean != false;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyUInt32(MsgUnifierHandle_t xMsgUnifier, uint32_t *pulUInt32) {
+BaseType_t xMsgUnifyUInt32(MsgUnifierHandle_t xMsgUnifier, uint32_t *pulValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_POSITIVE_INTEGER) return pdFAIL;
-  if (pulUInt32) *pulUInt32 = xMsgUnifier->xUnpacked.data.via.u64;
+  if (pulValue) *pulValue = xMsgUnifier->xUnpacked.data.via.u64;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyInt32(MsgUnifierHandle_t xMsgUnifier, int32_t *plInt32) {
+BaseType_t xMsgUnifyInt32(MsgUnifierHandle_t xMsgUnifier, int32_t *plValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_NEGATIVE_INTEGER) return pdFAIL;
   /*
    * Does the following assignment reverse the sign extension?
    */
-  if (plInt32) *plInt32 = xMsgUnifier->xUnpacked.data.via.i64;
+  if (plValue) *plValue = xMsgUnifier->xUnpacked.data.via.i64;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyFloat32(MsgUnifierHandle_t xMsgUnifier, float *plFloat32) {
+BaseType_t xMsgUnifyFloat32(MsgUnifierHandle_t xMsgUnifier, float *plValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_FLOAT32) return pdFAIL;
-  if (plFloat32) *plFloat32 = xMsgUnifier->xUnpacked.data.via.f64;
+  if (plValue) *plValue = xMsgUnifier->xUnpacked.data.via.f64;
   return pdPASS;
 }
 

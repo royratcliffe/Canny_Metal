@@ -8,6 +8,8 @@
 #include "stm32xx_i2c_seq.h"
 #include "stm32xx_registered_i2c.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "task.h"
 
 #include <limits.h>
@@ -65,18 +67,21 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
   TaskHandle_t xTask = xTaskGetCurrentTaskHandle();
 
   void prvSlaveTxCplt(I2CHandle_t xI2C) {
+    (void)xI2C;
     BaseType_t xWoken;
     xTaskNotifyFromISR(xTask, SLAVE_TX_CPLT_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
   void prvSlaveRxCplt(I2CHandle_t xI2C) {
+    (void)xI2C;
     BaseType_t xWoken;
     xTaskNotifyFromISR(xTask, SLAVE_RX_CPLT_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
   void prvListenCplt(I2CHandle_t xI2C) {
+    (void)xI2C;
     HAL_StatusTypeDef xStatus = HAL_I2C_EnableListen_IT(xI2C);
     configASSERT(xStatus == HAL_OK);
   }
@@ -90,6 +95,7 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    */
   void prvAddr(I2CHandle_t xI2C, uint8_t ucTransferDirection,
                uint16_t usAddrMatchCode) {
+    (void)xI2C;
     vI2CSeqTransferDirection(xI2CSeq, ucTransferDirection);
     vI2CSeqAddr(xI2CSeq, usAddrMatchCode >> 1U);
     BaseType_t xWoken;
@@ -98,6 +104,7 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
   }
 
   void prvError(I2CHandle_t xI2C) {
+    (void)xI2C;
     BaseType_t xWoken;
     xTaskNotifyFromISR(xTask, ERROR_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
@@ -223,3 +230,5 @@ void vI2CSlaveDeviceError(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
                           void (*pvError)(I2CSeqHandle_t xI2CSeq)) {
   prvI2CSlaveDevice(xI2CSlave, ucAddr)->pvError = pvError;
 }
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED

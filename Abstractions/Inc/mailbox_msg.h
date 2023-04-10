@@ -27,6 +27,18 @@
  *
  * You can send the \e same message binding to multiple mailboxes. Sending does
  * \e not change the binding.
+ *
+ * Send a message to a mailbox as follows.
+ * \code
+ * // Ping the echo mailbox. Bind a task handle followed by a string.
+ * // Send the message then notify.
+ * MsgBindingHandle_t xMsgBinding = xMsgBindingNew();
+ * xMsgBindMailbox(xMsgBinding, NULL);
+ * xMsgBindStr(xMsgBinding, "ping");
+ * xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
+ * vMsgBindingDestroy(xMsgBinding);
+ * xMailboxSent(xMailbox);
+ * \endcode
  */
 BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding, TickType_t xTicksToWait);
 
@@ -38,6 +50,13 @@ BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBind
  * \returns \c pdPASS if one message received else \c pdFAIL.
  */
 BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait);
+
+/*!
+ * \brief Relays a previously-received message.
+ * \param[in] xMsgUnifier Carries the received message. May or may not have
+ * already been unified, either partially or completely.
+ */
+BaseType_t xMailboxRelayMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait);
 
 BaseType_t xMsgBindMailbox(MsgBindingHandle_t xMsgBinding, MailboxHandle_t xMailbox);
 

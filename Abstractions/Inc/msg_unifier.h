@@ -60,6 +60,13 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
                           TickType_t xTicksToWait);
 
 /*!
+ * \brief Relays a previously-received message.
+ *
+ * Relays the used buffer.
+ */
+size_t xMsgUnifierRelay(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait);
+
+/*!
  * \brief Unifies with the \e next message object.
  */
 BaseType_t xMsgUnify(MsgUnifierHandle_t xMsgUnifier);
@@ -74,18 +81,18 @@ BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier);
 /*!
  * Converts standard \c bool to \c BaseType_t.
  */
-BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxBool);
+BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue);
 
-BaseType_t xMsgUnifyUInt32(MsgUnifierHandle_t xMsgUnifier, uint32_t *pulUInt32);
+BaseType_t xMsgUnifyUInt32(MsgUnifierHandle_t xMsgUnifier, uint32_t *pulValue);
 
 /*!
  * \brief Unpacks a signed 32-bit integer.
  *
  * Note that "negative" integer really means \e signed integer.
  */
-BaseType_t xMsgUnifyInt32(MsgUnifierHandle_t xMsgUnifier, int32_t *plInt32);
+BaseType_t xMsgUnifyInt32(MsgUnifierHandle_t xMsgUnifier, int32_t *plValue);
 
-BaseType_t xMsgUnifyFloat32(MsgUnifierHandle_t xMsgUnifier, float *plFloat32);
+BaseType_t xMsgUnifyFloat32(MsgUnifierHandle_t xMsgUnifier, float *plValue);
 
 /*!
  * \returns Succeeds only if the last unpack was a string object.

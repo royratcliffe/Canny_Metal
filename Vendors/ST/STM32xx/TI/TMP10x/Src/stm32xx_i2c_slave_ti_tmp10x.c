@@ -84,8 +84,7 @@ static portTASK_FUNCTION(prvTMP10xTask, pvParameters) {
   }
 
   vI2CSlaveDeviceAddr(xTMP10x->xI2CSlave, xTMP10x->ucAddr, prvAddr);
-  vI2CSlaveDeviceSlaveRxCplt(xTMP10x->xI2CSlave, xTMP10x->ucAddr,
-                             prvSlaveRxCplt);
+  vI2CSlaveDeviceSlaveRxCplt(xTMP10x->xI2CSlave, xTMP10x->ucAddr, prvSlaveRxCplt);
   uint32_t ulNotified;
   xTaskNotifyWait(0UL, tmp10xSTOP_NOTIFIED, &ulNotified, portMAX_DELAY);
   vI2CSlaveDeviceAddr(xTMP10x->xI2CSlave, xTMP10x->ucAddr, NULL);
@@ -106,8 +105,7 @@ BaseType_t xTMP10xStart(TMP10xHandle_t xTMP10x) {
   configASSERT(xTMP10x->xTask == NULL);
   char name[configMAX_TASK_NAME_LEN];
   snprintf(name, sizeof(name), "%s-%02x", tmp10xTASK_NAME, xTMP10x->ucAddr);
-  return xTaskCreate(prvTMP10xTask, name, tmp10xSTACK_DEPTH, xTMP10x,
-                     tmp10xPRIORITY, &xTMP10x->xTask);
+  return xTaskCreate(prvTMP10xTask, name, tmp10xSTACK_DEPTH, xTMP10x, tmp10xPRIORITY, &xTMP10x->xTask);
 }
 
 void vTMP10xStop(TMP10xHandle_t xTMP10x) {

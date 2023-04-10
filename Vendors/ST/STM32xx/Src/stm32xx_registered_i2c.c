@@ -16,9 +16,7 @@ static size_t prvHashOfOpaque(void *pvOpaque) {
 size_t xRegisteredCardinalOfI2C(I2C_HandleTypeDef *pxI2C) {
   static void *pvOpaques[stm32xx_i2cMAX_INSTANCES];
   static struct RegisteredOpaques prvRegisteredOpaques = {
-      .ppvOpaques = pvOpaques,
-      .xNumberOfOpaques = stm32xx_i2cMAX_INSTANCES,
-      .pxHashOfOpaqueFunction = prvHashOfOpaque};
+      .ppvOpaques = pvOpaques, .xNumberOfOpaques = stm32xx_i2cMAX_INSTANCES, .pxHashOfOpaqueFunction = prvHashOfOpaque};
   return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, pxI2C);
 }
 

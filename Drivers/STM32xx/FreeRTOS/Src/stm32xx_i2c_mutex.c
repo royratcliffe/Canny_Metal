@@ -4,6 +4,8 @@
 
 #include "stm32xx_i2c_mutex.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "semphr.h"
 
 #if configSUPPORT_STATIC_ALLOCATION
@@ -35,3 +37,5 @@ void vI2CCreateRecursiveMutex(I2CHandle_t xI2C)
 	configASSERT(xSemaphores[ucCardinal]);
 #endif
 }
+
+#endif // ifdef HAL_I2C_MODULE_ENABLED

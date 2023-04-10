@@ -34,7 +34,7 @@ typedef struct msgpack_zbuffer {
 } msgpack_zbuffer;
 
 #ifndef MSGPACK_ZBUFFER_INIT_SIZE
-#define MSGPACK_ZBUFFER_INIT_SIZE 8192
+#define MSGPACK_ZBUFFER_INIT_SIZE 256
 #endif
 
 static inline bool msgpack_zbuffer_init(
@@ -55,7 +55,7 @@ static inline char* msgpack_zbuffer_release_buffer(msgpack_zbuffer* zbuf);
 
 
 #ifndef MSGPACK_ZBUFFER_RESERVE_SIZE
-#define MSGPACK_ZBUFFER_RESERVE_SIZE 512
+#define MSGPACK_ZBUFFER_RESERVE_SIZE 16
 #endif
 
 static inline int msgpack_zbuffer_write(void* data, const char* buf, size_t len);

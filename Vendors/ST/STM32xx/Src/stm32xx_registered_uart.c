@@ -15,10 +15,9 @@ static size_t prvHashOfOpaque(void *pvOpaque) {
 
 size_t xRegisteredCardinalOfUART(UART_HandleTypeDef *pxUART) {
   static void *pvOpaques[stm32xx_uartMAX_INSTANCES];
-  static struct RegisteredOpaques prvRegisteredOpaques = {
-      .ppvOpaques = pvOpaques,
-      .xNumberOfOpaques = stm32xx_uartMAX_INSTANCES,
-      .pxHashOfOpaqueFunction = prvHashOfOpaque};
+  static struct RegisteredOpaques prvRegisteredOpaques = {.ppvOpaques = pvOpaques,
+                                                          .xNumberOfOpaques = stm32xx_uartMAX_INSTANCES,
+                                                          .pxHashOfOpaqueFunction = prvHashOfOpaque};
   return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, pxUART);
 }
 

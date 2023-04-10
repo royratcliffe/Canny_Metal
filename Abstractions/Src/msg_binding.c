@@ -50,24 +50,24 @@ size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMe
   return xMessageBufferSend(xMessageBuffer, xMsgBinding->xBuffer.data, xMsgBinding->xBuffer.size, xTicksToWait);
 }
 
-BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xBool) {
-  int (*pxPackFunction)(msgpack_packer *) = xBool ? msgpack_pack_true : msgpack_pack_false;
+BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xValue) {
+  int (*pxPackFunction)(msgpack_packer *) = xValue ? msgpack_pack_true : msgpack_pack_false;
   /*
    * A zero return code indicates success. Translate success to pdPASS.
    */
   return pxPackFunction(&xMsgBinding->xPacker) == 0;
 }
 
-BaseType_t xMsgBindInt(MsgBindingHandle_t xMsgBinding, int i) {
-  return msgpack_pack_int(&xMsgBinding->xPacker, i) == 0;
+BaseType_t xMsgBindInt(MsgBindingHandle_t xMsgBinding, int lValue) {
+  return msgpack_pack_int(&xMsgBinding->xPacker, lValue) == 0;
 }
 
-BaseType_t xMsgBindUInt(MsgBindingHandle_t xMsgBinding, unsigned int u) {
-  return msgpack_pack_unsigned_int(&xMsgBinding->xPacker, u) == 0;
+BaseType_t xMsgBindUInt(MsgBindingHandle_t xMsgBinding, unsigned int ulValue) {
+  return msgpack_pack_unsigned_int(&xMsgBinding->xPacker, ulValue) == 0;
 }
 
-BaseType_t xMsgBindFloat(MsgBindingHandle_t xMsgBinding, float f) {
-  return msgpack_pack_float(&xMsgBinding->xPacker, f) == 0;
+BaseType_t xMsgBindFloat(MsgBindingHandle_t xMsgBinding, float lValue) {
+  return msgpack_pack_float(&xMsgBinding->xPacker, lValue) == 0;
 }
 
 BaseType_t xMsgBindStrWithBody(MsgBindingHandle_t xMsgBinding, const char *pcStr, size_t xStrLengthBytes) {

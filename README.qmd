@@ -1,4 +1,7 @@
-# Canny Metal
+---
+title: Canny Metal
+format: gfm
+---
 
 Canny metal assembled with Canny bag o' Tudor on bare metal: ARM Cortex embedded experiments using FreeRTOS from the North East of England.
 
