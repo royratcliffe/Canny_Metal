@@ -108,21 +108,15 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
 
 #define push_simple_value(func)                                                                                        \
   ret = msgpack_unpack_callback(func)(user, &obj);                                                                     \
-  if (ret < 0) {                                                                                                       \
-    goto _failed;                                                                                                      \
-  }                                                                                                                    \
+  if (ret < 0) { goto _failed; }                                                                                       \
   goto _push
 #define push_fixed_value(func, arg)                                                                                    \
   ret = msgpack_unpack_callback(func)(user, arg, &obj);                                                                \
-  if (ret < 0) {                                                                                                       \
-    goto _failed;                                                                                                      \
-  }                                                                                                                    \
+  if (ret < 0) { goto _failed; }                                                                                       \
   goto _push
 #define push_variable_value(func, base, pos, len)                                                                      \
   ret = msgpack_unpack_callback(func)(user, (const char *)base, (const char *)pos, len, &obj);                         \
-  if (ret < 0) {                                                                                                       \
-    goto _failed;                                                                                                      \
-  }                                                                                                                    \
+  if (ret < 0) { goto _failed; }                                                                                       \
   goto _push
 
 #define again_fixed_trail(_cs, trail_len)                                                                              \
@@ -131,9 +125,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
   goto _fixed_trail_again
 #define again_fixed_trail_if_zero(_cs, trail_len, ifzero)                                                              \
   trail = trail_len;                                                                                                   \
-  if (trail == 0) {                                                                                                    \
-    goto ifzero;                                                                                                       \
-  }                                                                                                                    \
+  if (trail == 0) { goto ifzero; }                                                                                     \
   cs = _cs;                                                                                                            \
   goto _fixed_trail_again
 
@@ -143,9 +135,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
     goto _failed;                                                                                                      \
   } /* FIXME */                                                                                                        \
   ret = msgpack_unpack_callback(func)(user, count_, &stack[top].obj);                                                  \
-  if (ret < 0) {                                                                                                       \
-    goto _failed;                                                                                                      \
-  }                                                                                                                    \
+  if (ret < 0) { goto _failed; }                                                                                       \
   if ((count_) == 0) {                                                                                                 \
     obj = stack[top].obj;                                                                                              \
     goto _push;                                                                                                        \
@@ -177,9 +167,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
   }
 #endif
 
-    if (p == pe) {
-      goto _out;
-    }
+    if (p == pe) { goto _out; }
     do {
       switch (cs) {
       case MSGPACK_CS_HEADER:
@@ -256,9 +244,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
         // fallthrough
 
       default:
-        if ((size_t)(pe - p) < trail) {
-          goto _out;
-        }
+        if ((size_t)(pe - p) < trail) { goto _out; }
         n = p;
         p += trail - 1;
         switch (cs) {
@@ -407,16 +393,12 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
       }
 
     _push:
-      if (top == 0) {
-        goto _finish;
-      }
+      if (top == 0) { goto _finish; }
       c = &stack[top - 1];
       switch (c->ct) {
       case MSGPACK_CT_ARRAY_ITEM:
         ret = msgpack_unpack_callback(_array_item)(user, &c->obj, obj);
-        if (ret < 0) {
-          goto _failed;
-        }
+        if (ret < 0) { goto _failed; }
         if (--c->count == 0) {
           obj = c->obj;
           --top;
@@ -430,9 +412,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
         goto _header_again;
       case MSGPACK_CT_MAP_VALUE:
         ret = msgpack_unpack_callback(_map_item)(user, &c->obj, c->map_key, obj);
-        if (ret < 0) {
-          goto _failed;
-        }
+        if (ret < 0) { goto _failed; }
         if (--c->count == 0) {
           obj = c->obj;
           --top;

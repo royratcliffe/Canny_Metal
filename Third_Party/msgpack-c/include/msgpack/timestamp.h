@@ -22,10 +22,8 @@ typedef struct msgpack_timestamp {
 } msgpack_timestamp;
 
 static inline bool msgpack_object_to_timestamp(const msgpack_object *obj, msgpack_timestamp *ts) {
-  if (obj->type != MSGPACK_OBJECT_EXT)
-    return false;
-  if (obj->via.ext.type != -1)
-    return false;
+  if (obj->type != MSGPACK_OBJECT_EXT) return false;
+  if (obj->via.ext.type != -1) return false;
   switch (obj->via.ext.size) {
   case 4:
     ts->tv_nsec = 0;

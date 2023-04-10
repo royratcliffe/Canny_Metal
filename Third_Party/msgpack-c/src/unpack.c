@@ -169,8 +169,7 @@ static inline int template_callback_array(unpack_user *u, unsigned int n, msgpac
   // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
   // might not be constrained to 4GB on 64-bit systems
 #if SIZE_MAX == UINT_MAX
-  if (n > SIZE_MAX / sizeof(msgpack_object))
-    return MSGPACK_UNPACK_NOMEM_ERROR;
+  if (n > SIZE_MAX / sizeof(msgpack_object)) return MSGPACK_UNPACK_NOMEM_ERROR;
 #endif
 
   o->type = MSGPACK_OBJECT_ARRAY;
@@ -180,16 +179,12 @@ static inline int template_callback_array(unpack_user *u, unsigned int n, msgpac
 
   if (*u->z == NULL) {
     *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if (*u->z == NULL) {
-      return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+    if (*u->z == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   }
 
   // Unsure whether size = 0 should be an error, and if so, what to return
   o->via.array.ptr = (msgpack_object *)msgpack_zone_malloc(*u->z, size);
-  if (o->via.array.ptr == NULL) {
-    return MSGPACK_UNPACK_NOMEM_ERROR;
-  }
+  if (o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   return 0;
 }
 
@@ -213,8 +208,7 @@ static inline int template_callback_map(unpack_user *u, unsigned int n, msgpack_
 
   // Note - this will always be false on 64-bit systems
 #if SIZE_MAX == UINT_MAX
-  if (n > SIZE_MAX / sizeof(msgpack_object_kv))
-    return MSGPACK_UNPACK_NOMEM_ERROR;
+  if (n > SIZE_MAX / sizeof(msgpack_object_kv)) return MSGPACK_UNPACK_NOMEM_ERROR;
 #endif
 
   o->type = MSGPACK_OBJECT_MAP;
@@ -224,16 +218,12 @@ static inline int template_callback_map(unpack_user *u, unsigned int n, msgpack_
 
   if (*u->z == NULL) {
     *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if (*u->z == NULL) {
-      return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+    if (*u->z == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   }
 
   // Should size = 0 be an error? If so, what error to return?
   o->via.map.ptr = (msgpack_object_kv *)msgpack_zone_malloc(*u->z, size);
-  if (o->via.map.ptr == NULL) {
-    return MSGPACK_UNPACK_NOMEM_ERROR;
-  }
+  if (o->via.map.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   return 0;
 }
 
@@ -255,9 +245,7 @@ static inline int template_callback_str(unpack_user *u, const char *b, const cha
   MSGPACK_UNUSED(b);
   if (*u->z == NULL) {
     *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if (*u->z == NULL) {
-      return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+    if (*u->z == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   }
   o->type = MSGPACK_OBJECT_STR;
   o->via.str.ptr = p;
@@ -271,9 +259,7 @@ static inline int template_callback_bin(unpack_user *u, const char *b, const cha
   MSGPACK_UNUSED(b);
   if (*u->z == NULL) {
     *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if (*u->z == NULL) {
-      return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+    if (*u->z == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   }
   o->type = MSGPACK_OBJECT_BIN;
   o->via.bin.ptr = p;
@@ -285,14 +271,10 @@ static inline int template_callback_bin(unpack_user *u, const char *b, const cha
 static inline int template_callback_ext(unpack_user *u, const char *b, const char *p, unsigned int l,
                                         msgpack_object *o) {
   MSGPACK_UNUSED(b);
-  if (l == 0) {
-    return MSGPACK_UNPACK_PARSE_ERROR;
-  }
+  if (l == 0) { return MSGPACK_UNPACK_PARSE_ERROR; }
   if (*u->z == NULL) {
     *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if (*u->z == NULL) {
-      return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+    if (*u->z == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
   }
   o->type = MSGPACK_OBJECT_EXT;
   o->via.ext.type = *p;
@@ -313,9 +295,7 @@ static inline void init_count(void *buffer) { *(volatile _msgpack_atomic_counter
 
 static inline void decr_count(void *buffer) {
   // atomic if(--*(_msgpack_atomic_counter_t*)buffer == 0) { free(buffer); }
-  if (_msgpack_sync_decr_and_fetch((volatile _msgpack_atomic_counter_t *)buffer) == 0) {
-    free(buffer);
-  }
+  if (_msgpack_sync_decr_and_fetch((volatile _msgpack_atomic_counter_t *)buffer) == 0) { free(buffer); }
 }
 
 static inline void incr_count(void *buffer) {
@@ -331,14 +311,10 @@ bool msgpack_unpacker_init(msgpack_unpacker *mpac, size_t initial_buffer_size) {
   char *buffer;
   void *ctx;
 
-  if (initial_buffer_size < COUNTER_SIZE) {
-    initial_buffer_size = COUNTER_SIZE;
-  }
+  if (initial_buffer_size < COUNTER_SIZE) { initial_buffer_size = COUNTER_SIZE; }
 
   buffer = (char *)malloc(initial_buffer_size);
-  if (buffer == NULL) {
-    return false;
-  }
+  if (buffer == NULL) { return false; }
 
   ctx = malloc(sizeof(template_context));
   if (ctx == NULL) {
@@ -372,9 +348,7 @@ void msgpack_unpacker_destroy(msgpack_unpacker *mpac) {
 
 msgpack_unpacker *msgpack_unpacker_new(size_t initial_buffer_size) {
   msgpack_unpacker *mpac = (msgpack_unpacker *)malloc(sizeof(msgpack_unpacker));
-  if (mpac == NULL) {
-    return NULL;
-  }
+  if (mpac == NULL) { return NULL; }
 
   if (!msgpack_unpacker_init(mpac, initial_buffer_size)) {
     free(mpac);
@@ -396,9 +370,7 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker *mpac, size_t size) {
     mpac->used = COUNTER_SIZE;
     mpac->off = COUNTER_SIZE;
 
-    if (mpac->free >= size) {
-      return true;
-    }
+    if (mpac->free >= size) { return true; }
   }
 
   if (mpac->off == COUNTER_SIZE) {
@@ -414,9 +386,7 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker *mpac, size_t size) {
     }
 
     tmp = (char *)realloc(mpac->buffer, next_size);
-    if (tmp == NULL) {
-      return false;
-    }
+    if (tmp == NULL) { return false; }
 
     mpac->buffer = tmp;
     mpac->free = next_size - mpac->used;
@@ -435,9 +405,7 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker *mpac, size_t size) {
     }
 
     tmp = (char *)malloc(next_size);
-    if (tmp == NULL) {
-      return false;
-    }
+    if (tmp == NULL) { return false; }
 
     init_count(tmp);
 
@@ -468,9 +436,7 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker *mpac, size_t size) {
 int msgpack_unpacker_execute(msgpack_unpacker *mpac) {
   size_t off = mpac->off;
   int ret = template_execute(CTX_CAST(mpac->ctx), mpac->buffer, mpac->used, &mpac->off);
-  if (mpac->off > off) {
-    mpac->parsed += mpac->off - off;
-  }
+  if (mpac->off > off) { mpac->parsed += mpac->off - off; }
   return ret;
 }
 
@@ -479,11 +445,8 @@ msgpack_object msgpack_unpacker_data(msgpack_unpacker *mpac) { return template_d
 msgpack_zone *msgpack_unpacker_release_zone(msgpack_unpacker *mpac) {
   msgpack_zone *old = mpac->z;
 
-  if (old == NULL)
-    return NULL;
-  if (!msgpack_unpacker_flush_zone(mpac)) {
-    return NULL;
-  }
+  if (old == NULL) return NULL;
+  if (!msgpack_unpacker_flush_zone(mpac)) { return NULL; }
 
   mpac->z = NULL;
   CTX_CAST(mpac->ctx)->user.z = &mpac->z;
@@ -495,9 +458,7 @@ void msgpack_unpacker_reset_zone(msgpack_unpacker *mpac) { msgpack_zone_clear(mp
 
 bool msgpack_unpacker_flush_zone(msgpack_unpacker *mpac) {
   if (CTX_REFERENCED(mpac)) {
-    if (!msgpack_zone_push_finalizer(mpac->z, decr_count, mpac->buffer)) {
-      return false;
-    }
+    if (!msgpack_zone_push_finalizer(mpac->z, decr_count, mpac->buffer)) { return false; }
     CTX_REFERENCED(mpac) = false;
 
     incr_count(mpac->buffer);
@@ -525,9 +486,7 @@ static inline msgpack_unpack_return unpacker_next(msgpack_unpacker *mpac, msgpac
     return (msgpack_unpack_return)ret;
   }
 
-  if (ret == 0) {
-    return MSGPACK_UNPACK_CONTINUE;
-  }
+  if (ret == 0) { return MSGPACK_UNPACK_CONTINUE; }
   result->zone = msgpack_unpacker_release_zone(mpac);
   result->data = msgpack_unpacker_data(mpac);
 
@@ -538,9 +497,7 @@ msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker *mpac, msgpack_unpa
   msgpack_unpack_return ret;
 
   ret = unpacker_next(mpac, result);
-  if (ret == MSGPACK_UNPACK_SUCCESS) {
-    msgpack_unpacker_reset(mpac);
-  }
+  if (ret == MSGPACK_UNPACK_SUCCESS) { msgpack_unpacker_reset(mpac); }
 
   return ret;
 }
@@ -550,13 +507,9 @@ msgpack_unpack_return msgpack_unpacker_next_with_size(msgpack_unpacker *mpac, ms
   msgpack_unpack_return ret;
 
   ret = unpacker_next(mpac, result);
-  if (ret == MSGPACK_UNPACK_SUCCESS || ret == MSGPACK_UNPACK_CONTINUE) {
-    *p_bytes = mpac->parsed;
-  }
+  if (ret == MSGPACK_UNPACK_SUCCESS || ret == MSGPACK_UNPACK_CONTINUE) { *p_bytes = mpac->parsed; }
 
-  if (ret == MSGPACK_UNPACK_SUCCESS) {
-    msgpack_unpacker_reset(mpac);
-  }
+  if (ret == MSGPACK_UNPACK_SUCCESS) { msgpack_unpacker_reset(mpac); }
 
   return ret;
 }
@@ -564,9 +517,7 @@ msgpack_unpack_return msgpack_unpacker_next_with_size(msgpack_unpacker *mpac, ms
 msgpack_unpack_return msgpack_unpack(const char *data, size_t len, size_t *off, msgpack_zone *result_zone,
                                      msgpack_object *result) {
   size_t noff = 0;
-  if (off != NULL) {
-    noff = *off;
-  }
+  if (off != NULL) { noff = *off; }
 
   if (len <= noff) {
     // FIXME
@@ -580,23 +531,15 @@ msgpack_unpack_return msgpack_unpack(const char *data, size_t len, size_t *off, 
     ctx.user.referenced = false;
 
     e = template_execute(&ctx, data, len, &noff);
-    if (e < 0) {
-      return (msgpack_unpack_return)e;
-    }
+    if (e < 0) { return (msgpack_unpack_return)e; }
 
-    if (off != NULL) {
-      *off = noff;
-    }
+    if (off != NULL) { *off = noff; }
 
-    if (e == 0) {
-      return MSGPACK_UNPACK_CONTINUE;
-    }
+    if (e == 0) { return MSGPACK_UNPACK_CONTINUE; }
 
     *result = template_data(&ctx);
 
-    if (noff < len) {
-      return MSGPACK_UNPACK_EXTRA_BYTES;
-    }
+    if (noff < len) { return MSGPACK_UNPACK_EXTRA_BYTES; }
 
     return MSGPACK_UNPACK_SUCCESS;
   }
@@ -606,13 +549,9 @@ msgpack_unpack_return msgpack_unpack_next(msgpack_unpacked *result, const char *
   size_t noff = 0;
   msgpack_unpacked_destroy(result);
 
-  if (off != NULL) {
-    noff = *off;
-  }
+  if (off != NULL) { noff = *off; }
 
-  if (len <= noff) {
-    return MSGPACK_UNPACK_CONTINUE;
-  }
+  if (len <= noff) { return MSGPACK_UNPACK_CONTINUE; }
 
   {
     int e;
@@ -624,9 +563,7 @@ msgpack_unpack_return msgpack_unpack_next(msgpack_unpacked *result, const char *
 
     e = template_execute(&ctx, data, len, &noff);
 
-    if (off != NULL) {
-      *off = noff;
-    }
+    if (off != NULL) { *off = noff; }
 
     if (e < 0) {
       msgpack_zone_free(result->zone);
@@ -634,9 +571,7 @@ msgpack_unpack_return msgpack_unpack_next(msgpack_unpacked *result, const char *
       return (msgpack_unpack_return)e;
     }
 
-    if (e == 0) {
-      return MSGPACK_UNPACK_CONTINUE;
-    }
+    if (e == 0) { return MSGPACK_UNPACK_CONTINUE; }
 
     result->data = template_data(&ctx);
 

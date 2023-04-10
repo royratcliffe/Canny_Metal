@@ -18,9 +18,7 @@ struct msgpack_zone_chunk {
 
 static inline bool init_chunk_list(msgpack_zone_chunk_list *cl, size_t chunk_size) {
   msgpack_zone_chunk *chunk = (msgpack_zone_chunk *)malloc(sizeof(msgpack_zone_chunk) + chunk_size);
-  if (chunk == NULL) {
-    return false;
-  }
+  if (chunk == NULL) { return false; }
 
   cl->head = chunk;
   cl->free = chunk_size;
@@ -127,9 +125,7 @@ bool msgpack_zone_push_finalizer_expand(msgpack_zone *zone, void (*func)(void *d
   }
 
   tmp = (msgpack_zone_finalizer *)realloc(fa->array, sizeof(msgpack_zone_finalizer) * nnext);
-  if (tmp == NULL) {
-    return false;
-  }
+  if (tmp == NULL) { return false; }
 
   fa->array = tmp;
   fa->end = tmp + nnext;
@@ -162,9 +158,7 @@ void msgpack_zone_clear(msgpack_zone *zone) {
 bool msgpack_zone_init(msgpack_zone *zone, size_t chunk_size) {
   zone->chunk_size = chunk_size;
 
-  if (!init_chunk_list(&zone->chunk_list, chunk_size)) {
-    return false;
-  }
+  if (!init_chunk_list(&zone->chunk_list, chunk_size)) { return false; }
 
   init_finalizer_array(&zone->finalizer_array);
 
@@ -173,9 +167,7 @@ bool msgpack_zone_init(msgpack_zone *zone, size_t chunk_size) {
 
 msgpack_zone *msgpack_zone_new(size_t chunk_size) {
   msgpack_zone *zone = (msgpack_zone *)malloc(sizeof(msgpack_zone));
-  if (zone == NULL) {
-    return NULL;
-  }
+  if (zone == NULL) { return NULL; }
 
   zone->chunk_size = chunk_size;
 
@@ -190,9 +182,7 @@ msgpack_zone *msgpack_zone_new(size_t chunk_size) {
 }
 
 void msgpack_zone_free(msgpack_zone *zone) {
-  if (zone == NULL) {
-    return;
-  }
+  if (zone == NULL) { return; }
   msgpack_zone_destroy(zone);
   free(zone);
 }

@@ -76,8 +76,7 @@ static inline void msgpack_zbuffer_destroy(msgpack_zbuffer *zbuf) {
 
 static inline msgpack_zbuffer *msgpack_zbuffer_new(int level, size_t init_size) {
   msgpack_zbuffer *zbuf = (msgpack_zbuffer *)malloc(sizeof(msgpack_zbuffer));
-  if (zbuf == NULL)
-    return NULL;
+  if (zbuf == NULL) return NULL;
   if (!msgpack_zbuffer_init(zbuf, level, init_size)) {
     free(zbuf);
     return NULL;
@@ -86,9 +85,7 @@ static inline msgpack_zbuffer *msgpack_zbuffer_new(int level, size_t init_size) 
 }
 
 static inline void msgpack_zbuffer_free(msgpack_zbuffer *zbuf) {
-  if (zbuf == NULL) {
-    return;
-  }
+  if (zbuf == NULL) { return; }
   msgpack_zbuffer_destroy(zbuf);
   free(zbuf);
 }
@@ -100,9 +97,7 @@ static inline bool msgpack_zbuffer_expand(msgpack_zbuffer *zbuf) {
   size_t nsize = (csize == 0) ? zbuf->init_size : csize * 2;
 
   char *tmp = (char *)realloc(zbuf->data, nsize);
-  if (tmp == NULL) {
-    return false;
-  }
+  if (tmp == NULL) { return false; }
 
   zbuf->data = tmp;
   zbuf->stream.next_out = (Bytef *)(tmp + used);
@@ -115,22 +110,17 @@ static inline int msgpack_zbuffer_write(void *data, const char *buf, size_t len)
   msgpack_zbuffer *zbuf = (msgpack_zbuffer *)data;
 
   assert(buf || len == 0);
-  if (!buf)
-    return 0;
+  if (!buf) return 0;
 
   zbuf->stream.next_in = (Bytef *)buf;
   zbuf->stream.avail_in = (uInt)len;
 
   while (zbuf->stream.avail_in > 0) {
     if (zbuf->stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
-      if (!msgpack_zbuffer_expand(zbuf)) {
-        return -1;
-      }
+      if (!msgpack_zbuffer_expand(zbuf)) { return -1; }
     }
 
-    if (deflate(&zbuf->stream, Z_NO_FLUSH) != Z_OK) {
-      return -1;
-    }
+    if (deflate(&zbuf->stream, Z_NO_FLUSH) != Z_OK) { return -1; }
   }
 
   return 0;
@@ -143,9 +133,7 @@ static inline char *msgpack_zbuffer_flush(msgpack_zbuffer *zbuf) {
       return zbuf->data;
     case Z_OK:
     case Z_BUF_ERROR:
-      if (!msgpack_zbuffer_expand(zbuf)) {
-        return NULL;
-      }
+      if (!msgpack_zbuffer_expand(zbuf)) { return NULL; }
       break;
     default:
       return NULL;
@@ -165,9 +153,7 @@ static inline void msgpack_zbuffer_reset_buffer(msgpack_zbuffer *zbuf) {
 }
 
 static inline bool msgpack_zbuffer_reset(msgpack_zbuffer *zbuf) {
-  if (deflateReset(&zbuf->stream) != Z_OK) {
-    return false;
-  }
+  if (deflateReset(&zbuf->stream) != Z_OK) { return false; }
   msgpack_zbuffer_reset_buffer(zbuf);
   return true;
 }

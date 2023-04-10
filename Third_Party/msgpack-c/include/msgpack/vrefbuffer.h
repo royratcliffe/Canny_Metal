@@ -93,8 +93,7 @@ void msgpack_vrefbuffer_clear(msgpack_vrefbuffer *vref);
 
 static inline msgpack_vrefbuffer *msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size) {
   msgpack_vrefbuffer *vbuf = (msgpack_vrefbuffer *)malloc(sizeof(msgpack_vrefbuffer));
-  if (vbuf == NULL)
-    return NULL;
+  if (vbuf == NULL) return NULL;
   if (!msgpack_vrefbuffer_init(vbuf, ref_size, chunk_size)) {
     free(vbuf);
     return NULL;
@@ -103,9 +102,7 @@ static inline msgpack_vrefbuffer *msgpack_vrefbuffer_new(size_t ref_size, size_t
 }
 
 static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer *vbuf) {
-  if (vbuf == NULL) {
-    return;
-  }
+  if (vbuf == NULL) { return; }
   msgpack_vrefbuffer_destroy(vbuf);
   free(vbuf);
 }
@@ -114,8 +111,7 @@ static inline int msgpack_vrefbuffer_write(void *data, const char *buf, size_t l
   msgpack_vrefbuffer *vbuf = (msgpack_vrefbuffer *)data;
   assert(buf || len == 0);
 
-  if (!buf)
-    return 0;
+  if (!buf) return 0;
 
   if (len < vbuf->ref_size) {
     return msgpack_vrefbuffer_append_copy(vbuf, buf, len);

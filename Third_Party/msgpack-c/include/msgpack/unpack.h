@@ -201,9 +201,7 @@ MSGPACK_DLLEXPORT
 bool msgpack_unpacker_expand_buffer(msgpack_unpacker *mpac, size_t size);
 
 static inline bool msgpack_unpacker_reserve_buffer(msgpack_unpacker *mpac, size_t size) {
-  if (mpac->free >= size) {
-    return true;
-  }
+  if (mpac->free >= size) { return true; }
   return msgpack_unpacker_expand_buffer(mpac, size);
 }
 

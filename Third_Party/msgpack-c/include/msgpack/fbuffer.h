@@ -25,8 +25,7 @@ extern "C" {
 
 static inline int msgpack_fbuffer_write(void *data, const char *buf, size_t len) {
   assert(buf || len == 0);
-  if (!buf)
-    return 0;
+  if (!buf) return 0;
 
   return (1 == fwrite(buf, len, 1, (FILE *)data)) ? 0 : -1;
 }
