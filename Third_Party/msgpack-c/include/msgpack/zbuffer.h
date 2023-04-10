@@ -52,7 +52,7 @@ static inline void msgpack_zbuffer_reset_buffer(msgpack_zbuffer *zbuf);
 static inline char *msgpack_zbuffer_release_buffer(msgpack_zbuffer *zbuf);
 
 #ifndef MSGPACK_ZBUFFER_RESERVE_SIZE
-#define MSGPACK_ZBUFFER_RESERVE_SIZE 16
+#define MSGPACK_ZBUFFER_RESERVE_SIZE 64
 #endif
 
 static inline int msgpack_zbuffer_write(void *data, const char *buf, size_t len);

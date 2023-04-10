@@ -60,7 +60,7 @@ typedef struct msgpack_unpacker {
 } msgpack_unpacker;
 
 #ifndef MSGPACK_UNPACKER_INIT_BUFFER_SIZE
-#define MSGPACK_UNPACKER_INIT_BUFFER_SIZE 64
+#define MSGPACK_UNPACKER_INIT_BUFFER_SIZE 128
 #endif
 
 /**
@@ -71,8 +71,7 @@ MSGPACK_DLLEXPORT
 bool msgpack_unpacker_init(msgpack_unpacker *mpac, size_t initial_buffer_size);
 
 /**
- * Destroys a streaming deserializer initialized by msgpack_unpacker_init(msgpack_unpacker*,
- * size_t).
+ * Destroys a streaming deserializer initialized by msgpack_unpacker_init(msgpack_unpacker*, size_t).
  */
 MSGPACK_DLLEXPORT
 void msgpack_unpacker_destroy(msgpack_unpacker *mpac);
@@ -91,7 +90,7 @@ MSGPACK_DLLEXPORT
 void msgpack_unpacker_free(msgpack_unpacker *mpac);
 
 #ifndef MSGPACK_UNPACKER_RESERVE_SIZE
-#define MSGPACK_UNPACKER_RESERVE_SIZE 32
+#define MSGPACK_UNPACKER_RESERVE_SIZE 64
 #endif
 
 /**

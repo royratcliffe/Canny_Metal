@@ -49,7 +49,7 @@ typedef struct msgpack_zone {
 } msgpack_zone;
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
-#define MSGPACK_ZONE_CHUNK_SIZE 16
+#define MSGPACK_ZONE_CHUNK_SIZE 256
 #endif
 
 MSGPACK_DLLEXPORT
