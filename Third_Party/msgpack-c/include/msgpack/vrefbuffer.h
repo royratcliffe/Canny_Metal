@@ -62,7 +62,7 @@ typedef struct msgpack_vrefbuffer {
 #endif
 
 #ifndef MSGPACK_VREFBUFFER_CHUNK_SIZE
-#define MSGPACK_VREFBUFFER_CHUNK_SIZE 8192
+#define MSGPACK_VREFBUFFER_CHUNK_SIZE 256
 #endif
 
 MSGPACK_DLLEXPORT
