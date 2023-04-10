@@ -60,6 +60,13 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
                           TickType_t xTicksToWait);
 
 /*!
+ * \brief Relays a previously-received message.
+ *
+ * Relays the used buffer.
+ */
+size_t xMsgUnifierRelay(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait);
+
+/*!
  * \brief Unifies with the \e next message object.
  */
 BaseType_t xMsgUnify(MsgUnifierHandle_t xMsgUnifier);

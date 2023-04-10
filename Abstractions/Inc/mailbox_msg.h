@@ -51,6 +51,13 @@ BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBind
  */
 BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait);
 
+/*!
+ * \brief Relays a previously-received message.
+ * \param[in] xMsgUnifier Carries the received message. May or may not have
+ * already been unified, either partially or completely.
+ */
+BaseType_t xMailboxRelayMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait);
+
 BaseType_t xMsgBindMailbox(MsgBindingHandle_t xMsgBinding, MailboxHandle_t xMailbox);
 
 BaseType_t xMsgUnifyMailbox(MsgUnifierHandle_t xMsgUnifier, MailboxHandle_t *pxMailbox);

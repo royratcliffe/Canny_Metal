@@ -51,6 +51,15 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
   return xReceivedBytes;
 }
 
+/*
+ * The implementation breaks unpacker encapsulation. The interface provides no
+ * access to the used part of the buffer. Used therefore implies gone forever.
+ * Resurrect the bits by accessing the unpacker members directly.
+ */
+size_t xMsgUnifierRelay(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait) {
+  return xMessageBufferSend(xMessageBuffer, xMsgUnifier->xUnpacker.buffer, xMsgUnifier->xUnpacker.used, xTicksToWait);
+}
+
 BaseType_t xMsgUnify(MsgUnifierHandle_t xMsgUnifier) {
   return msgpack_unpacker_next(&xMsgUnifier->xUnpacker, &xMsgUnifier->xUnpacked);
 }

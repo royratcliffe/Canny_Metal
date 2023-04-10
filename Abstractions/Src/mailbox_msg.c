@@ -21,6 +21,11 @@ BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgU
   return xMsgUnifierReceive(xMsgUnifier, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
 }
 
+BaseType_t xMailboxRelayMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait) {
+  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  return xMsgUnifierRelay(xMsgUnifier, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
+}
+
 BaseType_t xMsgBindMailbox(MsgBindingHandle_t xMsgPack, MailboxHandle_t xMailbox) {
   if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
   return xMsgBindExtWithBody(xMsgPack, &xMailbox, sizeof(xMailbox), msgEXT_TYPE_MAILBOX);
