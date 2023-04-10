@@ -32,5 +32,4 @@ typedef struct RegisteredOpaques *RegisteredOpaques_t;
  * Asserts if full. By design, always provide sufficient space for registered
  * opaque pointers. No function exists to unregister a pointer by design.
  */
-size_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques,
-                                   void *pvOpaque);
+size_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);

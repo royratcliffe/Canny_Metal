@@ -34,8 +34,7 @@ void vI2CSeqDelete(I2CSeqHandle_t xI2CSeq);
  * Performs sanity validation. Only the least-significant bit determines the
  * direction: 0 for transmit, 1 for receive.
  */
-void vI2CSeqTransferDirection(I2CSeqHandle_t xI2CSeq,
-                              uint8_t ucTransferDirection);
+void vI2CSeqTransferDirection(I2CSeqHandle_t xI2CSeq, uint8_t ucTransferDirection);
 
 void vI2CSeqTransmit(I2CSeqHandle_t xI2CSeq);
 
@@ -64,8 +63,7 @@ void vI2CSeqSlaveIT(I2CSeqHandle_t xI2CSeq);
  * \brief Allocates transfer buffer.
  * \param[in] xBufferLengthBytes Length of the buffer in bytes.
  */
-void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq,
-                              size_t xBufferLengthBytes);
+void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes);
 
 /*!
  * \brief Copies from data to buffer.
