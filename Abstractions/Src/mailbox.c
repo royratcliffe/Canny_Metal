@@ -155,6 +155,6 @@ MailboxHandle_t xMailboxSelf() {
 }
 
 BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox) {
-  if (pxMailbox == NULL || *pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (pxMailbox == NULL || (*pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL)) return pdFAIL;
   return pdPASS;
 }
