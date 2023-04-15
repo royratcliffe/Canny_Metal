@@ -80,27 +80,17 @@ void vMailboxUnlinkAll(MailboxHandle_t xMailbox) {
   (void)xMailboxYieldLinked(xMailbox, prvYield);
 }
 
-BaseType_t xMailboxSetLinkOwner(MailboxHandle_t xMailbox, void *pvOwner) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+void vMailboxLinkOwner(MailboxHandle_t xMailbox, void *pvOwner) {
   listSET_LIST_ITEM_OWNER(&xMailbox->xLinked, pvOwner);
-  return pdPASS;
 }
 
-void *pvMailboxGetLinkOwner(MailboxHandle_t xMailbox) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return NULL;
-  return listGET_LIST_ITEM_OWNER(&xMailbox->xLinked);
-}
+void *pvMailboxLinkOwner(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_OWNER(&xMailbox->xLinked); }
 
-BaseType_t xMailboxSetLinkValue(MailboxHandle_t xMailbox, TickType_t xValue) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue) {
   listSET_LIST_ITEM_VALUE(&xMailbox->xLinked, xValue);
-  return pdPASS;
 }
 
-TickType_t xMailboxGetLinkValue(MailboxHandle_t xMailbox) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return portMAX_DELAY;
-  return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked);
-}
+TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked); }
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox)) {
   if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return NULL;
@@ -164,12 +154,7 @@ MailboxHandle_t xMailboxSelf() {
 #endif
 }
 
-/*!
- * \brief Overrides a mailbox handle with self as a fall-back.
- * \param[out] pxMailbox pointer to mailbox handle.
- * \returns \c pdPASS if the mailbox at pxMailbox is a mailbox.
- */
 BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox) {
-  if (pxMailbox == NULL && *pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (pxMailbox == NULL || *pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL) return pdFAIL;
   return pdPASS;
 }
