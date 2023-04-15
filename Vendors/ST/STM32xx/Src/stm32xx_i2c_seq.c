@@ -138,20 +138,20 @@ void vI2CSeqSlaveIT(I2CSeqHandle_t xI2CSeq) {
   xI2CSeq->pxNoOptionTransfer[I2C_DIRECTION_RECEIVE] = prvSlaveNoOptionTransmitIT;
 }
 
-void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes) {
+void vI2CSeqBufferLength(I2CSeqHandle_t xI2CSeq, size_t xBytes) {
 #if i2cseq_configUSE_STDLIB_BUFFER == 0
   if (xI2CSeq->pvBuffer) {
-    if (xI2CSeq->xBufferLengthBytes == xBufferLengthBytes) return;
+    if (xI2CSeq->xBufferLengthBytes == xBytes) return;
     vPortFree(xI2CSeq->pvBuffer);
   }
-  xI2CSeq->pvBuffer = pvPortMalloc(xBufferLengthBytes);
+  xI2CSeq->pvBuffer = pvPortMalloc(xBytes);
   configASSERT(xI2CSeq->pvBuffer);
 #else
-  void *pvBuffer = realloc(xI2CSeq->pvBuffer, xBufferLengthBytes);
+  void *pvBuffer = realloc(xI2CSeq->pvBuffer, xBytes);
   configASSERT(pvBuffer);
   xI2CSeq->pvBuffer = pvBuffer;
 #endif
-  xI2CSeq->xBufferLengthBytes = xBufferLengthBytes;
+  xI2CSeq->xBufferLengthBytes = xBytes;
 }
 
 void vI2CSeqCopyFrom(I2CSeqHandle_t xI2CSeq, const void *pvData) {
@@ -159,14 +159,14 @@ void vI2CSeqCopyFrom(I2CSeqHandle_t xI2CSeq, const void *pvData) {
 }
 
 void vI2CSeqCopyTo(I2CSeqHandle_t xI2CSeq, void *pvBuffer) {
-  (void)memcpy(pvBuffer, xI2CSeq->pvBuffer, xI2CSeqXferBytes(xI2CSeq));
+  (void)memcpy(pvBuffer, xI2CSeq->pvBuffer, xI2CSeqXfer(xI2CSeq));
 }
 
 void *pvI2CSeqBuffer(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->pvBuffer; }
 
-size_t xI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->xBufferLengthBytes; }
+size_t xI2CSeqBufferLength(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->xBufferLengthBytes; }
 
-size_t xI2CSeqXferBytes(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->xBufferLengthBytes - xI2CSeq->xI2C->XferSize; }
+size_t xI2CSeqXfer(I2CSeqHandle_t xI2CSeq) { return xI2CSeq->xBufferLengthBytes - xI2CSeq->xI2C->XferSize; }
 
 int xI2CSeqFrame(I2CSeqHandle_t xI2CSeq, uint32_t ulOptions) {
   return xI2CSeq->pxTransfer[xI2CSeq->ucTransferDirection](xI2CSeq, ulOptions);

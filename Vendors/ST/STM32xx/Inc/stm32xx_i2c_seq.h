@@ -73,14 +73,14 @@ void vI2CSeqSlaveIT(I2CSeqHandle_t xI2CSeq);
 
 /*!
  * \brief Allocates transfer buffer.
- * \param[in] xBufferLengthBytes Length of the buffer in bytes.
+ * \param[in] xBytes New length of the buffer in bytes.
  *
  * Sets up asynchronous memory space for pending transfer.
  *
  * Re-allocates the associated buffer. Optimises FreeRTOS heap allocations
  * by matching the existing buffer length first.
  */
-void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes);
+void vI2CSeqBufferLength(I2CSeqHandle_t xI2CSeq, size_t xBytes);
 
 /*!
  * \brief Copies from data to buffer.
@@ -97,13 +97,13 @@ void vI2CSeqCopyTo(I2CSeqHandle_t xI2CSeq, void *pvBuffer);
  */
 void *pvI2CSeqBuffer(I2CSeqHandle_t xI2CSeq);
 
-size_t xI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq);
+size_t xI2CSeqBufferLength(I2CSeqHandle_t xI2CSeq);
 
 /*!
  * The I2C handle's transfer size is a down counter starting at the initial
  * transfer size.
  */
-size_t xI2CSeqXferBytes(I2CSeqHandle_t xI2CSeq);
+size_t xI2CSeqXfer(I2CSeqHandle_t xI2CSeq);
 
 int xI2CSeqFrame(I2CSeqHandle_t xI2CSeq, uint32_t ulOptions);
 
