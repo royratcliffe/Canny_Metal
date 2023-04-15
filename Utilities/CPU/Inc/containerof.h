@@ -17,8 +17,8 @@
  * address. Subtracting a size from a void pointer decrements the pointer by one
  * byte for each displacement unit.
  */
-#define CONTAINER_OF(ptr, type, member)                                        \
-  ({                                                                           \
-    void *void_ptr = (void *)(ptr);                                            \
-    ((type *)(void_ptr - offsetof(type, member)));                             \
+#define CONTAINER_OF(ptr, type, member)            \
+  ({                                               \
+    void *void_ptr = (void *)(ptr);                \
+    ((type *)(void_ptr - offsetof(type, member))); \
   })
