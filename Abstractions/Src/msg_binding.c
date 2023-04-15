@@ -78,6 +78,14 @@ BaseType_t xMsgBindStr(MsgBindingHandle_t xMsgBinding, const char *pcStr) {
   return xMsgBindStrWithBody(xMsgBinding, pcStr, strlen(pcStr));
 }
 
+BaseType_t xMsgBindArray(MsgBindingHandle_t xMsgBinding, size_t xNumberOfElements) {
+  return msgpack_pack_array(&xMsgBinding->xPacker, xNumberOfElements) == 0;
+}
+
+BaseType_t xMsgBindMap(MsgBindingHandle_t xMsgBinding, size_t xNumberOfEntries) {
+  return msgpack_pack_map(&xMsgBinding->xPacker, xNumberOfEntries) == 0;
+}
+
 BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, const void *pvExt, size_t xExtLengthBytes,
                                int8_t cType) {
   return msgpack_pack_ext_with_body(&xMsgBinding->xPacker, pvExt, xExtLengthBytes, cType) == 0;

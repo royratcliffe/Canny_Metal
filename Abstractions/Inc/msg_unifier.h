@@ -126,6 +126,15 @@ BaseType_t xMsgUnifyStrDup(MsgUnifierHandle_t xMsgUnifier, char **ppcStrDup);
  */
 BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp);
 
+BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElements);
+
+/*!
+ * \brief Unifies with a map of entries.
+ * \param[out] pxNumberOfEntries Pointer to received number of entries on
+ * success. Entries are key-value pairs: key first, value second.
+ */
+BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries);
+
 /*!
  * \returns Fails when the type mismatches.
  */
