@@ -16,6 +16,12 @@
 #define i2cslaveBUFFER_LENGTH_BYTES 256U
 #endif
 
+/*!
+ * \brief Stack depth of I2C slave task in words.
+ *
+ * The depth needs to account for usage by device handlers. They respond to I2C
+ * events within the context of the slave task.
+ */
 #ifndef i2cslaveSTACK_DEPTH
 #define i2cslaveSTACK_DEPTH 2048U
 #endif
@@ -70,11 +76,9 @@ void vI2CSlaveDeviceSlaveRxCplt(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
 /*!
  * \brief Sets up a slave device address handler.
  */
-void vI2CSlaveDeviceAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
-                         void (*pvAddr)(I2CSeqHandle_t xI2CSeq));
+void vI2CSlaveDeviceAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr, void (*pvAddr)(I2CSeqHandle_t xI2CSeq));
 
-void vI2CSlaveDeviceError(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
-                          void (*pvError)(I2CSeqHandle_t xI2CSeq));
+void vI2CSlaveDeviceError(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr, void (*pvError)(I2CSeqHandle_t xI2CSeq));
 
 /*!
  * \}
