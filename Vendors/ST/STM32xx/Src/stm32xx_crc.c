@@ -8,11 +8,24 @@
  * and fail, and all the FreeRTOS-oriented generic types and constants.
  */
 
-#ifdef HAL_CRC_MODULE_ENABLED
-
-#include "crc32.h"
+#include "stm32xx_crc.h"
 
 #include "stm32xx_mcu.h"
+
+#include "semphr.h"
+
+static SemaphoreHandle_t xSemaphore = NULL;
+
+void vCRCCreateMutex() {
+  xSemaphore = xSemaphoreCreateMutex();
+  configASSERT(xSemaphore);
+}
+
+BaseType_t xCRCTake(TickType_t xTicksToWait) { return xSemaphoreTake(xSemaphore, xTicksToWait); }
+
+BaseType_t xCRCGive() { return xSemaphore ? xSemaphoreGive(xSemaphore) : pdFAIL; }
+
+#ifdef HAL_CRC_MODULE_ENABLED
 
 /*
  * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
@@ -112,7 +125,7 @@ BaseType_t xCRCRev(CRCRevIn_t xRevIn, CRCRevOut_t xRevOut)
 BaseType_t xCRC32C()
 {
 	vCRCInit(0xffffffff);
-	return xCRCPoly32(0x1EDC6F41) && xCRCRev(CRCRevInByte, CRCRevOutEnabled);
+	return xCRCPoly32(0x1EDC6F41) && xCRCRev(eCRCRevInByte, eCRCRevOutEnabled);
 }
 
 uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes)
