@@ -143,10 +143,12 @@ BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElem
  */
 BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries);
 
+BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes);
+
 /*!
  * \returns Fails when the type mismatches.
  */
-BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, const void **pvExt, size_t *pxExtLengthBytes, int8_t cType);
+BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, int8_t cType, const void **pvExt, size_t *pxExtLengthBytes);
 
 /*!
  * \}

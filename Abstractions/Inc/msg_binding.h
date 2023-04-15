@@ -65,7 +65,9 @@ BaseType_t xMsgBindArray(MsgBindingHandle_t xMsgBinding, size_t xNumberOfElement
 
 BaseType_t xMsgBindMap(MsgBindingHandle_t xMsgBinding, size_t xNumberOfEntries);
 
-BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, const void *pvExt, size_t xExtLengthBytes, int8_t cType);
+BaseType_t xMsgBindBinWithBody(MsgBindingHandle_t xMsgBinding, const void *pvBin, size_t xBinLengthBytes);
+
+BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, int8_t cType, const void *pvExt, size_t xExtLengthBytes);
 
 /*!
  * \}

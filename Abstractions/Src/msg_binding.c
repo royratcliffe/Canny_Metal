@@ -50,9 +50,7 @@ size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMe
   return xMessageBufferSend(xMessageBuffer, xMsgBinding->xBuffer.data, xMsgBinding->xBuffer.size, xTicksToWait);
 }
 
-BaseType_t xMsgBindNil(MsgBindingHandle_t xMsgBinding) {
-  return msgpack_pack_nil(&xMsgBinding->xPacker) == 0;
-}
+BaseType_t xMsgBindNil(MsgBindingHandle_t xMsgBinding) { return msgpack_pack_nil(&xMsgBinding->xPacker) == 0; }
 
 BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xValue) {
   int (*pxPackFunction)(msgpack_packer *) = xValue ? msgpack_pack_true : msgpack_pack_false;
@@ -90,8 +88,12 @@ BaseType_t xMsgBindMap(MsgBindingHandle_t xMsgBinding, size_t xNumberOfEntries) 
   return msgpack_pack_map(&xMsgBinding->xPacker, xNumberOfEntries) == 0;
 }
 
-BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, const void *pvExt, size_t xExtLengthBytes,
-                               int8_t cType) {
+BaseType_t xMsgBindBinWithBody(MsgBindingHandle_t xMsgBinding, const void *pvBin, size_t xBinLengthBytes) {
+  return msgpack_pack_bin_with_body(&xMsgBinding->xPacker, pvBin, xBinLengthBytes) == 0;
+}
+
+BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, int8_t cType, const void *pvExt,
+                               size_t xExtLengthBytes) {
   return msgpack_pack_ext_with_body(&xMsgBinding->xPacker, pvExt, xExtLengthBytes, cType) == 0;
 }
 

@@ -34,7 +34,7 @@ BaseType_t xMsgBindMailbox(MsgBindingHandle_t xMsgPack, MailboxHandle_t xMailbox
 BaseType_t xMsgUnifyMailbox(MsgUnifierHandle_t xMsgUnpack, MailboxHandle_t *pxMailbox) {
   const void *pvExt;
   size_t xExtLengthBytes;
-  if (!xMsgUnifyExtType(xMsgUnpack, &pvExt, &xExtLengthBytes, msgEXT_TYPE_MAILBOX) ||
+  if (!xMsgUnifyExtType(xMsgUnpack, msgEXT_TYPE_MAILBOX, &pvExt, &xExtLengthBytes) ||
       xExtLengthBytes != sizeof(*pxMailbox))
     return pdFAIL;
   if (pxMailbox) (void)memcpy(pxMailbox, pvExt, sizeof(*pxMailbox));

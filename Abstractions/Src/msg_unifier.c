@@ -159,8 +159,15 @@ BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntrie
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, const void **pvExt, size_t *pxExtLengthBytes,
-                            int8_t cType) {
+BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes) {
+  if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_BIN) return pdFAIL;
+  if (pvBin) *pvBin = xMsgUnifier->xUnpacked.data.via.bin.ptr;
+  if (pxBinLengthBytes) *pxBinLengthBytes = xMsgUnifier->xUnpacked.data.via.bin.size;
+  return pdPASS;
+}
+
+BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, int8_t cType, const void **pvExt,
+                            size_t *pxExtLengthBytes) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_EXT || xMsgUnifier->xUnpacked.data.via.ext.type != cType)
     return pdFAIL;
   if (pvExt) *pvExt = xMsgUnifier->xUnpacked.data.via.ext.ptr;
