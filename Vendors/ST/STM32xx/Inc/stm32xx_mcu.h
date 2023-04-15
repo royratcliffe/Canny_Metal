@@ -22,16 +22,16 @@
 #endif
 
 #if defined(STM32L452xx)
-#define STM32xx L4
-#define STM32L4xx 52
+#define STM32__ L4
+#define STM32L4__ 52
 #endif
 
 #if defined(STM32L4A6xx)
-#define STM32xx L4
-#define STM32L4xx A6
+#define STM32__ L4
+#define STM32L4__ A6
 #endif
 
-#if STM32xx == L4
+#if STM32__ == L4
 #include "stm32l4xx.h"
 #endif
 
