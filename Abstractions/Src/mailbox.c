@@ -163,3 +163,13 @@ MailboxHandle_t xMailboxSelf() {
   return NULL;
 #endif
 }
+
+/*!
+ * \brief Overrides a mailbox handle with self as a fall-back.
+ * \param[out] pxMailbox pointer to mailbox handle.
+ * \returns \c pdPASS if the mailbox at pxMailbox is a mailbox.
+ */
+BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox) {
+  if (pxMailbox == NULL && *pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  return pdPASS;
+}
