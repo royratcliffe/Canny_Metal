@@ -13,9 +13,9 @@
 #include <memory.h>
 #include <stdio.h>
 
-#define tmp10xSTOP_NOTIFIED (1UL << ('Z' - 'A'))
+#define ti_tmp10xSTOP_NOTIFIED (1UL << ('_' - '@'))
 
-struct TMP10x {
+struct TI_TMP10x {
   TaskHandle_t xTask;
   I2CSlaveHandle_t xI2CSlave;
   uint8_t ucAddr;
@@ -26,8 +26,8 @@ struct TMP10x {
  *
  * For the sake of simplicity, all errors assert. Assume the happy path.
  */
-static portTASK_FUNCTION(prvTMP10xTask, pvParameters) {
-  struct TMP10x *xTMP10x = pvParameters;
+static portTASK_FUNCTION(prvTI_TMP10xTask, pvParameters) {
+  TI_TMP10xHandle_t xTI_TMP10x = pvParameters;
 
   /*
    * 16-bit register file.
@@ -41,7 +41,7 @@ static portTASK_FUNCTION(prvTMP10xTask, pvParameters) {
       /*
        * Receive the first and next frames.
        */
-      vI2CSeqBufferLengthBytes(xI2CSeq, 3U);
+      vI2CSeqBufferLength(xI2CSeq, 3U);
       xStatus = xI2CSeqFirstFrame(xI2CSeq);
       configASSERT(xStatus == HAL_OK);
       break;
@@ -49,7 +49,7 @@ static portTASK_FUNCTION(prvTMP10xTask, pvParameters) {
       /*
        * Transmit the last frames.
        */
-      switch (xI2CSeqXferBytes(xI2CSeq)) {
+      switch (xI2CSeqXfer(xI2CSeq)) {
         uint8_t ucPtr;
         uint16_t usReg;
         uint8_t ucBig[2];
@@ -74,7 +74,7 @@ static portTASK_FUNCTION(prvTMP10xTask, pvParameters) {
   void prvSlaveRxCplt(I2CSeqHandle_t xI2CSeq) {
     switch (ucI2CSeqTransferDirection(xI2CSeq)) {
     case I2C_DIRECTION_TRANSMIT:
-      switch (xI2CSeqXferBytes(xI2CSeq)) {
+      switch (xI2CSeqXfer(xI2CSeq)) {
         uint8_t *pcBuffer;
       case 3U:
         pcBuffer = pvI2CSeqBuffer(xI2CSeq);
@@ -83,17 +83,17 @@ static portTASK_FUNCTION(prvTMP10xTask, pvParameters) {
     }
   }
 
-  vI2CSlaveDeviceAddr(xTMP10x->xI2CSlave, xTMP10x->ucAddr, prvAddr);
-  vI2CSlaveDeviceSlaveRxCplt(xTMP10x->xI2CSlave, xTMP10x->ucAddr, prvSlaveRxCplt);
+  vI2CSlaveDeviceAddr(xTI_TMP10x->xI2CSlave, xTI_TMP10x->ucAddr, prvAddr);
+  vI2CSlaveDeviceSlaveRxCplt(xTI_TMP10x->xI2CSlave, xTI_TMP10x->ucAddr, prvSlaveRxCplt);
   uint32_t ulNotified;
-  xTaskNotifyWait(0UL, tmp10xSTOP_NOTIFIED, &ulNotified, portMAX_DELAY);
-  vI2CSlaveDeviceAddr(xTMP10x->xI2CSlave, xTMP10x->ucAddr, NULL);
-  vI2CSlaveDeviceSlaveRxCplt(xTMP10x->xI2CSlave, xTMP10x->ucAddr, NULL);
+  xTaskNotifyWait(0UL, ti_tmp10xSTOP_NOTIFIED, &ulNotified, portMAX_DELAY);
+  vI2CSlaveDeviceAddr(xTI_TMP10x->xI2CSlave, xTI_TMP10x->ucAddr, NULL);
+  vI2CSlaveDeviceSlaveRxCplt(xTI_TMP10x->xI2CSlave, xTI_TMP10x->ucAddr, NULL);
   vTaskDelete(NULL);
 }
 
-TMP10xHandle_t xTMP10xCreate(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
-  TMP10xHandle_t xTMP10x = pvPortMalloc(sizeof(*xTMP10x));
+TI_TMP10xHandle_t xTI_TMP10xCreate(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
+  TI_TMP10xHandle_t xTMP10x = pvPortMalloc(sizeof(*xTMP10x));
   configASSERT(xTMP10x);
   xTMP10x->xTask = NULL;
   xTMP10x->xI2CSlave = xI2CSlave;
@@ -101,17 +101,17 @@ TMP10xHandle_t xTMP10xCreate(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
   return xTMP10x;
 }
 
-BaseType_t xTMP10xStart(TMP10xHandle_t xTMP10x) {
-  configASSERT(xTMP10x->xTask == NULL);
+BaseType_t xTI_TMP10xStart(TI_TMP10xHandle_t xTI_TMP10x) {
+  configASSERT(xTI_TMP10x->xTask == NULL);
   char name[configMAX_TASK_NAME_LEN];
-  snprintf(name, sizeof(name), "%s-%02x", tmp10xTASK_NAME, xTMP10x->ucAddr);
-  return xTaskCreate(prvTMP10xTask, name, tmp10xSTACK_DEPTH, xTMP10x, tmp10xPRIORITY, &xTMP10x->xTask);
+  snprintf(name, sizeof(name), "%s-%02x", ti_tmp10xTASK_NAME, xTI_TMP10x->ucAddr);
+  return xTaskCreate(prvTI_TMP10xTask, name, ti_tmp10xSTACK_DEPTH, xTI_TMP10x, ti_tmp10xPRIORITY, &xTI_TMP10x->xTask);
 }
 
-void vTMP10xStop(TMP10xHandle_t xTMP10x) {
-  configASSERT(xTMP10x->xTask);
-  xTaskNotify(xTMP10x->xTask, tmp10xSTOP_NOTIFIED, eSetBits);
-  xTMP10x->xTask = NULL;
+void vTI_TMP10xStop(TI_TMP10xHandle_t xTI_TMP10x) {
+  configASSERT(xTI_TMP10x->xTask);
+  xTaskNotify(xTI_TMP10x->xTask, ti_tmp10xSTOP_NOTIFIED, eSetBits);
+  xTI_TMP10x->xTask = NULL;
 }
 
-void vTMP10xDelete(TMP10xHandle_t xTMP10x) { vPortFree(xTMP10x); }
+void vTI_TMP10xDelete(TI_TMP10xHandle_t xTI_TMP10x) { vPortFree(xTI_TMP10x); }

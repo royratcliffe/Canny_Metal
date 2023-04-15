@@ -34,11 +34,11 @@ struct I2CSlave {
   struct I2CDevice *pxDevices[1U << 7U];
 };
 
-#define SLAVE_TX_CPLT_NOTIFIED (1UL << 0U)
-#define SLAVE_RX_CPLT_NOTIFIED (1UL << 1U)
-#define ADDR_NOTIFIED (1UL << 2U)
-#define ERROR_NOTIFIED (1UL << 3U)
-#define STOP_NOTIFIED (1UL << 31U)
+#define i2cslaveSLAVE_TX_CPLT_NOTIFIED (1UL << ('T' - '@'))
+#define i2cslaveSLAVE_RX_CPLT_NOTIFIED (1UL << ('R' - '@'))
+#define i2cslaveADDR_NOTIFIED (1UL << ('A' - '@'))
+#define i2cslaveERROR_NOTIFIED (1UL << ('E' - '@'))
+#define i2cslaveSTOP_NOTIFIED (1UL << ('_' - '@'))
 
 /*!
  * Slave mode is straightforward: listen, receive then transmit, repeat forever.
@@ -69,14 +69,14 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
   void prvSlaveTxCplt(I2CHandle_t xI2C) {
     (void)xI2C;
     BaseType_t xWoken;
-    xTaskNotifyFromISR(xTask, SLAVE_TX_CPLT_NOTIFIED, eSetBits, &xWoken);
+    xTaskNotifyFromISR(xTask, i2cslaveSLAVE_TX_CPLT_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
   void prvSlaveRxCplt(I2CHandle_t xI2C) {
     (void)xI2C;
     BaseType_t xWoken;
-    xTaskNotifyFromISR(xTask, SLAVE_RX_CPLT_NOTIFIED, eSetBits, &xWoken);
+    xTaskNotifyFromISR(xTask, i2cslaveSLAVE_RX_CPLT_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
@@ -93,33 +93,27 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    * The implementation captures the I2C sequencer and updates its transfer
    * direction and address. The updating runs at interrupt time.
    */
-  void prvAddr(I2CHandle_t xI2C, uint8_t ucTransferDirection,
-               uint16_t usAddrMatchCode) {
+  void prvAddr(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_t usAddrMatchCode) {
     (void)xI2C;
     vI2CSeqTransferDirection(xI2CSeq, ucTransferDirection);
     vI2CSeqAddr(xI2CSeq, usAddrMatchCode >> 1U);
     BaseType_t xWoken;
-    xTaskNotifyFromISR(xTask, ADDR_NOTIFIED, eSetBits, &xWoken);
+    xTaskNotifyFromISR(xTask, i2cslaveADDR_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
   void prvError(I2CHandle_t xI2C) {
     (void)xI2C;
     BaseType_t xWoken;
-    xTaskNotifyFromISR(xTask, ERROR_NOTIFIED, eSetBits, &xWoken);
+    xTaskNotifyFromISR(xTask, i2cslaveERROR_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
-  ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCpltHandler(
-      xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
-  ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCpltHandler(
-      xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
-  ListItem_t *pxListenCplt = pxI2CRegisterListenCpltHandler(
-      xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
-  ListItem_t *pxAddr =
-      pxI2CRegisterAddrHandler(xI2CSlave->xI2C, prvAddr, portMAX_DELAY);
-  ListItem_t *pxError =
-      pxI2CRegisterErrorHandler(xI2CSlave->xI2C, prvError, portMAX_DELAY);
+  ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCpltHandler(xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
+  ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCpltHandler(xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
+  ListItem_t *pxListenCplt = pxI2CRegisterListenCpltHandler(xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
+  ListItem_t *pxAddr = pxI2CRegisterAddrHandler(xI2CSlave->xI2C, prvAddr, portMAX_DELAY);
+  ListItem_t *pxError = pxI2CRegisterErrorHandler(xI2CSlave->xI2C, prvError, portMAX_DELAY);
 
   /*
    * Wait indefinitely for stop notification.
@@ -131,16 +125,12 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
       uint8_t ucAddr = ucI2CSeqAddr(xI2CSeq);
       struct I2CDevice *pxDevice = xI2CSlave->pxDevices[ucAddr];
       if (pxDevice) {
-        if ((ulNotified & SLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt)
-          pxDevice->pvSlaveTxCplt(xI2CSeq);
-        if ((ulNotified & SLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt)
-          pxDevice->pvSlaveRxCplt(xI2CSeq);
-        if ((ulNotified & ADDR_NOTIFIED) && pxDevice->pvAddr)
-          pxDevice->pvAddr(xI2CSeq);
-        if ((ulNotified & ERROR_NOTIFIED) && pxDevice->pvError)
-          pxDevice->pvError(xI2CSeq);
+        if ((ulNotified & i2cslaveSLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt) pxDevice->pvSlaveTxCplt(xI2CSeq);
+        if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt) pxDevice->pvSlaveRxCplt(xI2CSeq);
+        if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
+        if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
       }
-    } while ((ulNotified & STOP_NOTIFIED) == 0UL);
+    } while ((ulNotified & i2cslaveSTOP_NOTIFIED) == 0UL);
   }
 
   /*
@@ -151,11 +141,11 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    * structure and therefore avoid accessing the structure members after the
    * stop notification.
    */
-  (void)uxListRemove(pxSlaveTxCplt);
-  (void)uxListRemove(pxSlaveRxCplt);
-  (void)uxListRemove(pxListenCplt);
-  (void)uxListRemove(pxAddr);
-  (void)uxListRemove(pxError);
+  vI2CUnregister(pxSlaveTxCplt);
+  (void)vI2CUnregister(pxSlaveRxCplt);
+  (void)vI2CUnregister(pxListenCplt);
+  (void)vI2CUnregister(pxAddr);
+  (void)vI2CUnregister(pxError);
   vI2CSeqDelete(xI2CSeq);
   vTaskDelete(NULL);
 }
@@ -173,20 +163,17 @@ BaseType_t xI2CSlaveStart(I2CSlaveHandle_t xI2CSlave, const char *pcName) {
   char name[configMAX_TASK_NAME_LEN];
   snprintf(name, sizeof(name), "%s-I2C%d", pcName ? pcName : i2cslaveTASK_NAME,
            xRegisteredCardinalOfI2C(xI2CSlave->xI2C));
-  return xTaskCreate(prvI2CSlaveTask, name, i2cslaveSTACK_DEPTH, xI2CSlave,
-                     i2cslavePRIORITY, &xI2CSlave->xTask);
+  return xTaskCreate(prvI2CSlaveTask, name, i2cslaveSTACK_DEPTH, xI2CSlave, i2cslavePRIORITY, &xI2CSlave->xTask);
 }
 
 void vI2CSlaveStop(I2CSlaveHandle_t xI2CSlave) {
   configASSERT(xI2CSlave->xTask);
-  xTaskNotify(xI2CSlave->xTask, STOP_NOTIFIED, eSetBits);
+  xTaskNotify(xI2CSlave->xTask, i2cslaveSTOP_NOTIFIED, eSetBits);
   xI2CSlave->xTask = NULL;
 }
 
 void vI2CSlaveDelete(I2CSlaveHandle_t xI2CSlave) {
-  for (uint8_t ucAddr = 0x00U;
-       ucAddr < sizeof(xI2CSlave->pxDevices) / sizeof(xI2CSlave->pxDevices[0]);
-       ucAddr++)
+  for (uint8_t ucAddr = 0x00U; ucAddr < sizeof(xI2CSlave->pxDevices) / sizeof(xI2CSlave->pxDevices[0]); ucAddr++)
     vPortFree(xI2CSlave->pxDevices[ucAddr]);
   vPortFree(xI2CSlave);
 }
@@ -199,8 +186,7 @@ void vI2CSlaveDelete(I2CSlaveHandle_t xI2CSlave) {
  *
  * \note Watch out for race conditions.
  */
-static struct I2CDevice *prvI2CSlaveDevice(struct I2CSlave *pxI2CSlave,
-                                           uint8_t ucAddr) {
+static struct I2CDevice *prvI2CSlaveDevice(struct I2CSlave *pxI2CSlave, uint8_t ucAddr) {
   configASSERT((ucAddr & 0b10000000U) == 0b00000000U);
   struct I2CDevice *pxDevice = pxI2CSlave->pxDevices[ucAddr];
   if (pxDevice == NULL) {
@@ -221,13 +207,11 @@ void vI2CSlaveDeviceSlaveRxCplt(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
   prvI2CSlaveDevice(xI2CSlave, ucAddr)->pvSlaveRxCplt = pvSlaveRxCplt;
 }
 
-void vI2CSlaveDeviceAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
-                         void (*pvAddr)(I2CSeqHandle_t xI2CSeq)) {
+void vI2CSlaveDeviceAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr, void (*pvAddr)(I2CSeqHandle_t xI2CSeq)) {
   prvI2CSlaveDevice(xI2CSlave, ucAddr)->pvAddr = pvAddr;
 }
 
-void vI2CSlaveDeviceError(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,
-                          void (*pvError)(I2CSeqHandle_t xI2CSeq)) {
+void vI2CSlaveDeviceError(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr, void (*pvError)(I2CSeqHandle_t xI2CSeq)) {
   prvI2CSlaveDevice(xI2CSlave, ucAddr)->pvError = pvError;
 }
 

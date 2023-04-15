@@ -5,6 +5,11 @@
 #pragma once
 
 /*!
+ * \defgroup Mailbox Messaging Mailbox Abstraction
+ * \{
+ */
+
+/*!
  * \file
  *
  * Echo mailbox task exemplar:
@@ -56,7 +61,9 @@
 
 #include "FreeRTOS.h"
 
-/*
+/*!
+ * \brief Size in bytes of mailbox message buffer.
+ *
  * The mailbox buffer size amounts to a small number of bytes by default.
  * 256 bytes suffices when using packed messaging.
  */
@@ -66,9 +73,15 @@
 
 #define mailboxPRIORITY 24U
 
+/*!
+ * \brief Notifies mailbox sent.
+ *
+ * The notification value is a bit mask merged with the receiver's task
+ * notification bits.
+ */
 #if configUSE_TASK_NOTIFICATIONS == 1
 #ifndef mailboxSENT_NOTIFIED
-#define mailboxSENT_NOTIFIED (1UL << ('M' - 'A'))
+#define mailboxSENT_NOTIFIED (1UL << ('^' - '@'))
 #endif
 #endif
 
@@ -126,21 +139,33 @@ void vMailboxUnlink(MailboxHandle_t xMailbox);
  */
 void vMailboxUnlinkAll(MailboxHandle_t xMailbox);
 
-BaseType_t xMailboxSetLinkOwner(MailboxHandle_t xMailbox, void *pvOwner);
+/*!
+ * \brief Resets link owner.
+ * \param[in] Valid mailbox handle. Must \e not be \c NULL.
+ *
+ * The "link owner" is an arbitrary void pointer, initially \c NULL but
+ * available for assignment to any useful value---typically a pointer to
+ * something but other types possible with a cast.
+ */
+void vMailboxLinkOwner(MailboxHandle_t xMailbox, void *pvOwner);
 
-void *pvMailboxGetLinkOwner(MailboxHandle_t xMailbox);
+void *pvMailboxLinkOwner(MailboxHandle_t xMailbox);
 
 /*!
- * \brief Sets the link value of the mailbox.
+ * \brief Resets the link value of the mailbox.
  *
  * The link value determines the ordering of the mailbox within its link
  * association, and therefore the iteration order when yielding links. Defaults
  * to \c portMAX_DELAY which configures the mailbox for natural ordering where
  * the mailboxes appear in their link association in the order that they insert.
+ *
+ * The "reset" description reflects the fact that the link value determines the
+ * \e pending link order. Resetting the link value only prepares the tick-type
+ * value for subsequent link actions.
  */
-BaseType_t xMailboxSetLinkValue(MailboxHandle_t xMailbox, TickType_t xValue);
+void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue);
 
-TickType_t xMailboxGetLinkValue(MailboxHandle_t xMailbox);
+TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox);
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox));
 
@@ -185,8 +210,28 @@ BaseType_t xMailboxSent(MailboxHandle_t xMailbox);
 
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait);
 
+/*!
+ * \brief Sets up a mailbox processor.
+ *
+ * \code`
+ * // Turn myself into a mailbox processor.
+ * // \sa https://gcc.gnu.org/onlinedocs/gcc/Conditionals.html
+ * vMailboxSetUp(pvParameters ? : xMailboxNew());
+ * \endcode
+ */
 void vMailboxSetUp(void *pvParameters);
 
 void vMailboxTearDown(void);
 
-MailboxHandle_t xMailboxSelf();
+MailboxHandle_t xMailboxSelf(void);
+
+/*!
+ * \brief Overrides a mailbox handle with self as a fall-back.
+ * \param[out] pxMailbox Pointer to mailbox handle.
+ * \returns \c pdPASS if the mailbox at \c pxMailbox is a mailbox.
+ */
+BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox);
+
+/*!
+ * \}
+ */

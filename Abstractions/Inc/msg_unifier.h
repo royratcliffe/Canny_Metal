@@ -117,6 +117,12 @@ BaseType_t xMsgUnifyStrDup(MsgUnifierHandle_t xMsgUnifier, char **ppcStrDup);
  *
  * Performance is good: comparison proceeds by type first, followed by length
  * and finally by body character-by-character with early-out optimisation.
+ *
+ * The function name might suggest an integer return value: a comparison integer
+ * where negative means less than, positive more than, zero equal. That
+ * information could be useful for optimising the message match, perhaps. The
+ * return value must represent pass or fail in order to signal type and length
+ * matching success, however.
  */
 BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp);
 

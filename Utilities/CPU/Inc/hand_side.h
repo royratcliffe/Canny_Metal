@@ -47,8 +47,7 @@ struct hand_side {
  * `NULL` and the hand-side chain remains unaltered. Success returns the new
  * top.
  */
-struct hand_side *push_hand_side(struct hand_side **top, void *left,
-                                 void *right);
+struct hand_side *push_hand_side(struct hand_side **top, void *left, void *right);
 
 /*!
  * \brief Pops left if found
@@ -87,10 +86,7 @@ void free_hand_side(struct hand_side **top);
  * iteration itself returns null when no iterated function call gives a non-null
  * result.
  */
-void *for_left_and_right_hand_side(struct hand_side **top,
-                                   void *(*and)(void *left, void *right,
-                                                void *arg),
-                                   void *arg);
+void *for_left_and_right_hand_side(struct hand_side **top, void *(*and)(void *left, void *right, void *arg), void *arg);
 
 /*!
  * \brief Iterates left and right with variadic arguments.
@@ -99,10 +95,7 @@ void *for_left_and_right_hand_side(struct hand_side **top,
  * function sees the same variable argument list albeit with differing left and
  * right pointers.
  */
-void *vfor_left_and_right_hand_side(struct hand_side **top,
-                                    void *(*and)(void *left, void *right,
-                                                 va_list args),
-                                    ...);
+void *vfor_left_and_right_hand_side(struct hand_side **top, void *(*and)(void *left, void *right, va_list args), ...);
 
 /*!
  * \brief Right for lefthand side
@@ -131,8 +124,7 @@ void *right_for_left_hand_side(struct hand_side **top, void *left);
  * correctness by casting to the very generalised non-constant void pointer
  * type.
  */
-void *right_for_left_stricmp_hand_side(struct hand_side **top,
-                                       const char *left);
+void *right_for_left_stricmp_hand_side(struct hand_side **top, const char *left);
 
 /*!
  * \brief Left for righthand side

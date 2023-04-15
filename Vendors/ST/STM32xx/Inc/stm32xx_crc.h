@@ -1,5 +1,5 @@
 /*!
- * \file crc32.h
+ * \file stm32xx_crc.h
  *
  * Defines an abstract family of CRC peripheral operation functions. Imagine a
  * high-speed CRC computing peripheral that computes arbitrary CRC sums given
@@ -13,21 +13,11 @@
 
 #include "FreeRTOS.h"
 
-enum CRCRevIn
-{
-	CRCRevInNone,
-	CRCRevInByte,
-	CRCRevInHalfWord,
-	CRCRevInWord
-};
+enum CRCRevIn { eCRCRevInNone, eCRCRevInByte, eCRCRevInHalfWord, eCRCRevInWord };
 
 typedef enum CRCRevIn CRCRevIn_t;
 
-enum CRCRevOut
-{
-	CRCRevOutDisabled,
-	CRCRevOutEnabled
-};
+enum CRCRevOut { eCRCRevOutDisabled, eCRCRevOutEnabled };
 
 typedef enum CRCRevOut CRCRevOut_t;
 
@@ -36,8 +26,20 @@ typedef enum CRCRevOut CRCRevOut_t;
  */
 void vCRCCreateMutex();
 
+/*!
+ * \brief Gives back the CRC unit.
+ *
+ * Fails and does nothing if the semaphore does not yet exist.
+ */
 BaseType_t xCRCGive();
 
+/*!
+ * \brief Takes the CRC unit.
+ *
+ * Assumes a firmware environment where multiple tasks access the CRC unit. Uses
+ * a mutex for priority inheritance, but cannot use from within interrupt
+ * service routines.
+ */
 BaseType_t xCRCTake(TickType_t xTicksToWait);
 
 BaseType_t xCRCPoly32(uint32_t ulPol);

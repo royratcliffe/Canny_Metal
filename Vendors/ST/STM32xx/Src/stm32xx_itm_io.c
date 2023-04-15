@@ -1,7 +1,7 @@
 /*!
  * \file stm32xx_itm_io.c
  *
- * Connects `newlib`'s low-level input-output system with the STM32.
+ * Connects the \c newlib low-level input-output system with the STM32.
  *
  * Do not forget to enable the Serial-Wire Viewer (SWV) with the correct core
  * clock frequency. Enable ITM Stimulus Port 0 and Start Trace. Output will
@@ -10,8 +10,7 @@
 
 #include "stm32xx_mcu.h"
 
-int __io_putchar(int ch)
-{
-	ITM_SendChar(ch);
-	return 0;
+int __io_putchar(int ch) {
+  (void)ITM_SendChar(ch);
+  return 0;
 }
