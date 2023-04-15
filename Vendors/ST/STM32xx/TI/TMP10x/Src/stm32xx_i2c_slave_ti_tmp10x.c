@@ -41,7 +41,7 @@ static portTASK_FUNCTION(prvTI_TMP10xTask, pvParameters) {
       /*
        * Receive the first and next frames.
        */
-      vI2CSeqBufferLengthBytes(xI2CSeq, 3U);
+      vI2CSeqBufferLength(xI2CSeq, 3U);
       xStatus = xI2CSeqFirstFrame(xI2CSeq);
       configASSERT(xStatus == HAL_OK);
       break;
@@ -49,7 +49,7 @@ static portTASK_FUNCTION(prvTI_TMP10xTask, pvParameters) {
       /*
        * Transmit the last frames.
        */
-      switch (xI2CSeqXferBytes(xI2CSeq)) {
+      switch (xI2CSeqXfer(xI2CSeq)) {
         uint8_t ucPtr;
         uint16_t usReg;
         uint8_t ucBig[2];
@@ -74,7 +74,7 @@ static portTASK_FUNCTION(prvTI_TMP10xTask, pvParameters) {
   void prvSlaveRxCplt(I2CSeqHandle_t xI2CSeq) {
     switch (ucI2CSeqTransferDirection(xI2CSeq)) {
     case I2C_DIRECTION_TRANSMIT:
-      switch (xI2CSeqXferBytes(xI2CSeq)) {
+      switch (xI2CSeqXfer(xI2CSeq)) {
         uint8_t *pcBuffer;
       case 3U:
         pcBuffer = pvI2CSeqBuffer(xI2CSeq);
