@@ -82,6 +82,10 @@ BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier) {
     return eMsgUnifyTypeArray;
   case MSGPACK_OBJECT_MAP:
     return eMsgUnifyTypeMap;
+  case MSGPACK_OBJECT_BIN:
+    return eMsgUnifyTypeBin;
+  case MSGPACK_OBJECT_EXT:
+    return eMsgUnifyTypeExt;
   default:
     return eMsgUnifyTypeOther;
   }
