@@ -5,6 +5,11 @@
 #pragma once
 
 /*!
+ * \defgroup Mailbox Messaging Mailbox Abstraction
+ * \{
+ */
+
+/*!
  * \file
  *
  * Echo mailbox task exemplar:
@@ -66,6 +71,12 @@
 
 #define mailboxPRIORITY 24U
 
+/*!
+ * \brief Notifies mailbox sent.
+ *
+ * The notification value is a bit mask merged with the receiver's task
+ * notification bits.
+ */
 #if configUSE_TASK_NOTIFICATIONS == 1
 #ifndef mailboxSENT_NOTIFIED
 #define mailboxSENT_NOTIFIED (1UL << ('M' - 'A'))
@@ -137,6 +148,10 @@ void *pvMailboxGetLinkOwner(MailboxHandle_t xMailbox);
  * association, and therefore the iteration order when yielding links. Defaults
  * to \c portMAX_DELAY which configures the mailbox for natural ordering where
  * the mailboxes appear in their link association in the order that they insert.
+ *
+ * The "reset" description reflects the fact that the link value determines the
+ * \e pending link order. Resetting the link value only prepares the tick-type
+ * value for subsequent link actions.
  */
 BaseType_t xMailboxSetLinkValue(MailboxHandle_t xMailbox, TickType_t xValue);
 
@@ -185,8 +200,21 @@ BaseType_t xMailboxSent(MailboxHandle_t xMailbox);
 
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait);
 
+/*!
+ * \brief Sets up a mailbox processor.
+ *
+ * \code`
+ * // Turn myself into a mailbox processor.
+ * // \sa https://gcc.gnu.org/onlinedocs/gcc/Conditionals.html
+ * vMailboxSetUp(pvParameters ? : xMailboxNew());
+ * \endcode
+ */
 void vMailboxSetUp(void *pvParameters);
 
 void vMailboxTearDown(void);
 
 MailboxHandle_t xMailboxSelf();
+
+/*!
+ * \}
+ */
