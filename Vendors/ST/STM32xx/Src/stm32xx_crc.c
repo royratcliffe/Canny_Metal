@@ -50,87 +50,59 @@ extern CRC_HandleTypeDef hcrc;
  * `CRC_POLYLENGTH_7B`, etc.
  * \retval Answers `pdPASS` on success.
  */
-static BaseType_t prvCRCPoly(uint32_t ulPol, uint32_t ulPolySize)
-{
-	return HAL_CRCEx_Polynomial_Set(&hcrc, ulPol, ulPolySize) == HAL_OK ? pdPASS : pdFAIL;
+static BaseType_t prvCRCPoly(uint32_t ulPol, uint32_t ulPolySize) {
+  return HAL_CRCEx_Polynomial_Set(&hcrc, ulPol, ulPolySize) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-BaseType_t xCRCPoly32(uint32_t ulPol)
-{
-	return prvCRCPoly(ulPol, CRC_POLYLENGTH_32B);
+BaseType_t xCRCPoly32(uint32_t ulPol) { return prvCRCPoly(ulPol, CRC_POLYLENGTH_32B); }
+
+void vCRCInit(uint32_t ulInit) { WRITE_REG(hcrc.Instance->INIT, ulInit); }
+
+BaseType_t xCRCInputDataInversionNone() {
+  return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_NONE) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-void vCRCInit(uint32_t ulInit)
-{
-	WRITE_REG(hcrc.Instance->INIT, ulInit);
+BaseType_t xCRCInputDataInversionByte() {
+  return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_BYTE) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-BaseType_t xCRCInputDataInversionNone()
-{
-	return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_NONE) == HAL_OK ? pdPASS : pdFAIL;
+BaseType_t xCRCInputDataInversionHalfWord() {
+  return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_HALFWORD) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-BaseType_t xCRCInputDataInversionByte()
-{
-	return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_BYTE) == HAL_OK ? pdPASS : pdFAIL;
+BaseType_t xCRCInputDataInversionWord() {
+  return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_WORD) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-BaseType_t xCRCInputDataInversionHalfWord()
-{
-	return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_HALFWORD) == HAL_OK ? pdPASS : pdFAIL;
+BaseType_t xCRCRevIn(CRCRevIn_t xRevIn) {
+  static BaseType_t (*const xCRCInputDataInversion[])() = {xCRCInputDataInversionNone, xCRCInputDataInversionByte,
+                                                           xCRCInputDataInversionHalfWord, xCRCInputDataInversionWord};
+  return (*xCRCInputDataInversion[xRevIn])();
 }
 
-BaseType_t xCRCInputDataInversionWord()
-{
-	return HAL_CRCEx_Input_Data_Reverse(&hcrc, CRC_INPUTDATA_INVERSION_WORD) == HAL_OK ? pdPASS : pdFAIL;
+BaseType_t xCRCOutputDataInversionDisable() {
+  return HAL_CRCEx_Output_Data_Reverse(&hcrc, CRC_OUTPUTDATA_INVERSION_DISABLE) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-BaseType_t xCRCRevIn(CRCRevIn_t xRevIn)
-{
-	static BaseType_t (*const xCRCInputDataInversion[])() =
-	{
-			xCRCInputDataInversionNone,
-			xCRCInputDataInversionByte,
-			xCRCInputDataInversionHalfWord,
-			xCRCInputDataInversionWord
-	};
-	return (*xCRCInputDataInversion[xRevIn])();
+BaseType_t xCRCOutputDataInversionEnable() {
+  return HAL_CRCEx_Output_Data_Reverse(&hcrc, CRC_OUTPUTDATA_INVERSION_ENABLE) == HAL_OK ? pdPASS : pdFAIL;
 }
 
-BaseType_t xCRCOutputDataInversionDisable()
-{
-	return HAL_CRCEx_Output_Data_Reverse(&hcrc, CRC_OUTPUTDATA_INVERSION_DISABLE) == HAL_OK ? pdPASS : pdFAIL;
+BaseType_t xCRCRevOut(CRCRevOut_t xRevOut) {
+  static BaseType_t (*const xCRCOutputDataInversion[])() = {xCRCOutputDataInversionDisable,
+                                                            xCRCOutputDataInversionEnable};
+  return (*xCRCOutputDataInversion[xRevOut])();
 }
 
-BaseType_t xCRCOutputDataInversionEnable()
-{
-	return HAL_CRCEx_Output_Data_Reverse(&hcrc, CRC_OUTPUTDATA_INVERSION_ENABLE) == HAL_OK ? pdPASS : pdFAIL;
+BaseType_t xCRCRev(CRCRevIn_t xRevIn, CRCRevOut_t xRevOut) { return xCRCRevIn(xRevIn) && xCRCRevOut(xRevOut); }
+
+BaseType_t xCRC32C() {
+  vCRCInit(0xffffffff);
+  return xCRCPoly32(0x1EDC6F41) && xCRCRev(eCRCRevInByte, eCRCRevOutEnabled);
 }
 
-BaseType_t xCRCRevOut(CRCRevOut_t xRevOut)
-{
-	static BaseType_t (*const xCRCOutputDataInversion[])() =
-	{
-			xCRCOutputDataInversionDisable,
-			xCRCOutputDataInversionEnable
-	};
-	return (*xCRCOutputDataInversion[xRevOut])();
-}
-
-BaseType_t xCRCRev(CRCRevIn_t xRevIn, CRCRevOut_t xRevOut)
-{
-	return xCRCRevIn(xRevIn) && xCRCRevOut(xRevOut);
-}
-
-BaseType_t xCRC32C()
-{
-	vCRCInit(0xffffffff);
-	return xCRCPoly32(0x1EDC6F41) && xCRCRev(eCRCRevInByte, eCRCRevOutEnabled);
-}
-
-uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes)
-{
-	return HAL_CRC_Calculate(&hcrc, (void *)pvData, xDataLengthBytes);
+uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes) {
+  return HAL_CRC_Calculate(&hcrc, (void *)pvData, xDataLengthBytes);
 }
 
 #endif
