@@ -50,6 +50,10 @@ size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMe
   return xMessageBufferSend(xMessageBuffer, xMsgBinding->xBuffer.data, xMsgBinding->xBuffer.size, xTicksToWait);
 }
 
+BaseType_t xMsgBindNil(MsgBindingHandle_t xMsgBinding) {
+  return msgpack_pack_nil(&xMsgBinding->xPacker) == 0;
+}
+
 BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xValue) {
   int (*pxPackFunction)(msgpack_packer *) = xValue ? msgpack_pack_true : msgpack_pack_false;
   /*

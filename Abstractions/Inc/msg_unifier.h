@@ -81,6 +81,12 @@ BaseType_t xMsgUnify(MsgUnifierHandle_t xMsgUnifier);
 BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier);
 
 /*!
+ * \brief Unifies with nil.
+ * \returns \c pdPASS if unification succeeds.
+ */
+BaseType_t xMsgUnifyNil(MsgUnifierHandle_t xMsgUnifier);
+
+/*!
  * Converts standard \c bool to \c BaseType_t.
  */
 BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue);

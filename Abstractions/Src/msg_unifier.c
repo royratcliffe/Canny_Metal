@@ -87,6 +87,11 @@ BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier) {
   }
 }
 
+BaseType_t xMsgUnifyNil(MsgUnifierHandle_t xMsgUnifier) {
+  if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_NIL) return pdFAIL;
+  return pdPASS;
+}
+
 BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_BOOLEAN) return pdFAIL;
   if (pxValue) *pxValue = xMsgUnifier->xUnpacked.data.via.boolean != false;
