@@ -15,18 +15,18 @@
 
 enum CRCRevIn
 {
-	CRCRevInNone,
-	CRCRevInByte,
-	CRCRevInHalfWord,
-	CRCRevInWord
+	eCRCRevInNone,
+	eCRCRevInByte,
+	eCRCRevInHalfWord,
+	eCRCRevInWord
 };
 
 typedef enum CRCRevIn CRCRevIn_t;
 
 enum CRCRevOut
 {
-	CRCRevOutDisabled,
-	CRCRevOutEnabled
+	eCRCRevOutDisabled,
+	eCRCRevOutEnabled
 };
 
 typedef enum CRCRevOut CRCRevOut_t;
