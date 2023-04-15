@@ -28,7 +28,7 @@ BaseType_t xMailboxRelayMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUni
 
 BaseType_t xMsgBindMailbox(MsgBindingHandle_t xMsgPack, MailboxHandle_t xMailbox) {
   if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
-  return xMsgBindExtWithBody(xMsgPack, &xMailbox, sizeof(xMailbox), msgEXT_TYPE_MAILBOX);
+  return xMsgBindExtWithBody(xMsgPack, msgEXT_TYPE_MAILBOX, &xMailbox, sizeof(xMailbox));
 }
 
 BaseType_t xMsgUnifyMailbox(MsgUnifierHandle_t xMsgUnpack, MailboxHandle_t *pxMailbox) {
