@@ -79,7 +79,7 @@
  */
 #if configUSE_TASK_NOTIFICATIONS == 1
 #ifndef mailboxSENT_NOTIFIED
-#define mailboxSENT_NOTIFIED (1UL << ('M' - 'A'))
+#define mailboxSENT_NOTIFIED (1UL << ('^' - '@'))
 #endif
 #endif
 
