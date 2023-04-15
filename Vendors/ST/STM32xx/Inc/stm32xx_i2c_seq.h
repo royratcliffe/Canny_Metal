@@ -7,6 +7,18 @@
 #include "stm32xx_i2c.h"
 
 /*!
+ * \brief Configures FreeRTOS heap or standard library buffering.
+ *
+ * Defaults to FreeRTOS heap buffers.
+ *
+ * In either case, FreeRTOS heap or standard library, the implementation asserts
+ * success. It does \e not return an error on memory re-allocation failure.
+ */
+#ifndef i2cseq_configUSE_STDLIB_BUFFER
+#define i2cseq_configUSE_STDLIB_BUFFER 0
+#endif
+
+/*!
  * \brief I2C sequencer opaque handle.
  *
  * Use a forward structure declaration *without* definition hence opaque.
@@ -62,6 +74,11 @@ void vI2CSeqSlaveIT(I2CSeqHandle_t xI2CSeq);
 /*!
  * \brief Allocates transfer buffer.
  * \param[in] xBufferLengthBytes Length of the buffer in bytes.
+ *
+ * Sets up asynchronous memory space for pending transfer.
+ *
+ * Re-allocates the associated buffer. Optimises FreeRTOS heap allocations
+ * by matching the existing buffer length first.
  */
 void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes);
 

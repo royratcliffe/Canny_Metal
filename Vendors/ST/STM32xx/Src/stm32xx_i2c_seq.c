@@ -4,10 +4,13 @@
 
 #include "stm32xx_i2c_seq.h"
 
+#include "stm32xx_i2c.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 
 #include <memory.h>
+#include <stdlib.h>
 
 /*!
  * \brief I2C sequencer for STM32.
@@ -47,6 +50,12 @@ struct I2CSeq {
 };
 
 static HAL_StatusTypeDef prvMasterTransmitIT(struct I2CSeq *pxI2CSeq, uint32_t ulOptions) {
+  /*
+   * Earlier versions of the STM32 hardware abstraction layer use
+   * HAL_I2C_Master_Sequential_Transmit_IT as the function name. Later versions
+   * contract the Sequential while retaining identical interface signature and
+   * functional semantics.
+   */
   return HAL_I2C_Master_Seq_Transmit_IT(pxI2CSeq->xI2C, pxI2CSeq->ucAddr << 1U, pxI2CSeq->pvBuffer,
                                         pxI2CSeq->xBufferLengthBytes, ulOptions);
 }
@@ -92,7 +101,11 @@ I2CSeqHandle_t xI2CSeqCreate(I2CHandle_t xI2C) {
 
 void vI2CSeqDelete(I2CSeqHandle_t xI2CSeq) {
   if (xI2CSeq) {
+#if i2cseq_configUSE_STDLIB_BUFFER == 0
     vPortFree(xI2CSeq->pvBuffer);
+#else
+    free(xI2CSeq->pvBuffer);
+#endif
     vPortFree(xI2CSeq);
   }
 }
@@ -126,12 +139,19 @@ void vI2CSeqSlaveIT(I2CSeqHandle_t xI2CSeq) {
 }
 
 void vI2CSeqBufferLengthBytes(I2CSeqHandle_t xI2CSeq, size_t xBufferLengthBytes) {
+#if i2cseq_configUSE_STDLIB_BUFFER == 0
   if (xI2CSeq->pvBuffer) {
     if (xI2CSeq->xBufferLengthBytes == xBufferLengthBytes) return;
     vPortFree(xI2CSeq->pvBuffer);
   }
-  xI2CSeq->pvBuffer = pvPortMalloc(xI2CSeq->xBufferLengthBytes = xBufferLengthBytes);
+  xI2CSeq->pvBuffer = pvPortMalloc(xBufferLengthBytes);
   configASSERT(xI2CSeq->pvBuffer);
+#else
+  void *pvBuffer = realloc(xI2CSeq->pvBuffer, xBufferLengthBytes);
+  configASSERT(pvBuffer);
+  xI2CSeq->pvBuffer = pvBuffer;
+#endif
+  xI2CSeq->xBufferLengthBytes = xBufferLengthBytes;
 }
 
 void vI2CSeqCopyFrom(I2CSeqHandle_t xI2CSeq, const void *pvData) {
