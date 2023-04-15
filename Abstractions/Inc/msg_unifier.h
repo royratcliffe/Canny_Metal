@@ -30,6 +30,8 @@ enum msgUnpackType {
   eMsgUnifyTypeInt,
   eMsgUnifyTypeFloat,
   eMsgUnifyTypeStr,
+  eMsgUnifyTypeArray,
+  eMsgUnifyTypeMap,
   eMsgUnifyTypeOther
 };
 
