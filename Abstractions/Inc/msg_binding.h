@@ -39,6 +39,13 @@ size_t xMsgBindingBuffer(MsgBindingHandle_t xMsgBinding, const void **ppvBuffer)
 
 size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait);
 
+/*!
+ * \brief Binds a nil.
+ *
+ * Nil only has one value.
+ */
+BaseType_t xMsgBindNil(MsgBindingHandle_t xMsgBinding);
+
 BaseType_t xMsgBindBool(MsgBindingHandle_t xMsgBinding, BaseType_t xValue);
 
 BaseType_t xMsgBindInt(MsgBindingHandle_t xMsgBinding, int lValue);
@@ -54,7 +61,13 @@ BaseType_t xMsgBindStrWithBody(MsgBindingHandle_t xMsgBinding, const char *pcStr
 
 BaseType_t xMsgBindStr(MsgBindingHandle_t xMsgBinding, const char *pcStr);
 
-BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, const void *pvExt, size_t xExtLengthBytes, int8_t cType);
+BaseType_t xMsgBindArray(MsgBindingHandle_t xMsgBinding, size_t xNumberOfElements);
+
+BaseType_t xMsgBindMap(MsgBindingHandle_t xMsgBinding, size_t xNumberOfEntries);
+
+BaseType_t xMsgBindBinWithBody(MsgBindingHandle_t xMsgBinding, const void *pvBin, size_t xBinLengthBytes);
+
+BaseType_t xMsgBindExtWithBody(MsgBindingHandle_t xMsgBinding, int8_t cType, const void *pvExt, size_t xExtLengthBytes);
 
 /*!
  * \}

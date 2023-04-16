@@ -8,8 +8,7 @@
 
 ListItem_t *pxListItemNew(void *pxOwner, TickType_t xValue) {
   ListItem_t *pxListItem = pvPortMalloc(sizeof(*pxListItem));
-  if (pxListItem == NULL)
-    return NULL;
+  if (pxListItem == NULL) return NULL;
   vListInitialiseItem(pxListItem);
   listSET_LIST_ITEM_OWNER(pxListItem, pxOwner);
   listSET_LIST_ITEM_VALUE(pxListItem, xValue);
@@ -23,36 +22,29 @@ ListItem_t *pxListInsertNew(List_t *pxList, void *pxOwner, TickType_t xValue) {
   return pxListItem;
 }
 
-ListItem_t *pxListInsertNewEnd(List_t *pxList, void *pxOwner,
-                               TickType_t xValue) {
+ListItem_t *pxListInsertNewEnd(List_t *pxList, void *pxOwner, TickType_t xValue) {
   ListItem_t *pxListItem = pxListItemNew(pxOwner, xValue);
   configASSERT(pxListItem);
   vListInsertEnd(pxList, pxListItem);
   return pxListItem;
 }
 
-const ListItem_t *pxListYield(List_t *const pxList,
-                              BaseType_t (*pxYield)(void *pxOwner,
-                                                    TickType_t xValue)) {
-  const ListItem_t *pxListEnd = listGET_END_MARKER(pxList),
-                   *pxListItem = listGET_HEAD_ENTRY(pxList);
-  while (pxListItem != pxListEnd) {
-    if (pxYield(listGET_LIST_ITEM_OWNER(pxListItem),
-                listGET_LIST_ITEM_VALUE(pxListItem)) == pdPASS)
-      return pxListItem;
-    pxListItem = listGET_NEXT(pxListItem);
+const ListItem_t *pxListYield(List_t *const pxList, BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue)) {
+  for (const ListItem_t *pxHeadEntry = listGET_HEAD_ENTRY(pxList), *pxEndMarker = listGET_END_MARKER(pxList),
+                        *pxNextEntry;
+       pxHeadEntry != pxEndMarker; pxHeadEntry = pxNextEntry) {
+    pxNextEntry = listGET_NEXT(pxHeadEntry);
+    if (pxYield(listGET_LIST_ITEM_OWNER(pxHeadEntry), listGET_LIST_ITEM_VALUE(pxHeadEntry)) == pdPASS)
+      return pxHeadEntry;
   }
   return NULL;
 }
 
-void vListYield(List_t *const pxList,
-                BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue)) {
-  const ListItem_t *pxListEnd = listGET_END_MARKER(pxList),
-                   *pxListItem = listGET_HEAD_ENTRY(pxList);
-  while (pxListItem != pxListEnd) {
-    if (pxYield(listGET_LIST_ITEM_OWNER(pxListItem),
-                listGET_LIST_ITEM_VALUE(pxListItem)) == pdFAIL)
-      return;
-    pxListItem = listGET_NEXT(pxListItem);
+void vListYield(List_t *const pxList, BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue)) {
+  for (const ListItem_t *pxHeadEntry = listGET_HEAD_ENTRY(pxList), *pxEndMarker = listGET_END_MARKER(pxList),
+                        *pxNextEntry;
+       pxHeadEntry != pxEndMarker; pxHeadEntry = pxNextEntry) {
+    pxNextEntry = listGET_NEXT(pxHeadEntry);
+    if (pxYield(listGET_LIST_ITEM_OWNER(pxHeadEntry), listGET_LIST_ITEM_VALUE(pxHeadEntry)) == pdFAIL) return;
   }
 }

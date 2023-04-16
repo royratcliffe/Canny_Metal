@@ -30,6 +30,10 @@ enum msgUnpackType {
   eMsgUnifyTypeInt,
   eMsgUnifyTypeFloat,
   eMsgUnifyTypeStr,
+  eMsgUnifyTypeArray,
+  eMsgUnifyTypeMap,
+  eMsgUnifyTypeBin,
+  eMsgUnifyTypeExt,
   eMsgUnifyTypeOther
 };
 
@@ -79,6 +83,12 @@ BaseType_t xMsgUnify(MsgUnifierHandle_t xMsgUnifier);
 BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier);
 
 /*!
+ * \brief Unifies with nil.
+ * \returns \c pdPASS if unification succeeds.
+ */
+BaseType_t xMsgUnifyNil(MsgUnifierHandle_t xMsgUnifier);
+
+/*!
  * Converts standard \c bool to \c BaseType_t.
  */
 BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue);
@@ -126,10 +136,21 @@ BaseType_t xMsgUnifyStrDup(MsgUnifierHandle_t xMsgUnifier, char **ppcStrDup);
  */
 BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp);
 
+BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElements);
+
+/*!
+ * \brief Unifies with a map of entries.
+ * \param[out] pxNumberOfEntries Pointer to received number of entries on
+ * success. Entries are key-value pairs: key first, value second.
+ */
+BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries);
+
+BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes);
+
 /*!
  * \returns Fails when the type mismatches.
  */
-BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, const void **pvExt, size_t *pxExtLengthBytes, int8_t cType);
+BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, int8_t cType, const void **pvExt, size_t *pxExtLengthBytes);
 
 /*!
  * \}

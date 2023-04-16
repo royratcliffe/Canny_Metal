@@ -78,9 +78,22 @@ BaseType_t xMsgUnifyType(MsgUnifierHandle_t xMsgUnifier) {
     return eMsgUnifyTypeFloat;
   case MSGPACK_OBJECT_STR:
     return eMsgUnifyTypeStr;
+  case MSGPACK_OBJECT_ARRAY:
+    return eMsgUnifyTypeArray;
+  case MSGPACK_OBJECT_MAP:
+    return eMsgUnifyTypeMap;
+  case MSGPACK_OBJECT_BIN:
+    return eMsgUnifyTypeBin;
+  case MSGPACK_OBJECT_EXT:
+    return eMsgUnifyTypeExt;
   default:
     return eMsgUnifyTypeOther;
   }
+}
+
+BaseType_t xMsgUnifyNil(MsgUnifierHandle_t xMsgUnifier) {
+  if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_NIL) return pdFAIL;
+  return pdPASS;
 }
 
 BaseType_t xMsgUnifyBool(MsgUnifierHandle_t xMsgUnifier, BaseType_t *pxValue) {
@@ -138,8 +151,27 @@ BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp)
   return strlen(pcStrCmp) == xStrLengthBytes && memcmp(pcStrCmp, pcStr, xStrLengthBytes) == 0;
 }
 
-BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, const void **pvExt, size_t *pxExtLengthBytes,
-                            int8_t cType) {
+BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElements) {
+  if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_ARRAY) return pdFAIL;
+  if (pxNumberOfElements) *pxNumberOfElements = xMsgUnifier->xUnpacked.data.via.array.size;
+  return pdPASS;
+}
+
+BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries) {
+  if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_MAP) return pdFAIL;
+  if (pxNumberOfEntries) *pxNumberOfEntries = xMsgUnifier->xUnpacked.data.via.map.size;
+  return pdPASS;
+}
+
+BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes) {
+  if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_BIN) return pdFAIL;
+  if (pvBin) *pvBin = xMsgUnifier->xUnpacked.data.via.bin.ptr;
+  if (pxBinLengthBytes) *pxBinLengthBytes = xMsgUnifier->xUnpacked.data.via.bin.size;
+  return pdPASS;
+}
+
+BaseType_t xMsgUnifyExtType(MsgUnifierHandle_t xMsgUnifier, int8_t cType, const void **pvExt,
+                            size_t *pxExtLengthBytes) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_EXT || xMsgUnifier->xUnpacked.data.via.ext.type != cType)
     return pdFAIL;
   if (pvExt) *pvExt = xMsgUnifier->xUnpacked.data.via.ext.ptr;
