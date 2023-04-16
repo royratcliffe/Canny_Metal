@@ -39,13 +39,21 @@ ListItem_t *pxListInsertNewEnd(List_t *pxList, void *pxOwner, TickType_t xValue)
 /*!
  * \brief Yields list item owners and item values as pairs while yielding fails.
  *
+ * \param pxYield Pointer to yield function taking the owner-value tuple for
+ * each list item until the yield answers \c pdPASS.
+ *
  * \returns Answers the passing list item, else \c NULL if no matching list
  * item. The \c pxYield function determines the match, success or failure, pass
  * or fail.
  *
- * The return value is \c const by design for compatibility; if not \c NULL,
- * the result is a immutable list item. Such items reference their container
- * list and even if immutable can detach using \c uxListRemove.
+ * The return value is \c const by design for compatibility; if not \c NULL, the
+ * result is a immutable list item. Such items reference their container list
+ * and even if immutable can detach using \c uxListRemove.
+ *
+ * The list item iteration steps ahead before calling the yield function. The
+ * iteration continues normally even if the yield function removes the item,
+ * although the arguments only pass the item's owner and value members; it does
+ * not pass the item itself.
  */
 const ListItem_t *pxListYield(List_t *const pxList, BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue));
 
