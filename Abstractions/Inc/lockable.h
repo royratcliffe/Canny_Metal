@@ -1,5 +1,5 @@
 /*
- * lockable.c
+ * lockable.h
  */
 
 #pragma once
