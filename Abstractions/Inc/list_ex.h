@@ -34,8 +34,7 @@ ListItem_t *pxListInsertNew(List_t *pxList, void *pxOwner, TickType_t xValue);
  * value. Thus, the \c xValue parameter is non-functional with respect to the
  * container albeit appearing in list yields.
  */
-ListItem_t *pxListInsertNewEnd(List_t *pxList, void *pxOwner,
-                               TickType_t xValue);
+ListItem_t *pxListInsertNewEnd(List_t *pxList, void *pxOwner, TickType_t xValue);
 
 /*!
  * \brief Yields list item owners and item values as pairs while yielding fails.
@@ -48,9 +47,7 @@ ListItem_t *pxListInsertNewEnd(List_t *pxList, void *pxOwner,
  * the result is a immutable list item. Such items reference their container
  * list and even if immutable can detach using \c uxListRemove.
  */
-const ListItem_t *pxListYield(List_t *const pxList,
-                              BaseType_t (*pxYield)(void *pxOwner,
-                                                    TickType_t xValue));
+const ListItem_t *pxListYield(List_t *const pxList, BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue));
 
 /*!
  * \brief Yields owners and their values.
@@ -61,5 +58,4 @@ const ListItem_t *pxListYield(List_t *const pxList,
  *
  * \returns Answers the passing item.
  */
-void vListYield(List_t *const pxList,
-                BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue));
+void vListYield(List_t *const pxList, BaseType_t (*pxYield)(void *pxOwner, TickType_t xValue));
