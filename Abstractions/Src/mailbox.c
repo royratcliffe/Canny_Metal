@@ -137,6 +137,8 @@ size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferL
 void vMailboxSetUp(void *pvParameters) {
 #ifdef mailboxTASK_TLS_INDEX
   vTaskSetThreadLocalStoragePointer(NULL, mailboxTASK_TLS_INDEX, pvParameters);
+#else
+  (void)pvParameters;
 #endif
 }
 
