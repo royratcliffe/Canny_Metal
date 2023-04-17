@@ -55,6 +55,10 @@ BaseType_t xMsgBindUInt(MsgBindingHandle_t xMsgBinding, unsigned int ulValue);
 BaseType_t xMsgBindFloat(MsgBindingHandle_t xMsgBinding, float lValue);
 
 /*!
+ * \brief Binds a string with its body.
+ * \param[in] pcStr String pointer to character, the start of the string.
+ * \param[in] xStrLengthBytes Length of string in bytes, not in Unicodes.
+ *
  * The body should have UTF-8 encoding.
  */
 BaseType_t xMsgBindStrWithBody(MsgBindingHandle_t xMsgBinding, const char *pcStr, size_t xStrLengthBytes);
