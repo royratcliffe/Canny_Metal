@@ -213,7 +213,7 @@ size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferL
 /*!
  * \brief Sets up a mailbox processor.
  *
- * \code`
+ * \code
  * // Turn myself into a mailbox processor.
  * // \sa https://gcc.gnu.org/onlinedocs/gcc/Conditionals.html
  * vMailboxSetUp(pvParameters ? : xMailboxNew());
