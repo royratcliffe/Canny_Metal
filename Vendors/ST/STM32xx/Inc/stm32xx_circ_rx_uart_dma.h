@@ -67,3 +67,8 @@ UARTHandle_t xUARTDMAForCircRx(CircRxHandle_t xCircRx);
  * needs a circular DMA channel.
  */
 CircRxHandle_t xCircRxUARTDMACreate(UARTHandle_t xUART, void *pvSender, TxHandler_t xHandler);
+
+/*!
+ * \brief Deletes and unwinds a circular DMA-based UART receiver.
+ */
+void vCircRxUARTDMADelete(UARTHandle_t xUART);
