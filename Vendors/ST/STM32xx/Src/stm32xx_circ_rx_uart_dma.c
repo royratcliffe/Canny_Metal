@@ -60,8 +60,8 @@ static void prvRxEvent(UARTHandle_t xUART, uint16_t usXfer) {
 }
 
 CircRxHandle_t xCircRxUARTDMACreate(UARTHandle_t xUART, void *pvSender, TxHandler_t xHandler) {
-  CircRxHandle_t xCircRx = xCircRxCreate(pvSender, xHandler);
   size_t xCardinal = xRegisteredCardinalOfUART(xUART);
+  CircRxHandle_t xCircRx = xCircRxCreate(pvSender, xHandler);
   xCircRxForUART[xCardinal] = xCircRx;
   TaskHandle_t xTask;
   xTaskCreate(prvCircRxUARTDMATask, "circrxUARTDMA", circrx_uartdmaSTACK_DEPTH, xCircRx, circrx_uartdmaPRIORITY,
