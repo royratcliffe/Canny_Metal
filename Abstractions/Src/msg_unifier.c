@@ -144,22 +144,22 @@ BaseType_t xMsgUnifyStrDup(MsgUnifierHandle_t xMsgUnifier, char **ppcStrDup) {
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp) {
-  const char *pcStr;
+BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pzStrCmp) {
+  const char *pzStr;
   size_t xStrLengthBytes;
-  if (!xMsgUnifyStr(xMsgUnifier, &pcStr, &xStrLengthBytes)) return pdFAIL;
-  return strlen(pcStrCmp) == xStrLengthBytes && memcmp(pcStrCmp, pcStr, xStrLengthBytes) == 0;
+  if (!xMsgUnifyStr(xMsgUnifier, &pzStr, &xStrLengthBytes)) return pdFAIL;
+  return strlen(pzStrCmp) == xStrLengthBytes && memcmp(pzStrCmp, pzStr, xStrLengthBytes) == 0;
 }
 
-BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElements) {
+BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_ARRAY) return pdFAIL;
-  if (pxNumberOfElements) *pxNumberOfElements = xMsgUnifier->xUnpacked.data.via.array.size;
+  if (pxNumberOfItems) *pxNumberOfItems = xMsgUnifier->xUnpacked.data.via.array.size;
   return pdPASS;
 }
 
-BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries) {
+BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_MAP) return pdFAIL;
-  if (pxNumberOfEntries) *pxNumberOfEntries = xMsgUnifier->xUnpacked.data.via.map.size;
+  if (pxNumberOfItems) *pxNumberOfItems = xMsgUnifier->xUnpacked.data.via.map.size;
   return pdPASS;
 }
 

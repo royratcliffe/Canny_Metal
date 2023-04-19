@@ -136,14 +136,14 @@ BaseType_t xMsgUnifyStrDup(MsgUnifierHandle_t xMsgUnifier, char **ppcStrDup);
  */
 BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp);
 
-BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElements);
+BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems);
 
 /*!
- * \brief Unifies with a map of entries.
- * \param[out] pxNumberOfEntries Pointer to received number of entries on
- * success. Entries are key-value pairs: key first, value second.
+ * \brief Unifies with a map of items.
+ * \param[out] pxNumberOfItems Pointer to received number of items on
+ * success. Items are key-value pairs: key first, value second.
  */
-BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries);
+BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems);
 
 BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes);
 
