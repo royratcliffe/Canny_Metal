@@ -163,6 +163,19 @@ BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems)
   return pdPASS;
 }
 
+BaseType_t xMsgUnifyMapStrKey(MsgUnifierHandle_t xMsgUnifier, const char *pzStrKey) {
+  size_t xNumberOfItems;
+  if (!xMsgUnifyMap(xMsgUnifier, &xNumberOfItems)) return pdFAIL;
+  for (; xNumberOfItems != 0UL && xMsgUnify(xMsgUnifier); xNumberOfItems--)
+    {
+      BaseType_t xUnifyKey = xMsgUnifyStrCmp(xMsgUnifier, pzStrKey);
+      BaseType_t xUnifyValue = xMsgUnify(xMsgUnifier);
+      if (xUnifyKey) return xUnifyValue;
+      if (!xUnifyValue) break;
+    }
+  return pdFAIL;
+}
+
 BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes) {
   if (xMsgUnifier->xUnpacked.data.type != MSGPACK_OBJECT_BIN) return pdFAIL;
   if (pvBin) *pvBin = xMsgUnifier->xUnpacked.data.via.bin.ptr;

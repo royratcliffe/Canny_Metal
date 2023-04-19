@@ -145,6 +145,14 @@ BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItem
  */
 BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems);
 
+/*!
+ * Requires an initial unification. Unifies the key by string comparison.
+ * Unifies with the matched item's value on success. Either unifies with any
+ * message material after the map on failure, or the end of the buffer in the
+ * case of missing values or missing items.
+ */
+BaseType_t xMsgUnifyMapStrKey(MsgUnifierHandle_t xMsgUnifier, const char *pzStrKey);
+
 BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes);
 
 /*!
