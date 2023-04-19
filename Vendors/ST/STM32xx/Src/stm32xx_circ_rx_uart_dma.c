@@ -30,6 +30,7 @@
 #include "list_ex.h"
 
 static CircRxHandle_t xCircRxForUART[stm32xx_uartMAX_INSTANCES];
+static ListItem_t *pxRxEventForUART[stm32xx_uartMAX_INSTANCES];
 
 CircRxHandle_t xCircRxForUARTDMA(UARTHandle_t xUART) { return xCircRxForUART[xRegisteredCardinalOfUART(xUART)]; }
 
