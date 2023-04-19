@@ -29,10 +29,10 @@
 #include "tx_handler.h"
 
 #include "FreeRTOS.h"
-#include "task.h"
 #include "stream_buffer.h"
+#include "task.h"
 
-typedef void *CircRxHandle_t;
+typedef struct CircRx *CircRxHandle_t;
 
 /*!
  * \brief Sends data.
@@ -81,7 +81,7 @@ void vCircRxTaskHandle(CircRxHandle_t xCircRx, TaskHandle_t xTask);
 /*!
  * \brief Notifies circular receiver task.
  * \param ulXfer New circular transfer offset.
- * \param pxWoken Assigned to `pdTRUE` if context switch required because a
+ * \param pxWoken Assigned to \c pdTRUE if context switch required because a
  * higher-priority task woke up.
  */
 BaseType_t xCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken);
