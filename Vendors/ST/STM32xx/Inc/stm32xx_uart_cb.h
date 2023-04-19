@@ -43,3 +43,5 @@
  * existing handler for the same UART.
  */
 ListItem_t *pxUARTRegisterRxEvent(UARTHandle_t xUART, UARTRxEventHandler_t xHandler, TickType_t xDelay);
+
+void vUARTUnregisterRxEvent(ListItem_t *pxRxEvent);
