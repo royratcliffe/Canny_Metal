@@ -56,7 +56,7 @@ static portTASK_FUNCTION(prvCircRxUARTDMATask, pvParameters) {
  */
 static void prvRxEvent(UARTHandle_t xUART, uint16_t usXfer) {
   CircRxHandle_t xCircRx = xCircRxForUARTDMA(xUART);
-  if (xCircRx) xTaskNotifyFromISR(xCircRxTaskHandle(xCircRx), usXfer, eSetValueWithOverwrite, NULL);
+  if (xCircRx) vCircRxNotifyFromISR(xCircRx, usXfer, NULL);
 }
 
 CircRxHandle_t xCircRxUARTDMACreate(UARTHandle_t xUART, void *pvSender, TxHandler_t xHandler) {

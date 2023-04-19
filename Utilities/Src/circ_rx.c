@@ -28,6 +28,14 @@
 
 #include <limits.h>
 
+/*
+ * \brief Delete notification for circular-receive task.
+ *
+ * The mask bit must be at position 16 or greater in order to avoid intersecting
+ * with the 16-bit transfer offset.
+ */
+#define circ_rxDELETE_NOTIFIED (1UL << ('_' - '@'))
+
 struct CircRx {
   TaskHandle_t xTask;
   TxHandler_t xHandler;
@@ -45,6 +53,7 @@ void vCircRx(CircRxHandle_t xCircRx, void *pvRxBuffer, size_t xBufferLengthBytes
   for (;;) {
     uint32_t ulXfer;
     xTaskNotifyWait(0UL, ULONG_MAX, &ulXfer, portMAX_DELAY);
+    if (ulXfer & circ_rxDELETE_NOTIFIED) break;
     if (ulCirc == ulXfer) continue;
     if (ulXfer > ulCirc)
       vCircRxSend(xCircRx, (uint8_t *)pvRxBuffer + ulCirc, ulXfer - ulCirc);
@@ -54,6 +63,7 @@ void vCircRx(CircRxHandle_t xCircRx, void *pvRxBuffer, size_t xBufferLengthBytes
     }
     ulCirc = ulXfer;
   }
+  vTaskDelete(NULL);
 }
 
 CircRxHandle_t xCircRxCreate(void *pvSender, TxHandler_t xHandler) {
@@ -65,19 +75,24 @@ CircRxHandle_t xCircRxCreate(void *pvSender, TxHandler_t xHandler) {
   return xCircRx;
 }
 
-TaskHandle_t xCircRxTaskHandle(CircRxHandle_t xCircRx) {
-  return xCircRx->xTask;
+void vCircRxDelete(CircRxHandle_t xCircRx) {
+  TaskHandle_t xTask = xCircRxTaskHandle(xCircRx);
+  if (xTask) (void)xTaskNotify(xTask, circ_rxDELETE_NOTIFIED, eSetBits);
+  vPortFree(xCircRx);
 }
 
-void vCircRxTaskHandle(CircRxHandle_t xCircRx, TaskHandle_t xTask) {
-  xCircRx->xTask = xTask;
-}
+TaskHandle_t xCircRxTaskHandle(CircRxHandle_t xCircRx) { return xCircRx->xTask; }
+
+void vCircRxTaskHandle(CircRxHandle_t xCircRx, TaskHandle_t xTask) { xCircRx->xTask = xTask; }
 
 void vCircRxStreamBuffer(CircRxHandle_t xCircRx, StreamBufferHandle_t xStreamBuffer) {
   xCircRx->xHandler = vTxStreamBufferHandler;
   xCircRx->pvSender = xStreamBuffer;
 }
 
-BaseType_t xCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken) {
-  return xTaskNotifyFromISR(xCircRxTaskHandle(xCircRx), ulXfer, eSetValueWithOverwrite, pxWoken);
+void vCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken) {
+  uint32_t ulNotified;
+  TaskHandle_t xTask = xCircRxTaskHandle(xCircRx);
+  (void)xTaskNotifyAndQueryFromISR(xTask, ulXfer, eSetValueWithOverwrite, &ulNotified, pxWoken);
+  if (ulNotified & circ_rxDELETE_NOTIFIED) (void)xTaskNotifyFromISR(xTask, circ_rxDELETE_NOTIFIED, eSetBits, NULL);
 }

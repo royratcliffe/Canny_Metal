@@ -61,6 +61,15 @@ void vCircRx(CircRxHandle_t xCircRx, void *pvRxBuffer, size_t xBufferLengthBytes
 CircRxHandle_t xCircRxCreate(void *pvSender, TxHandler_t Handler);
 
 /*!
+ * \brief Deletes a circular receiver.
+ *
+ * Always shut down the interrupt-service routine and the asynchronous transfer
+ * notification \e before deleting in order to avoid a race condition. Do not
+ * let the transfer offset overwrite the delete notified bit.
+ */
+void vCircRxDelete(CircRxHandle_t xCircRx);
+
+/*!
  * \brief Wires up a stream-buffered circular receiver.
  *
  * The receiver blocks indefinitely when filling the given stream buffer. This
@@ -83,5 +92,7 @@ void vCircRxTaskHandle(CircRxHandle_t xCircRx, TaskHandle_t xTask);
  * \param ulXfer New circular transfer offset.
  * \param pxWoken Assigned to \c pdTRUE if context switch required because a
  * higher-priority task woke up.
+ *
+ * Detects and reasserts any pending delete notification.
  */
-BaseType_t xCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken);
+void vCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken);
