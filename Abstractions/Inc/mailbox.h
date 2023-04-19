@@ -60,6 +60,7 @@
  */
 
 #include "FreeRTOS.h"
+#include "task.h"
 
 /*!
  * \brief Size in bytes of mailbox message buffer.
@@ -221,6 +222,14 @@ size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferL
  */
 void vMailboxSetUp(void *pvParameters);
 
+/*!
+ * \brief Tears down a mailbox processor task.
+ *
+ * Unlinks the thread-local storage from the task's mailbox. Tear-down does \e
+ * not delete the mailbox. This implies that the task does not own the mailbox
+ * but that the mailbox owns the task, correctly the other way around. The
+ * mailbox persists after tear-down and the mailbox can respawn its task.
+ */
 void vMailboxTearDown(void);
 
 MailboxHandle_t xMailboxSelf(void);
@@ -231,6 +240,13 @@ MailboxHandle_t xMailboxSelf(void);
  * \returns \c pdPASS if the mailbox at \c pxMailbox is a mailbox.
  */
 BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox);
+
+/*!
+ * \brief Answers mailbox of task.
+ * \param[in] xTask Handle of task to query or \c NULL for the current task.
+ * \returns Handle of mailbox.
+ */
+MailboxHandle_t xMailboxOfTask(TaskHandle_t xTask);
 
 /*!
  * \}
