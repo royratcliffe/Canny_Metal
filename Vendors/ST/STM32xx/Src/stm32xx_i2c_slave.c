@@ -1,5 +1,6 @@
 /*
  * stm32xx_i2c_slave.c
+ * SPDX-License-Identifier: MIT
  */
 
 #include "stm32xx_i2c_slave.h"
@@ -11,6 +12,8 @@
 #ifdef HAL_I2C_MODULE_ENABLED
 
 #include "task.h"
+
+#include "registered_opaques.h"
 
 #include <limits.h>
 #include <stdio.h>
@@ -31,17 +34,44 @@ struct I2CDevice {
 struct I2CSlave {
   I2CHandle_t xI2C;
   TaskHandle_t xTask;
-  struct I2CDevice *pxDevices[1U << 7U];
+  void *pvAddrs[i2cslaveMAX_DEVICES];
+  struct I2CDevice *pxDevices[i2cslaveMAX_DEVICES];
 };
+
+static size_t prvHashOfAddr(void *pvOpaque) { return (size_t)pvOpaque; }
+
+/*!
+ * \brief Registers address.
+ *
+ * Merges the address with an arbitrary non-zero bits to allow for address zero.
+ * In practice, address zero is the "general call" address and not used.
+ * Registered opaque pointers rely on NULL, or all zero, for empty registration
+ * slots. Avoid stepping on the registration semantics.
+ */
+static size_t prvRegisteredCardinalOfAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
+  struct RegisteredOpaques prvRegisteredOpaques = {.ppvOpaques = xI2CSlave->pvAddrs,
+                                                   .xNumberOfOpaques = i2cslaveMAX_DEVICES,
+                                                   .pxHashOfOpaqueFunction = prvHashOfAddr};
+  return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, (void *)(0xdeadbe00UL | ucAddr));
+}
+
+static struct I2CDevice **prvRegisteredDeviceOfAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
+  return xI2CSlave->pxDevices + prvRegisteredCardinalOfAddr(xI2CSlave, ucAddr);
+}
 
 #define i2cslaveSLAVE_TX_CPLT_NOTIFIED (1UL << ('T' - '@'))
 #define i2cslaveSLAVE_RX_CPLT_NOTIFIED (1UL << ('R' - '@'))
-#define i2cslaveADDR_NOTIFIED (1UL << ('A' - '@'))
-#define i2cslaveERROR_NOTIFIED (1UL << ('E' - '@'))
-#define i2cslaveSTOP_NOTIFIED (1UL << ('_' - '@'))
+#define i2cslaveADDR_NOTIFIED          (1UL << ('A' - '@'))
+#define i2cslaveERROR_NOTIFIED         (1UL << ('E' - '@'))
+#define i2cslaveSTOP_NOTIFIED          (1UL << ('_' - '@'))
 
 /*!
+ * \brief I2C slave service code.
+ *
  * Slave mode is straightforward: listen, receive then transmit, repeat forever.
+ *
+ * The task quits immediately if I2C listening fails to enable. This happens if
+ * the channel has not been correctly initialised.
  */
 static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
   I2CSlaveHandle_t xI2CSlave = pvParameters;
@@ -123,7 +153,7 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
     do {
       xTaskNotifyWait(0UL, ULONG_MAX, &ulNotified, portMAX_DELAY);
       uint8_t ucAddr = ucI2CSeqAddr(xI2CSeq);
-      struct I2CDevice *pxDevice = xI2CSlave->pxDevices[ucAddr];
+      struct I2CDevice *pxDevice = *prvRegisteredDeviceOfAddr(xI2CSlave, ucAddr);
       if (pxDevice) {
         if ((ulNotified & i2cslaveSLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt) pxDevice->pvSlaveTxCplt(xI2CSeq);
         if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt) pxDevice->pvSlaveRxCplt(xI2CSeq);
@@ -161,7 +191,12 @@ I2CSlaveHandle_t xI2CSlaveCreate(I2CHandle_t xI2C) {
 BaseType_t xI2CSlaveStart(I2CSlaveHandle_t xI2CSlave, const char *pcName) {
   configASSERT(xI2CSlave->xTask == NULL);
   char name[configMAX_TASK_NAME_LEN];
-  snprintf(name, sizeof(name), "%s-I2C%d", pcName ? pcName : i2cslaveTASK_NAME,
+  /*
+   * Use hexadecimal and two digits for the I2C cardinal in order not to confuse
+   * the cardinal with the I2C channel. The two spaces do not directly connect,
+   * only indirectly through the I2C registered hashing function.
+   */
+  snprintf(name, sizeof(name), "%s-I2C%02x", pcName ? pcName : i2cslaveTASK_NAME,
            xRegisteredCardinalOfI2C(xI2CSlave->xI2C));
   return xTaskCreate(prvI2CSlaveTask, name, i2cslaveSTACK_DEPTH, xI2CSlave, i2cslavePRIORITY, &xI2CSlave->xTask);
 }
@@ -184,17 +219,18 @@ void vI2CSlaveDelete(I2CSlaveHandle_t xI2CSlave) {
  * Constructs the slave device lazily. The slave is an association entity
  * linking a slave with its bus address.
  *
- * \note Watch out for race conditions.
+ * \note Watch out for race conditions. Best to set up devices \e before
+ * starting the slave.
  */
 static struct I2CDevice *prvI2CSlaveDevice(struct I2CSlave *pxI2CSlave, uint8_t ucAddr) {
   configASSERT((ucAddr & 0b10000000U) == 0b00000000U);
-  struct I2CDevice *pxDevice = pxI2CSlave->pxDevices[ucAddr];
-  if (pxDevice == NULL) {
-    pxDevice = pvPortMalloc(sizeof(*pxDevice));
-    configASSERT(pxDevice);
-    pxI2CSlave->pxDevices[ucAddr] = pxDevice;
+  struct I2CDevice **ppxDevice = prvRegisteredDeviceOfAddr(pxI2CSlave, ucAddr);
+  if (ppxDevice == NULL) {
+    *ppxDevice = pvPortMalloc(sizeof(**ppxDevice));
+    configASSERT(*ppxDevice);
+    (void)memset(*ppxDevice, 0, sizeof(**ppxDevice));
   }
-  return pxDevice;
+  return *ppxDevice;
 }
 
 void vI2CSlaveDeviceSlaveTxCplt(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr,

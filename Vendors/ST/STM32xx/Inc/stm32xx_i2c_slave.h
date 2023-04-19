@@ -34,6 +34,10 @@
 #define i2cslaveTASK_NAME "I2Cslave"
 #endif
 
+#ifndef i2cslaveMAX_DEVICES
+#define i2cslaveMAX_DEVICES 16U
+#endif
+
 typedef struct I2CSlave *I2CSlaveHandle_t;
 
 /*!
