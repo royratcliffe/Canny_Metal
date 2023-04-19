@@ -3,6 +3,7 @@ Language: Cpp
 BasedOnStyle: LLVM
 ColumnLimit: 120
 AlignEscapedNewlines: Left
+AlignConsecutiveMacros: true
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 ...
