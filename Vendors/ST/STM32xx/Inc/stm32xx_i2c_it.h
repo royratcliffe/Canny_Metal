@@ -14,14 +14,14 @@
  * \brief Master I2C transmit complete notification.
  */
 #ifndef stm32xxI2C_MASTER_TX_CPLT_NOTIFIED
-#define stm32xxI2C_MASTER_TX_CPLT_NOTIFIED (1UL << ('T' - 'A'))
+#define stm32xxI2C_MASTER_TX_CPLT_NOTIFIED (1UL << ('T' - '@'))
 #endif
 
 /*!
  * \brief Master I2C receive complete notification.
  */
 #ifndef stm32xxI2C_MASTER_RX_CPLT_NOTIFIED
-#define stm32xxI2C_MASTER_RX_CPLT_NOTIFIED (1UL << ('R' - 'A'))
+#define stm32xxI2C_MASTER_RX_CPLT_NOTIFIED (1UL << ('R' - '@'))
 #endif
 
 /*!
