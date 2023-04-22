@@ -70,7 +70,7 @@ BaseType_t xCRCRev(CRCRevIn_t xRevIn, CRCRevOut_t xRevOut);
 /*!
  * \brief Configures the CRC unit for CRC-32 Castagnoli.
  *
- * Do not forget to invert the calculation result using the C `~` operator, or
+ * Do not forget to invert the calculation result using the C \c ~ operator, or
  * equivalently by XOR with FFFFFFFF.
  *
  * \code
@@ -94,6 +94,6 @@ BaseType_t xCRC32C();
  * This peripheral-based CRC calculator merely writes 32-bit values to a
  * peripheral data register.
  *
- * Performs a naughty `const` cast. The HAL interface accepts a mutable pointer.
+ * Performs a naughty \c const cast. The HAL interface accepts a mutable pointer.
  */
 uint32_t ulCRCCalc(const void *pvData, size_t xDataLengthBytes);
