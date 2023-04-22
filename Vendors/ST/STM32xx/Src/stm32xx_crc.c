@@ -27,16 +27,22 @@ BaseType_t xCRCGive() { return xSemaphore ? xSemaphoreGive(xSemaphore) : pdFAIL;
 
 #ifdef HAL_CRC_MODULE_ENABLED
 
-/*
+/*!
+ * \brief External CRC handle.
+ *
  * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
  * Configuration panel. Include \c crc.h, typically under \c Core/Inc, in order to
  * access the external CRC handle \c hcrc.
  *
- *		extern CRC_HandleTypeDef hcrc;
+ * \code
+ * extern CRC_HandleTypeDef hcrc;
+ * \endcode
  *
  * The Core auto-generated sources declare the CRC handle in header:
  *
- *		#include "crc.h"
+ * \code
+ * #include "crc.h"
+ * \endcode
  *
  * Compilation fails however unless the hardware abstraction layer enables its
  * CRC module.
