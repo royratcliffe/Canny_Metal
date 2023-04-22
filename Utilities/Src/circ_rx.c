@@ -90,9 +90,9 @@ void vCircRxStreamBuffer(CircRxHandle_t xCircRx, StreamBufferHandle_t xStreamBuf
   xCircRx->pvSender = xStreamBuffer;
 }
 
-void vCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken) {
+void vCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint16_t usXfer, BaseType_t *pxWoken) {
   uint32_t ulNotified;
   TaskHandle_t xTask = xCircRxTaskHandle(xCircRx);
-  (void)xTaskNotifyAndQueryFromISR(xTask, ulXfer, eSetValueWithOverwrite, &ulNotified, pxWoken);
+  (void)xTaskNotifyAndQueryFromISR(xTask, usXfer, eSetValueWithOverwrite, &ulNotified, pxWoken);
   if (ulNotified & circ_rxDELETE_NOTIFIED) (void)xTaskNotifyFromISR(xTask, circ_rxDELETE_NOTIFIED, eSetBits, NULL);
 }

@@ -89,10 +89,10 @@ void vCircRxTaskHandle(CircRxHandle_t xCircRx, TaskHandle_t xTask);
 
 /*!
  * \brief Notifies circular receiver task.
- * \param ulXfer New circular transfer offset.
+ * \param usXfer New circular transfer position.
  * \param pxWoken Assigned to \c pdTRUE if context switch required because a
  * higher-priority task woke up.
  *
- * Detects and reasserts any pending delete notification.
+ * \note Detects and reasserts any pending delete notification.
  */
-void vCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint32_t ulXfer, BaseType_t *pxWoken);
+void vCircRxNotifyFromISR(CircRxHandle_t xCircRx, uint16_t usXfer, BaseType_t *pxWoken);
