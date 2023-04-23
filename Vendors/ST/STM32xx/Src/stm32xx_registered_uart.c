@@ -8,17 +8,20 @@
 
 #include "registered_opaques.h"
 
+static void *pvOpaques[stm32xx_uartMAX_INSTANCES];
+
 static size_t prvHashOfOpaque(void *pvOpaque) {
-  UART_HandleTypeDef *pUART = pvOpaque;
-  return (uint32_t)pUART->Instance >> 10U;
+  UARTHandle_t xUART = pvOpaque;
+  return (uint32_t)xUART->Instance >> 10U;
 }
 
-size_t xRegisteredCardinalOfUART(UART_HandleTypeDef *pxUART) {
-  static void *pvOpaques[stm32xx_uartMAX_INSTANCES];
+size_t xRegisteredCardinalOfUART(UARTHandle_t xUART) {
   static struct RegisteredOpaques prvRegisteredOpaques = {.ppvOpaques = pvOpaques,
                                                           .xNumberOfOpaques = stm32xx_uartMAX_INSTANCES,
                                                           .pxHashOfOpaqueFunction = prvHashOfOpaque};
-  return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, pxUART);
+  return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, xUART);
 }
+
+UARTHandle_t xUARTOfRegisteredCardinal(size_t xCardinal) { return pvOpaques[xCardinal]; }
 
 #endif

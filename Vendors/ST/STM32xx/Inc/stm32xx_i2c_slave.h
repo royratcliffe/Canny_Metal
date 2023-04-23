@@ -1,6 +1,5 @@
-/*
- * stm32xx_i2c_slave.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -32,6 +31,10 @@
 
 #ifndef i2cslaveTASK_NAME
 #define i2cslaveTASK_NAME "I2Cslave"
+#endif
+
+#ifndef i2cslaveMAX_DEVICES
+#define i2cslaveMAX_DEVICES 16U
 #endif
 
 typedef struct I2CSlave *I2CSlaveHandle_t;

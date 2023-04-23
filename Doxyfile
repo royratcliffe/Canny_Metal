@@ -4,6 +4,8 @@ PROJECT_NUMBER         = 0.1.0
 
 INPUT                  = .
 
+EXCLUDE                = Third_Party
+
 OUTPUT_DIRECTORY       = Documentation
 
 OPTIMIZE_OUTPUT_FOR_C  = YES
@@ -19,6 +21,9 @@ RECURSIVE              = YES
 SOURCE_BROWSER         = YES
 
 PREDEFINED             = HAL_UART_MODULE_ENABLED
+PREDEFINED            += HAL_USART_MODULE_ENABLED
+PREDEFINED            += HAL_CRC_MODULE_ENABLED
+PREDEFINED            += HAL_I2C_MODULE_ENABLED
 
 HAVE_DOT               = YES
 

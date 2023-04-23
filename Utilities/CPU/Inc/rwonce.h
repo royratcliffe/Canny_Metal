@@ -10,7 +10,7 @@
  *
  * The readable always reads once, even if already accessed and fully optimised.
  * In other words, the implementation guarantees a single memory-read operation.
- * Makes use of C11's `volatile` modifier and `typeof` built-in function.
+ * Makes use of C11's \c volatile modifier and \c typeof built-in function.
  */
 #define READ_ONCE(lvalue) (*(const volatile typeof(lvalue) *)&(lvalue))
 

@@ -34,6 +34,8 @@
  * }
  * \endcode
  */
-size_t xRegisteredCardinalOfUART(UART_HandleTypeDef *pxUART);
+size_t xRegisteredCardinalOfUART(UARTHandle_t xUART);
+
+UARTHandle_t xUARTOfRegisteredCardinal(size_t xCardinal);
 
 #endif

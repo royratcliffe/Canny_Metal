@@ -65,6 +65,6 @@ static inline int list_is_singular(const struct list_head *head) {
 
 /*!
  * \brief Iterates over list, starting at head.
- * \param loop Pointer to `list_head` structure to use as loop cursor.
+ * \param loop Pointer to \c list_head structure to use as loop cursor.
  */
 #define LIST_FOR_EACH(loop, head) for (loop = (head)->next; loop != (head); loop = (loop)->next)

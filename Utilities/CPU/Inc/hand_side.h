@@ -36,7 +36,7 @@ struct hand_side {
  * \param top Pointer to top
  * \param left Pointer to lefthand side
  * \param right Pointer to righthand side
- * \retval New left-right pair pushed to top or `NULL` if out of memory
+ * \retval New left-right pair pushed to top or \c NULL if out of memory
  *
  * The push operation both pushes and creates if necessary. The top address is a
  * null pointer initially and this qualifies as a valid but empty hand-side
@@ -44,7 +44,7 @@ struct hand_side {
  * dynamically-allocated heap memory.
  *
  * Pushing fails if memory allocation fails. In such cases, the return value is
- * `NULL` and the hand-side chain remains unaltered. Success returns the new
+ * \c NULL and the hand-side chain remains unaltered. Success returns the new
  * top.
  */
 struct hand_side *push_hand_side(struct hand_side **top, void *left, void *right);
@@ -53,7 +53,7 @@ struct hand_side *push_hand_side(struct hand_side **top, void *left, void *right
  * \brief Pops left if found
  * \param top Top of chain
  * \param left Lefthand side to match
- * \retval Right hand side if match else `NULL`
+ * \retval Right hand side if match else \c NULL
  *
  * Removes left and right, matching on left. Removes only one, stopping at the
  * first match.
@@ -91,7 +91,7 @@ void *for_left_and_right_hand_side(struct hand_side **top, void *(*and)(void *le
 /*!
  * \brief Iterates left and right with variadic arguments.
  *
- * Restarts the variadic argument list at every iteration. Hence the `and`
+ * Restarts the variadic argument list at every iteration. Hence the \c and
  * function sees the same variable argument list albeit with differing left and
  * right pointers.
  */
@@ -118,9 +118,9 @@ void *right_for_left_hand_side(struct hand_side **top, void *left);
  * \param left Pointer to null-terminated lefthand side string
  *
  * Right for left also supports insensitive string comparison where matching
- * utilises `stricmp` for comparing the left-hand side with the given string.
+ * utilises \c stricmp for comparing the left-hand side with the given string.
  * This naturally assumes that the left-hand sides represent pointers to
- * null-terminated strings. The implementation throws away the `const`
+ * null-terminated strings. The implementation throws away the \c const
  * correctness by casting to the very generalised non-constant void pointer
  * type.
  */

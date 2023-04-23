@@ -137,6 +137,8 @@ size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferL
 void vMailboxSetUp(void *pvParameters) {
 #ifdef mailboxTASK_TLS_INDEX
   vTaskSetThreadLocalStoragePointer(NULL, mailboxTASK_TLS_INDEX, pvParameters);
+#else
+  (void)pvParameters;
 #endif
 }
 
@@ -146,15 +148,17 @@ void vMailboxTearDown() {
 #endif
 }
 
-MailboxHandle_t xMailboxSelf() {
+MailboxHandle_t xMailboxSelf() { return xMailboxOfTask(NULL); }
+
+BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox) {
+  if (pxMailbox == NULL || ((*pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL))) return pdFAIL;
+  return pdPASS;
+}
+
+MailboxHandle_t xMailboxOfTask(TaskHandle_t xTask) {
 #ifdef mailboxTASK_TLS_INDEX
-  return pvTaskGetThreadLocalStoragePointer(NULL, mailboxTASK_TLS_INDEX);
+  return pvTaskGetThreadLocalStoragePointer(xTask, mailboxTASK_TLS_INDEX);
 #else
   return NULL;
 #endif
-}
-
-BaseType_t xMailboxOrSelf(MailboxHandle_t *pxMailbox) {
-  if (pxMailbox == NULL || (*pxMailbox == NULL && (*pxMailbox = xMailboxSelf()) == NULL)) return pdFAIL;
-  return pdPASS;
 }

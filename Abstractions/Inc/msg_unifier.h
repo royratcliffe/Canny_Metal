@@ -136,14 +136,22 @@ BaseType_t xMsgUnifyStrDup(MsgUnifierHandle_t xMsgUnifier, char **ppcStrDup);
  */
 BaseType_t xMsgUnifyStrCmp(MsgUnifierHandle_t xMsgUnifier, const char *pcStrCmp);
 
-BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfElements);
+BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems);
 
 /*!
- * \brief Unifies with a map of entries.
- * \param[out] pxNumberOfEntries Pointer to received number of entries on
- * success. Entries are key-value pairs: key first, value second.
+ * \brief Unifies with a map of items.
+ * \param[out] pxNumberOfItems Pointer to received number of items on
+ * success. Items are key-value pairs: key first, value second.
  */
-BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfEntries);
+BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems);
+
+/*!
+ * Requires an initial unification. Unifies the key by string comparison.
+ * Unifies with the matched item's value on success. Either unifies with any
+ * message material after the map on failure, or the end of the buffer in the
+ * case of missing values or missing items.
+ */
+BaseType_t xMsgUnifyMapStrKey(MsgUnifierHandle_t xMsgUnifier, const char *pzStrKey);
 
 BaseType_t xMsgUnifyBin(MsgUnifierHandle_t xMsgUnifier, const void **pvBin, size_t *pxBinLengthBytes);
 

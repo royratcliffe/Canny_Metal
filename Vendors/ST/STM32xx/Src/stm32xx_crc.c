@@ -27,16 +27,22 @@ BaseType_t xCRCGive() { return xSemaphore ? xSemaphoreGive(xSemaphore) : pdFAIL;
 
 #ifdef HAL_CRC_MODULE_ENABLED
 
-/*
- * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
- * Configuration panel. Include `crc.h`, typically under Core/Inc, in order to
- * access the external CRC handle `hcrc`.
+/*!
+ * \brief External CRC handle.
  *
- *		extern CRC_HandleTypeDef hcrc;
+ * Activate the CRC; it appears under Computing within STM32CubeMX's Pinout and
+ * Configuration panel. Include \c crc.h, typically under \c Core/Inc, in order to
+ * access the external CRC handle \c hcrc.
+ *
+ * \code
+ * extern CRC_HandleTypeDef hcrc;
+ * \endcode
  *
  * The Core auto-generated sources declare the CRC handle in header:
  *
- *		#include "crc.h"
+ * \code
+ * #include "crc.h"
+ * \endcode
  *
  * Compilation fails however unless the hardware abstraction layer enables its
  * CRC module.
@@ -45,10 +51,10 @@ extern CRC_HandleTypeDef hcrc;
 
 /*!
  * \brief Sets up the polynomial.
- * \param ulPol Generating polynomial. Contents of polynomial register, `POL`.
+ * \param ulPol Generating polynomial. Contents of polynomial register, \c POL.
  * \param ulPolySize Polynomial size. One of 7, 8, 16 or 32 bits encoded as:
- * `CRC_POLYLENGTH_7B`, etc.
- * \retval Answers `pdPASS` on success.
+ * \c CRC_POLYLENGTH_7B, etc.
+ * \retval Answers \c pdPASS on success.
  */
 static BaseType_t prvCRCPoly(uint32_t ulPol, uint32_t ulPolySize) {
   return HAL_CRCEx_Polynomial_Set(&hcrc, ulPol, ulPolySize) == HAL_OK ? pdPASS : pdFAIL;
