@@ -6,12 +6,10 @@
 #include "FreeRTOS.h"
 #include "message_buffer.h"
 
-void vTxMessageBufferHandler(void *pvMessageBuffer, const void *pvTxData, size_t xDataLengthBytes)
-{
-	(void)xMessageBufferSend(pvMessageBuffer, pvTxData, xDataLengthBytes, portMAX_DELAY);
+void vTxMessageBufferHandler(void *pvMessageBuffer, const void *pvTxData, size_t xDataLengthBytes) {
+  (void)xMessageBufferSend(pvMessageBuffer, pvTxData, xDataLengthBytes, portMAX_DELAY);
 }
 
-void vTxStreamBufferHandler(void *pvStreamBuffer, const void *pvTxData, size_t xDataLengthBytes)
-{
-	(void)xStreamBufferSend(pvStreamBuffer, pvTxData, xDataLengthBytes, portMAX_DELAY);
+void vTxStreamBufferHandler(void *pvStreamBuffer, const void *pvTxData, size_t xDataLengthBytes) {
+  (void)xStreamBufferSend(pvStreamBuffer, pvTxData, xDataLengthBytes, portMAX_DELAY);
 }
