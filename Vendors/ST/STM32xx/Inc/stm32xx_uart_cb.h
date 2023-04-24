@@ -29,6 +29,14 @@
 #include "FreeRTOS.h"
 #include "list.h"
 
+ListItem_t *pxUARTRegisterTxHalfCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
+ListItem_t *pxUARTRegisterTxCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
+ListItem_t *pxUARTRegisterRxHalfCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
+ListItem_t *pxUARTRegisterRxCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
 /*!
  * \brief Registers receive event handler for UART.
  * \param xUART Handle of UART with underlying USART instance.
