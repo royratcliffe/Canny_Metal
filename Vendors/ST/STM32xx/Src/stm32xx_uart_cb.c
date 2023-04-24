@@ -154,7 +154,7 @@ ListItem_t *pxUARTRegisterRxEvent(UARTHandle_t xUART, UARTRxEventHandler_t xHand
   return pxListInsertNew(pxForUART, xHandler, xDelay);
 }
 
-void vUARTUnregisterRxEvent(ListItem_t *pxRxEvent) {
-  (void)uxListRemove(pxRxEvent);
-  vPortFree(pxRxEvent);
+void vUARTUnregister(ListItem_t *pxRegisteredForUART) {
+  (void)uxListRemove(pxRegisteredForUART);
+  vPortFree(pxRegisteredForUART);
 }

@@ -75,7 +75,7 @@ CircRxHandle_t xCircRxUARTDMACreate(UARTHandle_t xUART, void *pvSender, TxHandle
 
 void vCircRxUARTDMADelete(UARTHandle_t xUART) {
   size_t xCardinal = xRegisteredCardinalOfUART(xUART);
-  vUARTUnregisterRxEvent(pxRxEventForUART[xCardinal]);
+  vUARTUnregister(pxRxEventForUART[xCardinal]);
   pxRxEventForUART[xCardinal] = NULL;
   vCircRxDelete(xCircRxForUART[xCardinal]);
   xCircRxForUART[xCardinal] = NULL;

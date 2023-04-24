@@ -52,4 +52,4 @@ ListItem_t *pxUARTRegisterRxCplt(UARTHandle_t xUART, UARTHandler_t xHandler, Tic
  */
 ListItem_t *pxUARTRegisterRxEvent(UARTHandle_t xUART, UARTRxEventHandler_t xHandler, TickType_t xDelay);
 
-void vUARTUnregisterRxEvent(ListItem_t *pxRxEvent);
+void vUARTUnregister(ListItem_t *pxRegisteredForUART);
