@@ -1,6 +1,5 @@
-/*
- * stm32xx_i2c_seq.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "stm32xx_i2c_seq.h"
 
@@ -144,7 +143,11 @@ void vI2CSeqBufferLength(I2CSeqHandle_t xI2CSeq, size_t xBytes) {
     if (xI2CSeq->xBufferLengthBytes == xBytes) return;
     vPortFree(xI2CSeq->pvBuffer);
   }
-  xI2CSeq->pvBuffer = pvPortMalloc(xBytes);
+  /*
+   * Do not allow allocation to fail if the buffer length is zero. FreeRTOS
+   * answers NULL for zero-length allocations.
+   */
+  xI2CSeq->pvBuffer = pvPortMalloc(xBytes ?: 1U);
   configASSERT(xI2CSeq->pvBuffer);
 #else
   void *pvBuffer = realloc(xI2CSeq->pvBuffer, xBytes);
