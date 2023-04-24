@@ -39,6 +39,8 @@ ListItem_t *pxUARTRegisterRxCplt(UARTHandle_t xUART, UARTHandler_t xHandler, Tic
 
 ListItem_t *pxUARTRegisterError(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
 
+ListItem_t *pxUARTRegisterWakeup(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
 /*!
  * \brief Registers receive event handler for UART.
  * \param xUART Handle of UART with underlying USART instance.

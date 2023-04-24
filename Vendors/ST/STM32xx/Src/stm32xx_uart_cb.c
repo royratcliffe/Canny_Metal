@@ -159,6 +159,28 @@ ListItem_t *pxUARTRegisterError(UARTHandle_t xUART, UARTHandler_t xHandler, Tick
 }
 
 #if USE_HAL_UART_REGISTER_CALLBACKS
+static void prvWakeup(UARTHandle_t xUART)
+#else
+void HAL_UART_WakeupCallback(UARTHandle_t xUART)
+#endif
+{
+  BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
+    ((UARTHandler_t)pxOwner)(xUART);
+    return pdPASS;
+  }
+  vListYield(xWakeupForUART + xRegisteredCardinalOfUART(xUART), xYield);
+}
+
+ListItem_t *pxUARTRegisterWakeup(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay) {
+  List_t *pxForUART = xWakeupForUART + xRegisteredCardinalOfUART(xUART);
+#if USE_HAL_UART_REGISTER_CALLBACKS
+  if (listLIST_IS_EMPTY(pxForUART)) HAL_UART_RegisterCallback(xUART, HAL_UART_WAKEUP_CB_ID, prvWakeup);
+#endif
+  return pxListInsertNew(pxForUART, xHandler, xDelay);
+}
+
+#if USE_HAL_UART_REGISTER_CALLBACKS
 static void prvRxEvent(UARTHandle_t xUART, uint16_t usXfer)
 #else
 void HAL_UARTEx_RxEventCallback(UARTHandle_t xUART, uint16_t usXfer)
