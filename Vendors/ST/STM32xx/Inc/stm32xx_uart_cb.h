@@ -39,6 +39,12 @@ ListItem_t *pxUARTRegisterRxCplt(UARTHandle_t xUART, UARTHandler_t xHandler, Tic
 
 ListItem_t *pxUARTRegisterError(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
 
+ListItem_t *pxUARTRegisterAbortCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
+ListItem_t *pxUARTRegisterAbortTransmitCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
+ListItem_t *pxUARTRegisterAbortReceiveCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
+
 ListItem_t *pxUARTRegisterWakeup(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay);
 
 /*!
