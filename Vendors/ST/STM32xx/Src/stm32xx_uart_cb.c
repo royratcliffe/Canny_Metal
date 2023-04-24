@@ -32,6 +32,8 @@ static List_t xTxHalfCpltForUART[stm32xx_uartMAX_INSTANCES];
 static List_t xTxCpltForUART[stm32xx_uartMAX_INSTANCES];
 static List_t xRxHalfCpltForUART[stm32xx_uartMAX_INSTANCES];
 static List_t xRxCpltForUART[stm32xx_uartMAX_INSTANCES];
+static List_t xErrorForUART[stm32xx_uartMAX_INSTANCES];
+static List_t xWakeupForUART[stm32xx_uartMAX_INSTANCES];
 static List_t xRxEventForUART[stm32xx_uartMAX_INSTANCES];
 
 static void __attribute__((constructor)) prvListInitialise() {
@@ -40,6 +42,8 @@ static void __attribute__((constructor)) prvListInitialise() {
     vListInitialise(xTxCpltForUART + xCardinal);
     vListInitialise(xRxHalfCpltForUART + xCardinal);
     vListInitialise(xRxCpltForUART + xCardinal);
+    vListInitialise(xErrorForUART + xCardinal);
+    vListInitialise(xWakeupForUART + xCardinal);
     vListInitialise(xRxEventForUART + xCardinal);
   }
 }
@@ -128,6 +132,28 @@ ListItem_t *pxUARTRegisterRxCplt(UARTHandle_t xUART, UARTHandler_t xHandler, Tic
   List_t *pxForUART = xRxCpltForUART + xRegisteredCardinalOfUART(xUART);
 #if USE_HAL_UART_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForUART)) HAL_UART_RegisterCallback(xUART, HAL_UART_RX_COMPLETE_CB_ID, prvRxCplt);
+#endif
+  return pxListInsertNew(pxForUART, xHandler, xDelay);
+}
+
+#if USE_HAL_UART_REGISTER_CALLBACKS
+static void prvError(UARTHandle_t xUART)
+#else
+void HAL_UART_ErrorCallback(UARTHandle_t xUART)
+#endif
+{
+  BaseType_t xYield(void *pxOwner, TickType_t xValue) {
+    (void)xValue;
+    ((UARTHandler_t)pxOwner)(xUART);
+    return pdPASS;
+  }
+  vListYield(xErrorForUART + xRegisteredCardinalOfUART(xUART), xYield);
+}
+
+ListItem_t *pxUARTRegisterError(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay) {
+  List_t *pxForUART = xErrorForUART + xRegisteredCardinalOfUART(xUART);
+#if USE_HAL_UART_REGISTER_CALLBACKS
+  if (listLIST_IS_EMPTY(pxForUART)) HAL_UART_RegisterCallback(xUART, HAL_UART_ERROR_CB_ID, prvError);
 #endif
   return pxListInsertNew(pxForUART, xHandler, xDelay);
 }
