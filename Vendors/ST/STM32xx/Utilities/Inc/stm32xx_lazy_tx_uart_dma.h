@@ -1,28 +1,45 @@
-/*
- * stm32xx_lazy_tx_uart_dma.h
- * Copyright (c) 2023, Roy Ratcliffe, Northumberland, United Kingdom
- *
- * Permission is hereby granted, free of charge,  to any person obtaining a
- * copy  of  this  software  and    associated   documentation  files  (the
- * "Software"), to deal in  the   Software  without  restriction, including
- * without limitation the rights to  use,   copy,  modify,  merge, publish,
- * distribute, sublicense, and/or sell  copies  of   the  Software,  and to
- * permit persons to whom the Software is   furnished  to do so, subject to
- * the following conditions:
- *
- *     The above copyright notice and this permission notice shall be
- *     included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT  WARRANTY OF ANY KIND, EXPRESS
- * OR  IMPLIED,  INCLUDING  BUT  NOT   LIMITED    TO   THE   WARRANTIES  OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR   PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS  OR   COPYRIGHT  HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY,  WHETHER   IN  AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM,  OUT  OF   OR  IN  CONNECTION  WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
+
+/*!
+ * \file
+ *
+ * Follow the example below to set up a lazy-circular transceiver that simply
+ * sends back what it receives.
+ *
+ * \code
+ * #include "FreeRTOS.h"
+ * #include "task.h"
+ *
+ * #include "stm32xx_lazy_tx_uart_dma.h"
+ * #include "stm32xx_circ_rx_uart_dma.h"
+ *
+ * // Core
+ * #include "usart.h"
+ *
+ * #include <string.h>
+ *
+ * void prvLazyTxSend(void *pvSender, const void *pvTxData,
+ *                    size_t xDataLengthBytes) {
+ *   (void)xLazyTxSend(pvSender, pvTxData, xDataLengthBytes, portMAX_DELAY);
+ * }
+ *
+ * portTASK_FUNCTION(StartDefaultTask, pvParameters) {
+ *   LazyTxHandle_t xLazyTx = xLazyTxUARTDMACreate(&huart2);
+ *   char cData[] = "hello world\r\n";
+ *   xLazyTxSend(xLazyTx, cData, strlen(cData), portMAX_DELAY);
+ *   (void)xCircRxUARTDMACreate(&huart2, xLazyTx, prvLazyTxSend);
+ *   vTaskDelete(NULL);
+ * }
+ * \endcode
+ *
+ * Notice that the lazy transmitter and the circular receiver automatically
+ * remain in memory. Once started, they both exist as high-priority tasks that
+ * handle DMA interrupts, passing the incoming and outgoing data through stream
+ * buffers.
+ */
 
 #include "lazy_tx.h"
 
@@ -41,11 +58,12 @@
  * \returns Lazy transmit handle for a given UART if configured for lazy
  * transmission, else \c NULL if not.
  */
-LazyTxHandle_t xLazyTxForUART(UARTHandle_t hUART);
+LazyTxHandle_t xLazyTxForUARTDMA(UARTHandle_t xUART);
 
 /*!
  * \brief Creates a lazy UART transmitter task via DMA on STM32.
- * \param hUART Pointer to STM32 UART hardware pre-configured for transmission
+ *
+ * \param xUART Pointer to STM32 UART hardware pre-configured for transmission
  * via DMA. The HAL interface calls this a handle albeit a non-opaque one.
  *
  * Registers a UART transmit complete callback. This requires per-UART
@@ -54,4 +72,4 @@ LazyTxHandle_t xLazyTxForUART(UARTHandle_t hUART);
  * Requires UART interrupts enabled. Transmit complete callbacks only run if
  * interrupts enabled.
  */
-LazyTxHandle_t xLazyTxUARTCreate(UARTHandle_t hUART);
+LazyTxHandle_t xLazyTxUARTDMACreate(UARTHandle_t xUART);
