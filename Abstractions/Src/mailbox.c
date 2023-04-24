@@ -1,6 +1,5 @@
-/*
- * mailbox.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 /*
  * \file
@@ -39,7 +38,7 @@ void vMailboxDelete(MailboxHandle_t xMailbox) {
 BaseType_t xMailboxSpawnWith(MailboxHandle_t xMailbox, TaskFunction_t xTaskCode, const char *pcName,
                              const configSTACK_DEPTH_TYPE usStackDepth, UBaseType_t uxPriority) {
   char name[configMAX_TASK_NAME_LEN];
-  (void)snprintf(name, sizeof(name), "%s@%p", pcName ? pcName : "mailbox", xMailbox);
+  (void)snprintf(name, sizeof(name), "%s@%05x", pcName ? pcName : "mailbox", (unsigned int)xMailbox & 0xfffffU);
   return xTaskCreate(xTaskCode, name, usStackDepth, xMailbox, uxPriority, &xMailbox->xTask);
 }
 

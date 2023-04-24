@@ -1,6 +1,5 @@
-/*
- * mailbox.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -115,6 +114,9 @@ void vMailboxDelete(MailboxHandle_t xMailbox);
  * Notice that the mailbox is prime. Create the mailbox, spawn the mailbox. The
  * task appears to service the mailbox. The mailbox remains the message target
  * not the task.
+ *
+ * The task name becomes the given \c pcName plus the least-significant 12 bits
+ * of the mailbox address.
  */
 BaseType_t xMailboxSpawnWith(MailboxHandle_t xMailbox, TaskFunction_t xTaskCode, const char *pcName,
                              const configSTACK_DEPTH_TYPE usStackDepth, UBaseType_t uxPriority);
