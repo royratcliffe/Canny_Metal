@@ -6,4 +6,5 @@ AlignEscapedNewlines: Left
 AlignConsecutiveMacros: true
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
+RemoveBracesLLVM: true
 ...
