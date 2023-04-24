@@ -163,7 +163,7 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
         if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt) pxDevice->pvSlaveRxCplt(xI2CSeq);
         if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
         if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
-      } else {
+      } else
         /*
          * Perform a dummy transfer when no device exists. Always try at least
          * one frame. This may fail if the master fails to acknowledge such as
@@ -177,7 +177,6 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
           *((uint8_t *)pvI2CSeqBuffer(xI2CSeq)) = 0xa5U;
           xI2CSeqLastFrame(xI2CSeq);
         }
-      }
       if ((ulNotified & i2cslaveLISTEN_CPLT_NOTIFIED)) HAL_I2C_EnableListen_IT(xI2CSlave->xI2C);
     } while ((ulNotified & i2cslaveSTOP_NOTIFIED) == 0UL);
   }
