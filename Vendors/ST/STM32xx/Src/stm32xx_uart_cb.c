@@ -182,7 +182,8 @@ void HAL_UART_AbortTransmitCpltCallback(UARTHandle_t xUART)
 ListItem_t *pxUARTRegisterAbortTransmitCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForUART = xAbortTransmitCpltForUART + xRegisteredCardinalOfUART(xUART);
 #if USE_HAL_UART_REGISTER_CALLBACKS
-  if (listLIST_IS_EMPTY(pxForUART)) HAL_UART_RegisterCallback(xUART, HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID, prvAbortTransmitCplt);
+  if (listLIST_IS_EMPTY(pxForUART))
+    HAL_UART_RegisterCallback(xUART, HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID, prvAbortTransmitCplt);
 #endif
   return pxListInsertNew(pxForUART, xHandler, xDelay);
 }
@@ -204,7 +205,8 @@ void HAL_UART_AbortReceiveCpltCallback(UARTHandle_t xUART)
 ListItem_t *pxUARTRegisterAbortReceiveCplt(UARTHandle_t xUART, UARTHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForUART = xAbortReceiveCpltForUART + xRegisteredCardinalOfUART(xUART);
 #if USE_HAL_UART_REGISTER_CALLBACKS
-  if (listLIST_IS_EMPTY(pxForUART)) HAL_UART_RegisterCallback(xUART, HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID, prvAbortReceiveCplt);
+  if (listLIST_IS_EMPTY(pxForUART))
+    HAL_UART_RegisterCallback(xUART, HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID, prvAbortReceiveCplt);
 #endif
   return pxListInsertNew(pxForUART, xHandler, xDelay);
 }
