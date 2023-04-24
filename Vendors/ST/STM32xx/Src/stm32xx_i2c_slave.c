@@ -59,6 +59,7 @@ static struct I2CDevice **prvRegisteredDeviceOfAddr(I2CSlaveHandle_t xI2CSlave, 
 
 #define i2cslaveSLAVE_TX_CPLT_NOTIFIED (1UL << ('T' - '@'))
 #define i2cslaveSLAVE_RX_CPLT_NOTIFIED (1UL << ('R' - '@'))
+#define i2cslaveLISTEN_CPLT_NOTIFIED   (1UL << ('L' - '@'))
 #define i2cslaveADDR_NOTIFIED          (1UL << ('A' - '@'))
 #define i2cslaveERROR_NOTIFIED         (1UL << ('E' - '@'))
 #define i2cslaveSTOP_NOTIFIED          (1UL << ('_' - '@'))
@@ -110,8 +111,9 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
 
   void prvListenCplt(I2CHandle_t xI2C) {
     (void)xI2C;
-    HAL_StatusTypeDef xStatus = HAL_I2C_EnableListen_IT(xI2C);
-    configASSERT(xStatus == HAL_OK);
+    BaseType_t xWoken;
+    xTaskNotifyFromISR(xTask, i2cslaveLISTEN_CPLT_NOTIFIED, eSetBits, &xWoken);
+    portYIELD_FROM_ISR(xWoken);
   }
 
   /*
@@ -119,7 +121,11 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    * the master wants to transmit and therefore the slave needs to receive.
    *
    * The implementation captures the I2C sequencer and updates its transfer
-   * direction and address. The updating runs at interrupt time.
+   * direction and address. The updating runs at interrupt time. This makes some
+   * important assumptions about the asynchronous transfer process. It assumes
+   * that the "address" event never overlaps a transfer in progress which
+   * therefore implies that the sequencer is not currently in use: a normal and
+   * fair assumption to make given that I2C transfers never overlap on the bus.
    */
   void prvAddr(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_t usAddrMatchCode) {
     (void)xI2C;
@@ -157,7 +163,22 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
         if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt) pxDevice->pvSlaveRxCplt(xI2CSeq);
         if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
         if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
+      } else {
+        /*
+         * Perform a dummy transfer when no device exists. Always try at least
+         * one frame. This may fail if the master fails to acknowledge such as
+         * when the master performs a device address ping using
+         * HAL_I2C_IsDeviceReady. Set up the transfer nevertheless. Adjust the
+         * slave mask to avoid overlap with non-emulated peripherals sharing the
+         * same bus.
+         */
+        if ((ulNotified & i2cslaveADDR_NOTIFIED)) {
+          vI2CSeqBufferLength(xI2CSeq, 1UL);
+          *((uint8_t *)pvI2CSeqBuffer(xI2CSeq)) = 0xa5U;
+          xI2CSeqLastFrame(xI2CSeq);
+        }
       }
+      if ((ulNotified & i2cslaveLISTEN_CPLT_NOTIFIED)) HAL_I2C_EnableListen_IT(xI2CSlave->xI2C);
     } while ((ulNotified & i2cslaveSTOP_NOTIFIED) == 0UL);
   }
 
