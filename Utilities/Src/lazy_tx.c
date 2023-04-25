@@ -26,7 +26,7 @@ static portTASK_FUNCTION(prvLazyTxTask, pvParameters) {
     uint8_t ucTxData[lazytxBUFFER_LENGTH_BYTES];
     size_t xBufferLengthBytes =
         xStreamBufferReceive(xLazyTx->xStreamBuffer, ucTxData, sizeof(ucTxData), lazytxDELAY_TICKS);
-    (*xLazyTx->xHandler)(xLazyTx->pvSender, xBufferLengthBytes ? ucTxData : NULL, xBufferLengthBytes);
+    xLazyTx->xHandler(xLazyTx->pvSender, xBufferLengthBytes ? ucTxData : NULL, xBufferLengthBytes);
   }
 }
 
