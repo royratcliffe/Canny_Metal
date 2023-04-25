@@ -32,7 +32,7 @@
 struct SLIPRx {
   StreamBufferHandle_t xStreamBuffer;
   void *pvSender;
-  SLIPRxSendHandler_t xHandler;
+  volatile SLIPRxSendHandler_t xHandler;
   TaskHandle_t xTask;
 };
 
@@ -82,9 +82,12 @@ SLIPRxHandle_t xSLIPRxCreate(size_t xBufferSizeBytes, size_t xTriggerLevelBytes)
   (void)memset(xSLIPRx, 0, sizeof(*xSLIPRx));
   xSLIPRx->xStreamBuffer = xStreamBufferCreate(xBufferSizeBytes, xTriggerLevelBytes);
   configASSERT(xSLIPRx->xStreamBuffer);
-  xTaskCreate(prvSLIPRxCode, "SLIPrx", sliprxSTACK_DEPTH, xSLIPRx, sliprxPRIORITY, &xSLIPRx->xTask);
-  configASSERT(xSLIPRx->xTask != NULL);
   return xSLIPRx;
+}
+
+void vSLIPRxSpawn(SLIPRxHandle_t xSLIPRx, const char *pcName) {
+  xTaskCreate(prvSLIPRxCode, pcName ?: "SLIPrx", sliprxSTACK_DEPTH, xSLIPRx, sliprxPRIORITY, &xSLIPRx->xTask);
+  configASSERT(xSLIPRx->xTask != NULL);
 }
 
 void vSLIPRxSendHandler(SLIPRxHandle_t xSLIPRx, void *pvSender, SLIPRxSendHandler_t xHandler) {
@@ -97,7 +100,7 @@ void vSLIPRxSend(SLIPRxHandle_t xSLIPRx, const void *pvData, size_t xDataLengthB
 }
 
 void vSLIPRxDelete(SLIPRxHandle_t xSLIPRx) {
-  vTaskDelete(xSLIPRx->xTask);
+  if (xSLIPRx->xTask) vTaskDelete(xSLIPRx->xTask);
   vStreamBufferDelete(xSLIPRx->xStreamBuffer);
   vPortFree(xSLIPRx);
 }

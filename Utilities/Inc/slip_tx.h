@@ -38,6 +38,8 @@ typedef TxHandler_t SLIPTxSendHandler_t;
 
 SLIPTxHandle_t xSLIPTxCreate(size_t xBufferSizeBytes);
 
+void vSLIPTxSpawn(SLIPTxHandle_t xSLIPTx, const char *pcName);
+
 void vSLIPTxSendHandler(SLIPTxHandle_t xSLIPTx, void *pvSender, SLIPTxSendHandler_t xHandler);
 
 /*

@@ -61,6 +61,8 @@ typedef TxHandler_t SLIPRxSendHandler_t;
  */
 SLIPRxHandle_t xSLIPRxCreate(size_t xBufferSizeBytes, size_t xTriggerLevelBytes);
 
+void vSLIPRxSpawn(SLIPRxHandle_t xSLIPRx, const char *pcName);
+
 void vSLIPRxSendHandler(SLIPRxHandle_t xSLIPRx, void *pvSender, SLIPRxSendHandler_t xHandler);
 
 /*!

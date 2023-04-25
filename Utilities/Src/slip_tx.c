@@ -12,7 +12,7 @@
 struct SLIPTx {
   MessageBufferHandle_t xMessageBuffer;
   void *pvSender;
-  TxHandler_t xHandler;
+  volatile TxHandler_t xHandler;
   TaskHandle_t xTask;
 };
 
@@ -60,9 +60,12 @@ SLIPTxHandle_t xSLIPTxCreate(size_t xBufferSizeBytes) {
   (void)memset(xSLIPTx, 0, sizeof(*xSLIPTx));
   xSLIPTx->xMessageBuffer = xMessageBufferCreate(xBufferSizeBytes);
   configASSERT(xSLIPTx->xMessageBuffer);
-  xTaskCreate(prvSLIPTxCode, "SLIPtx", sliptxSTACK_DEPTH, xSLIPTx, sliptxPRIORITY, &xSLIPTx->xTask);
-  configASSERT(xSLIPTx->xTask != NULL);
   return xSLIPTx;
+}
+
+void vSLIPTxSpawn(SLIPTxHandle_t xSLIPTx, const char *pcName) {
+  xTaskCreate(prvSLIPTxCode, pcName ?: "SLIPtx", sliptxSTACK_DEPTH, xSLIPTx, sliptxPRIORITY, &xSLIPTx->xTask);
+  configASSERT(xSLIPTx->xTask != NULL);
 }
 
 void vSLIPTxSendHandler(SLIPTxHandle_t xSLIPTx, void *pvSender, SLIPTxSendHandler_t xHandler) {
@@ -75,7 +78,7 @@ void vSLIPTxSend(SLIPTxHandle_t xSLIPTx, const void *pvData, size_t xDataLengthB
 }
 
 void vSLIPTxDelete(SLIPTxHandle_t xSLIPTx) {
-  vTaskDelete(xSLIPTx->xTask);
+  if (xSLIPTx->xTask) vTaskDelete(xSLIPTx->xTask);
   vMessageBufferDelete(xSLIPTx->xMessageBuffer);
   vPortFree(xSLIPTx);
 }
