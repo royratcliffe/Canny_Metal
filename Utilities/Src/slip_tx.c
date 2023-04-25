@@ -70,8 +70,8 @@ void vSLIPTxSendHandler(SLIPTxHandle_t xSLIPTx, void *pvSender, SLIPTxSendHandle
   xSLIPTx->xHandler = xHandler;
 }
 
-void vSLIPTxSend(SLIPTxHandle_t xSLIPTx, const void *pvTxData, size_t xDataLengthBytes) {
-  if (xSLIPTx->xHandler) xSLIPTx->xHandler(xSLIPTx->pvSender, pvTxData, xDataLengthBytes);
+void vSLIPTxSend(SLIPTxHandle_t xSLIPTx, const void *pvData, size_t xDataLengthBytes) {
+  if (xSLIPTx->xHandler) xSLIPTx->xHandler(xSLIPTx->pvSender, pvData, xDataLengthBytes);
 }
 
 void vSLIPTxDelete(SLIPTxHandle_t xSLIPTx) {

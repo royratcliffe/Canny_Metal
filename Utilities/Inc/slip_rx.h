@@ -69,7 +69,7 @@ void vSLIPRxSendHandler(SLIPRxHandle_t xSLIPRx, void *pvSender, SLIPRxSendHandle
  * Filters out zero-length packets. Sending no bytes amounts to a no-operation;
  * it always returns immediately.
  */
-void vSLIPRxSend(SLIPRxHandle_t xSLIPRx, const void *pvTxData, size_t xDataLengthBytes);
+void vSLIPRxSend(SLIPRxHandle_t xSLIPRx, const void *pvData, size_t xDataLengthBytes);
 
 /*!
  * Deletes SLIP receiver infrastructure.

@@ -92,8 +92,8 @@ void vSLIPRxSendHandler(SLIPRxHandle_t xSLIPRx, void *pvSender, SLIPRxSendHandle
   xSLIPRx->xHandler = xHandler;
 }
 
-void vSLIPRxSend(SLIPRxHandle_t xSLIPRx, const void *pvTxData, size_t xDataLengthBytes) {
-  if (xSLIPRx->xHandler && xDataLengthBytes) xSLIPRx->xHandler(xSLIPRx->pvSender, pvTxData, xDataLengthBytes);
+void vSLIPRxSend(SLIPRxHandle_t xSLIPRx, const void *pvData, size_t xDataLengthBytes) {
+  if (xSLIPRx->xHandler && xDataLengthBytes) xSLIPRx->xHandler(xSLIPRx->pvSender, pvData, xDataLengthBytes);
 }
 
 void vSLIPRxDelete(SLIPRxHandle_t xSLIPRx) {

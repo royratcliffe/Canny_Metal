@@ -38,13 +38,14 @@ typedef TxHandler_t SLIPTxSendHandler_t;
 
 SLIPTxHandle_t xSLIPTxCreate(size_t xBufferSizeBytes);
 
-void vSLIPTxSendHandler(SLIPTxHandle_t xSLIPTx, void *pvSend, SLIPTxSendHandler_t xHandler);
+void vSLIPTxSendHandler(SLIPTxHandle_t xSLIPTx, void *pvSender, SLIPTxSendHandler_t xHandler);
 
 /*
  * \brief Sends raw data from the SLIP transmitter.
  *
- * Used privately but also exposed for diagnostic purposes, bypassing the SLIP encoder.
+ * Used privately but also exposed for diagnostic purposes, bypassing the SLIP
+ * encoder.
  */
-void vSLIPTxSend(SLIPTxHandle_t xSLIPTx, const void *pvTxData, size_t xDataLengthBytes);
+void vSLIPTxSend(SLIPTxHandle_t xSLIPTx, const void *pvData, size_t xDataLengthBytes);
 
 void vSLIPTxDelete(SLIPTxHandle_t xSLIPTx);
