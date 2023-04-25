@@ -5,7 +5,7 @@
 
 struct LazyTx {
   StreamBufferHandle_t xStreamBuffer;
-  TxHandler_t Handler;
+  TxHandler_t xHandler;
   void *pvSender;
   TaskHandle_t xTask;
 };
@@ -24,16 +24,16 @@ static portTASK_FUNCTION(prvLazyTxTask, pvParameters) {
     uint8_t ucTxData[lazytxBUFFER_LENGTH_BYTES];
     size_t xBufferLengthBytes =
         xStreamBufferReceive(xLazyTx->xStreamBuffer, ucTxData, sizeof(ucTxData), lazytxDELAY_TICKS);
-    (*xLazyTx->Handler)(xLazyTx->pvSender, xBufferLengthBytes ? ucTxData : NULL, xBufferLengthBytes);
+    (*xLazyTx->xHandler)(xLazyTx->pvSender, xBufferLengthBytes ? ucTxData : NULL, xBufferLengthBytes);
   }
 }
 
-LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t Handler) {
+LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t xHandler) {
   LazyTxHandle_t xLazyTx = pvPortMalloc(sizeof(*xLazyTx));
   configASSERT(xLazyTx != NULL);
   xLazyTx->xStreamBuffer = xStreamBufferCreate(lazytxBUFFER_SIZE_BYTES, lazytxTRIGGER_LEVEL_BYTES);
   xLazyTx->pvSender = pvSender;
-  xLazyTx->Handler = Handler;
+  xLazyTx->xHandler = xHandler;
   xTaskCreate(prvLazyTxTask, "lazytx", configMINIMAL_STACK_SIZE + lazytxBUFFER_LENGTH_BYTES, xLazyTx, lazytxPRIORITY,
               &xLazyTx->xTask);
   configASSERT(xLazyTx->xTask != NULL);

@@ -32,12 +32,12 @@ typedef struct LazyTx *LazyTxHandle_t;
 /*!
  * \brief Creates a lazy transmitter.
  * \param pvSender Abstract transmitter, a handle used by handler.
- * \param Handler Function to handle transmission, blocking if necessary.
+ * \param xHandler Function to handle transmission, blocking if necessary.
  *
  * Dynamically creates the transmission stream. Use xLazyTxSend() to fill the
  * stream.
  */
-LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t Handler);
+LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t xHandler);
 
 /*!
  * \brief Answers the handle of the lazy transmitter task.
