@@ -34,8 +34,7 @@ LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t xHandler) {
   xLazyTx->xStreamBuffer = xStreamBufferCreate(lazytxBUFFER_SIZE_BYTES, lazytxTRIGGER_LEVEL_BYTES);
   xLazyTx->pvSender = pvSender;
   xLazyTx->xHandler = xHandler;
-  xTaskCreate(prvLazyTxTask, "lazytx", configMINIMAL_STACK_SIZE + lazytxBUFFER_LENGTH_BYTES, xLazyTx, lazytxPRIORITY,
-              &xLazyTx->xTask);
+  xTaskCreate(prvLazyTxTask, "lazytx", lazytxSTACK_DEPTH, xLazyTx, lazytxPRIORITY, &xLazyTx->xTask);
   configASSERT(xLazyTx->xTask != NULL);
   return xLazyTx;
 }

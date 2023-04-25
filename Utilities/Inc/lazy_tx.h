@@ -25,6 +25,8 @@
 #define lazytxDELAY_TICKS portMAX_DELAY
 #endif
 
+#define lazytxSTACK_DEPTH (configMINIMAL_STACK_SIZE + lazytxBUFFER_LENGTH_BYTES)
+
 #define lazytxPRIORITY 16U
 
 typedef struct LazyTx *LazyTxHandle_t;
