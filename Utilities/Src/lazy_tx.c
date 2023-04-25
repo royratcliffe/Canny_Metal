@@ -11,8 +11,10 @@ struct LazyTx {
 };
 
 /*!
+ * \brief Lazy transmitter code.
+ *
  * Receives data from a stream buffer. Writes the transmit data to the HAL
- * interrupt interface, or some other node in a transmitter chain.
+ * interrupt interface, typically, or some other node in a transmitter chain.
  *
  * Three parameters determine when the stream empties: the lazy buffer length in
  * bytes, the lazy delay in ticks, but also the lazy transmit stream's trigger
