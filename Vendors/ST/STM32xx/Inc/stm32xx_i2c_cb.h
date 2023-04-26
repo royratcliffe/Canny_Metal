@@ -6,6 +6,8 @@
 
 #include "stm32xx_i2c.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "FreeRTOS.h"
 #include "list.h"
 
@@ -46,3 +48,5 @@ ListItem_t *pxI2CRegisterAbortHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, T
  * therefore requires removal of the list item then freeing of the item.
  */
 void vI2CUnregister(ListItem_t *pxRegistered);
+
+#endif

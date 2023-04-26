@@ -10,6 +10,8 @@
 #include "stm32xx_i2c_seq.h"
 #include "stm32xx_i2c_slave.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include <memory.h>
 #include <stdio.h>
 
@@ -115,3 +117,5 @@ void vTI_TMP10xStop(TI_TMP10xHandle_t xTI_TMP10x) {
 }
 
 void vTI_TMP10xDelete(TI_TMP10xHandle_t xTI_TMP10x) { vPortFree(xTI_TMP10x); }
+
+#endif

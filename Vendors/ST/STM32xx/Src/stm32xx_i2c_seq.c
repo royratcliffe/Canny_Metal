@@ -5,6 +5,8 @@
 
 #include "stm32xx_i2c.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -204,3 +206,5 @@ int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq) {
 }
 
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq) { return HAL_I2C_GetError(xI2CSeq->xI2C); }
+
+#endif

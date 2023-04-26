@@ -29,6 +29,8 @@
  */
 typedef struct I2CSeq *I2CSeqHandle_t;
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 /*!
  * \brief Creates a new dynamic I2C sequencer.
  */
@@ -118,3 +120,5 @@ int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq);
 int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq);
 
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq);
+
+#endif

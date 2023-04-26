@@ -10,6 +10,8 @@
 // for STM32xx hardware abstraction layer
 #include "stm32xx_i2c.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 /*!
  * \brief Master I2C transmit complete notification.
  */
@@ -65,3 +67,5 @@ HAL_StatusTypeDef xI2CMasterReceiveIT(I2CHandle_t xI2C, uint8_t ucAddr, void *pv
 HAL_StatusTypeDef xI2CMasterWaitReceiveCplt(TickType_t xTicksToWait);
 
 void vI2CMasterNotifyReceiveCpltFromISR(TaskHandle_t xTask);
+
+#endif
