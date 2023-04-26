@@ -5,6 +5,16 @@
 
 #include "stm32xx_i2c.h"
 
+/*!
+ * Enable the "Dual Address Acknowledged" parameter under Slave Features using
+ * the STCubeMX tool. Also set up the Secondary Address Mask. Use "OA2[5:1]
+ * masked" to match addresses 08 through 1F, unshifted. Similarly, 4:1 matches
+ * 08 through 0F. OA stands for Own Address. Set up the "Secondary slave
+ * address." Matching 7-bit addresses intersect the secondary address and the
+ * mask, where the mask applies from the right---the second least significant
+ * bit, shifted.
+ */
+
 #include "stm32xx_i2c_seq.h"
 
 #ifdef HAL_I2C_MODULE_ENABLED

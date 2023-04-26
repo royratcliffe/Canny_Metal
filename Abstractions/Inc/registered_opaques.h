@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "FreeRTOS.h"
+
 #include <stddef.h>
 
 struct RegisteredOpaques {
@@ -33,3 +35,10 @@ typedef struct RegisteredOpaques *RegisteredOpaques_t;
  * opaque pointers. No function exists to unregister a pointer by design.
  */
 size_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
+
+/*!
+ * \brief Non-mutating query of opaque by registry.
+ *
+ * \returns \c pdPASS if the opaque has already been registered.
+ */
+BaseType_t xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);

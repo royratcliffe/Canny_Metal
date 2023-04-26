@@ -34,9 +34,12 @@ struct I2CSlave {
   TaskHandle_t xTask;
   void *pvAddrs[i2cslaveMAX_DEVICES];
   struct I2CDevice *pxDevices[i2cslaveMAX_DEVICES];
+  struct RegisteredOpaques xRegisteredOpaques;
 };
 
 static size_t prvHashOfAddr(void *pvOpaque) { return (size_t)pvOpaque; }
+
+static void *pvOpaqueOfAddr(uint8_t ucAddr) { return (void *)(0xdeadbe00UL | ucAddr); }
 
 /*!
  * \brief Registers address.
@@ -47,14 +50,15 @@ static size_t prvHashOfAddr(void *pvOpaque) { return (size_t)pvOpaque; }
  * slots. Avoid stepping on the registration semantics.
  */
 static size_t prvRegisteredCardinalOfAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
-  struct RegisteredOpaques prvRegisteredOpaques = {.ppvOpaques = xI2CSlave->pvAddrs,
-                                                   .xNumberOfOpaques = i2cslaveMAX_DEVICES,
-                                                   .pxHashOfOpaqueFunction = prvHashOfAddr};
-  return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, (void *)(0xdeadbe00UL | ucAddr));
+  return xRegisteredCardinalOfOpaque(&xI2CSlave->xRegisteredOpaques, pvOpaqueOfAddr(ucAddr));
 }
 
 static struct I2CDevice **prvRegisteredDeviceOfAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
   return xI2CSlave->pxDevices + prvRegisteredCardinalOfAddr(xI2CSlave, ucAddr);
+}
+
+static BaseType_t prvAddrIsRegistered(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
+  return xOpaqueIsRegistered(&xI2CSlave->xRegisteredOpaques, pvOpaqueOfAddr(ucAddr));
 }
 
 #define i2cslaveSLAVE_TX_CPLT_NOTIFIED (1UL << ('T' - '@'))
@@ -157,12 +161,16 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
     do {
       xTaskNotifyWait(0UL, ULONG_MAX, &ulNotified, portMAX_DELAY);
       uint8_t ucAddr = ucI2CSeqAddr(xI2CSeq);
-      struct I2CDevice *pxDevice = *prvRegisteredDeviceOfAddr(xI2CSlave, ucAddr);
-      if (pxDevice) {
-        if ((ulNotified & i2cslaveSLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt) pxDevice->pvSlaveTxCplt(xI2CSeq);
-        if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt) pxDevice->pvSlaveRxCplt(xI2CSeq);
-        if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
-        if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
+      if (prvAddrIsRegistered(xI2CSlave, ucAddr)) {
+        struct I2CDevice *pxDevice = *prvRegisteredDeviceOfAddr(xI2CSlave, ucAddr);
+        if (pxDevice) {
+          if ((ulNotified & i2cslaveSLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt)
+            pxDevice->pvSlaveTxCplt(xI2CSeq);
+          if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt)
+            pxDevice->pvSlaveRxCplt(xI2CSeq);
+          if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
+          if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
+        }
       } else
         /*
          * Perform a dummy transfer when no device exists. Always try at least
@@ -203,6 +211,9 @@ I2CSlaveHandle_t xI2CSlaveCreate(I2CHandle_t xI2C) {
   configASSERT(xI2CSlave);
   (void)memset(xI2CSlave, 0, sizeof(*xI2CSlave));
   xI2CSlave->xI2C = xI2C;
+  xI2CSlave->xRegisteredOpaques.ppvOpaques = xI2CSlave->pvAddrs;
+  xI2CSlave->xRegisteredOpaques.xNumberOfOpaques = i2cslaveMAX_DEVICES;
+  xI2CSlave->xRegisteredOpaques.pxHashOfOpaqueFunction = prvHashOfAddr;
   return xI2CSlave;
 }
 
