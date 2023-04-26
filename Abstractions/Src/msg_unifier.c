@@ -42,6 +42,10 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
   /*
    * Receiving automatically resets the packer. It does not reserve any
    * additional capacity automatically beyond that currently reserved.
+   *
+   * What happens if the unpacker's buffer capacity does not allow the message
+   * buffer to drain. The mailbox becomes stuck with continuous receive failure.
+   * Ensure that the unifier matches the message buffer size.
    */
   msgpack_unpacker_reset(&xMsgUnifier->xUnpacker);
   size_t xReceivedBytes =
