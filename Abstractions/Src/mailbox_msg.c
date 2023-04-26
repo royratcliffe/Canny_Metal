@@ -12,6 +12,10 @@ BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBind
   return xMsgBindingSend(xMsgBinding, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
 }
 
+void vMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding) {
+  if (xMailboxOrSelf(&xMailbox) == pdPASS) (void)xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
+}
+
 BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
   /*
