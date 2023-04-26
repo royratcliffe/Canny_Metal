@@ -32,7 +32,7 @@ static void prvTxCplt(UARTHandle_t xUART)
   if (xLazyTx) vTaskNotifyGiveFromISR(xLazyTxTaskHandle(xLazyTx), NULL);
 }
 
-LazyTxHandle_t xLazyTxUARTDMACreate(UARTHandle_t xUART) {
+LazyTxHandle_t xLazyTxForUARTDMACreate(UARTHandle_t xUART) {
   size_t xCardinal = xRegisteredCardinalOfUART(xUART);
   LazyTxHandle_t xLazyTx = xLazyTxCreate(xUART, prvLazyTxHandler);
   xLazyTxForUART[xCardinal] = xLazyTx;

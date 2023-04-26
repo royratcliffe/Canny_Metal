@@ -27,10 +27,10 @@
  * }
  *
  * portTASK_FUNCTION(StartDefaultTask, pvParameters) {
- *   LazyTxHandle_t xLazyTx = xLazyTxUARTDMACreate(&huart2);
+ *   LazyTxHandle_t xLazyTx = xLazyTxForUARTDMACreate(&huart2);
  *   char cData[] = "hello world\r\n";
  *   xLazyTxSend(xLazyTx, cData, strlen(cData), portMAX_DELAY);
- *   (void)xCircRxUARTDMACreate(&huart2, xLazyTx, prvLazyTxSend);
+ *   (void)xCircRxForUARTDMACreate(&huart2, xLazyTx, prvLazyTxSend);
  *   vTaskDelete(NULL);
  * }
  * \endcode
@@ -72,4 +72,4 @@ LazyTxHandle_t xLazyTxForUARTDMA(UARTHandle_t xUART);
  * Requires UART interrupts enabled. Transmit complete callbacks only run if
  * interrupts enabled.
  */
-LazyTxHandle_t xLazyTxUARTDMACreate(UARTHandle_t xUART);
+LazyTxHandle_t xLazyTxForUARTDMACreate(UARTHandle_t xUART);
