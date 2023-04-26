@@ -1,6 +1,5 @@
-/*
- * slip_tx.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "slip_tx.h"
 

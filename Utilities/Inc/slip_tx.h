@@ -1,6 +1,5 @@
-/*
- * slip_tx.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -27,10 +26,11 @@
 /*
  * \brief Handle of SLIP transmitter.
  *
- * The transmitter encapsulates two things: a message buffer on which the
+ * The transmitter encapsulates two things: a \e message buffer on which the
  * transmitter blocks and a transmitter function with its opaque parameter. The
- * SLIP transmitter eats incoming un-encoded raw frames and spits out a
- * SLIP-encoded byte stream.
+ * message buffer carries raw SLIP-ready frames before SLIP encoding---one
+ * message, one frame. The SLIP transmitter eats incoming raw frames and spits
+ * out a SLIP-encoded byte stream.
  */
 typedef struct SLIPTx *SLIPTxHandle_t;
 
@@ -45,8 +45,8 @@ void vSLIPTxSendHandler(SLIPTxHandle_t xSLIPTx, void *pvSender, SLIPTxSendHandle
 /*
  * \brief Sends raw data from the SLIP transmitter.
  *
- * Used privately but also exposed for diagnostic purposes, bypassing the SLIP
- * encoder.
+ * Used privately by the SLIP encoder but also exposed for diagnostic purposes,
+ * bypassing the SLIP encoder.
  */
 void vSLIPTxSend(SLIPTxHandle_t xSLIPTx, const void *pvData, size_t xDataLengthBytes);
 
