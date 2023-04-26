@@ -39,15 +39,15 @@ UARTHandle_t xUARTDMAForCircRx(CircRxHandle_t xCircRx);
  * somewhere to pass bytes on successful receipt. The \c NULL passes to the
  * function's first parameter, and ignored in this excerpt.
  * \code{.c}
- * xCircRxUARTDMACreate(&hlpuart1, NULL, handler);
+ * xCircRxForUARTDMACreate(&hlpuart1, NULL, handler);
  * \endcode
  * Uses dynamic memory for space allocation. Expression \c &lpuart1 identifies
  * the low-power UART channel to wire up for receiving using DMA. The channel
  * needs a circular DMA channel.
  */
-CircRxHandle_t xCircRxUARTDMACreate(UARTHandle_t xUART, void *pvSender, TxHandler_t xHandler);
+CircRxHandle_t xCircRxForUARTDMACreate(UARTHandle_t xUART, void *pvSender, TxHandler_t xHandler);
 
 /*!
  * \brief Deletes and unwinds a circular DMA-based UART receiver.
  */
-void vCircRxUARTDMADelete(UARTHandle_t xUART);
+void vCircRxForUARTDMADelete(UARTHandle_t xUART);
