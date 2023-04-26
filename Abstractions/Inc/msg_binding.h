@@ -29,6 +29,9 @@ MsgBindingHandle_t xMsgBindingNew();
 
 void vMsgBindingDestroy(MsgBindingHandle_t xMsgBinding);
 
+/*!
+ * \brief Clears the message binding.
+ */
 void vMsgBindingClear(MsgBindingHandle_t xMsgBinding);
 
 /*!
