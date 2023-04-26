@@ -92,7 +92,7 @@ void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue) {
 TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked); }
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox)) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return NULL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return NULL;
   for (const ListItem_t *pxHeadEntry = listGET_HEAD_ENTRY(&xMailbox->xLinking),
                         *pxEndMarker = listGET_END_MARKER(&xMailbox->xLinking), *pxNextEntry;
        pxHeadEntry != pxEndMarker; pxHeadEntry = pxNextEntry) {
@@ -108,18 +108,18 @@ MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYie
 }
 
 MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return NULL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return NULL;
   List_t *pxLinking = listLIST_ITEM_CONTAINER(&xMailbox->xLinked);
   return pxLinking != NULL ? CONTAINER_OF(pxLinking, struct Mailbox, xLinking) : NULL;
 }
 
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return 0UL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return 0UL;
   return xMessageBufferSend(xMailbox, pvTxData, xDataLengthBytes, xTicksToWait);
 }
 
 BaseType_t xMailboxSent(MailboxHandle_t xMailbox) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
 #ifdef mailboxSENT_NOTIFIED
   if (xMailbox->xTask == NULL) return pdFAIL;
   return xTaskNotify(xMailbox->xTask, mailboxSENT_NOTIFIED, eSetBits);
@@ -129,7 +129,7 @@ BaseType_t xMailboxSent(MailboxHandle_t xMailbox) {
 }
 
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return 0UL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return 0UL;
   return xMessageBufferReceive(xMailbox, pvRxData, xBufferLengthBytes, xTicksToWait);
 }
 
