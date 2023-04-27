@@ -276,9 +276,9 @@ ListItem_t *pxI2CRegisterAbortHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, T
   return pxListInsertNew(pxForI2C, xHandler, xDelay);
 }
 
-void vI2CUnregister(ListItem_t *pxRegistered) {
-  (void)uxListRemove(pxRegistered);
-  vPortFree(pxRegistered);
+void vI2CUnregister(ListItem_t *pxRegisteredForI2C) {
+  (void)uxListRemove(pxRegisteredForI2C);
+  vPortFree(pxRegisteredForI2C);
 }
 
 /*!

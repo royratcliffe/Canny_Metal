@@ -291,4 +291,9 @@ ListItem_t *pxCANRegisterError(CANHandle_t xCAN, CANHandler_t xHandler, TickType
   return pxListInsertNew(pxForCAN, xHandler, xDelay);
 }
 
+void vCANUnregister(ListItem_t *pxRegisteredForCAN) {
+  (void)uxListRemove(pxRegisteredForCAN);
+  vPortFree(pxRegisteredForCAN);
+}
+
 #endif // ifdef HAL_CAN_MODULE_ENABLED

@@ -42,11 +42,11 @@ ListItem_t *pxI2CRegisterAbortHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, T
 
 /*!
  * \brief Unregisters registered handler items.
- * \param[in] pxRegistered List item returned by registration.
+ * \param[in] pxRegisteredForI2C List item returned by registration.
  *
  * Registration allocates the registered list items dynamically. Unregistering
  * therefore requires removal of the list item then freeing of the item.
  */
-void vI2CUnregister(ListItem_t *pxRegistered);
+void vI2CUnregister(ListItem_t *pxRegisteredForI2C);
 
 #endif
