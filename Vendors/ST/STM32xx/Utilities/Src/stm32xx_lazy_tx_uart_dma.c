@@ -26,8 +26,7 @@ static void prvLazyTxHandler(void *pvTransmitter, const void *pvTxData, size_t x
   (void)ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 }
 
-static void prvTxCplt(UARTHandle_t xUART)
-{
+static void prvTxCplt(UARTHandle_t xUART) {
   LazyTxHandle_t xLazyTx = xLazyTxForUARTDMA(xUART);
   if (xLazyTx) vTaskNotifyGiveFromISR(xLazyTxTaskHandle(xLazyTx), NULL);
 }
