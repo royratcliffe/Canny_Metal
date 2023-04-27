@@ -1,6 +1,5 @@
-/*
- * stm32xx_i2c_cb.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
