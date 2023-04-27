@@ -7,4 +7,5 @@ AlignConsecutiveMacros: true
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 RemoveBracesLLVM: true
+SortIncludes: false
 ...
