@@ -3,6 +3,8 @@
 
 #include "stm32xx_can.h"
 
+#ifdef HAL_CAN_MODULE_ENABLED
+
 #include "task.h"
 
 // standard library
@@ -40,3 +42,5 @@ HAL_StatusTypeDef xCANGetRxMessage(CAN_HandleTypeDef *pxCAN, struct CANRx *pxCAN
   configASSERT(IS_CAN_RX_FIFO(pxCANRx->ulRxFifo));
   return HAL_CAN_GetRxMessage(pxCAN, pxCANRx->ulRxFifo, &pxCANRx->xRxHeader, pxCANRx->ucRxData);
 }
+
+#endif // ifdef HAL_CAN_MODULE_ENABLED

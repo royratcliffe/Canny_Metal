@@ -3,6 +3,8 @@
 
 #include "stm32xx_can_cb.h"
 
+#ifdef HAL_CAN_MODULE_ENABLED
+
 #include "stm32xx_registered_can.h"
 
 static List_t xTxMailboxCompleteForCAN[stm32xx_canMAX_INSTANCES][stm32xx_canTX_MAILBOX_MAX_INSTANCES];
@@ -288,3 +290,5 @@ ListItem_t *pxCANRegisterError(CANHandle_t xCAN, CANHandler_t xHandler, TickType
 #endif
   return pxListInsertNew(pxForCAN, xHandler, xDelay);
 }
+
+#endif // ifdef HAL_CAN_MODULE_ENABLED
