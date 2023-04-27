@@ -1,4 +1,5 @@
-// stm32xx_can_cb.h
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 /*!
  * \file
@@ -21,12 +22,15 @@
  * \param xDelay Ascending priority order of handler invocation. Use
  * \c portMAX_DELAY to add the given handler to the end of the handler list.
  */
-ListItem_t *pxCANRegisterTxMailboxComplete(uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler, TickType_t xDelay);
-ListItem_t *pxCANRegisterTxMailboxAbort(uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler, TickType_t xDelay);
-ListItem_t *pxCANRegisterRxFifoMsgPending(uint8_t ucRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay);
-ListItem_t *pxCANRegisterRxFifoFull(uint8_t ucRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay);
-ListItem_t *pxCANRegisterSleep(CANHandler_t xHandler, TickType_t xDelay);
-ListItem_t *pxCANRegisterWakeUpFromRxMsg(CANHandler_t xHandler, TickType_t xDelay);
-ListItem_t *pxCANRegisterError(CANHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterTxMailboxComplete(CANHandle_t xCAN, uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler,
+                                           TickType_t xDelay);
+ListItem_t *pxCANRegisterTxMailboxAbort(CANHandle_t xCAN, uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler,
+                                        TickType_t xDelay);
+ListItem_t *pxCANRegisterRxFifoMsgPending(CANHandle_t xCAN, uint8_t ucRxFifo, CANRxFifoHandler_t xHandler,
+                                          TickType_t xDelay);
+ListItem_t *pxCANRegisterRxFifoFull(CANHandle_t xCAN, uint8_t ucRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterSleep(CANHandle_t xCAN, CANHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterWakeupFromRxMsg(CANHandle_t xCAN, CANHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterError(CANHandle_t xCAN, CANHandler_t xHandler, TickType_t xDelay);
 
 #endif // ifdef HAL_CAN_MODULE_ENABLED
