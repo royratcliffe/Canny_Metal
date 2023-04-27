@@ -119,6 +119,13 @@ int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq);
 
 int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq);
 
+/*!
+ * \brief Generates a stop condition.
+ *
+ * Tells the master to discard the current transfer.
+ */
+void vI2CSeqNAck(I2CSeqHandle_t xI2CSeq);
+
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq);
 
 #endif

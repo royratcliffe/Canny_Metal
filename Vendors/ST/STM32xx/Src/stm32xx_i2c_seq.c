@@ -205,6 +205,8 @@ int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq) {
   return xI2CSeq->pxNoOptionTransfer[xI2CSeq->ucTransferDirection](xI2CSeq);
 }
 
+void vI2CSeqNAck(I2CSeqHandle_t xI2CSeq) { __HAL_I2C_GENERATE_NACK(xI2CSeq->xI2C); }
+
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq) { return HAL_I2C_GetError(xI2CSeq->xI2C); }
 
 #endif
