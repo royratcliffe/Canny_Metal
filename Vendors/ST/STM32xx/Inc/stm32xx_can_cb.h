@@ -18,18 +18,15 @@
 #ifdef HAL_CAN_MODULE_ENABLED
 
 /*!
- * \param xPriority Ascending priority order of handler invocation. Use
- * `portMAX_DELAY` to add the given handler to the end of the handler list.
+ * \param xDelay Ascending priority order of handler invocation. Use
+ * \c portMAX_DELAY to add the given handler to the end of the handler list.
  */
-ListItem_t *pxhalCANRegisterTxMailboxCompleteHandler(uint8_t ucMailbox, halCANHandler_t xhalCANHandler,
-                                                     TickType_t xPriority);
-ListItem_t *pxhalCANRegisterTxMailboxAbortHandler(uint8_t ucMailbox, halCANHandler_t xhalCANHandler,
-                                                  TickType_t xPriority);
-ListItem_t *pxhalCANRegisterRxFifoMsgPendingHandler(uint8_t ucRxFifo, halCANHandler_t xhalCANHandler,
-                                                    TickType_t xPriority);
-ListItem_t *pxhalCANRegisterRxFifoFullHandler(uint8_t ucRxFifo, halCANHandler_t xhalCANHandler, TickType_t xPriority);
-ListItem_t *pxhalCANRegisterSleepHandler(halCANHandler_t xhalCANHandler, TickType_t xPriority);
-ListItem_t *pxhalCANRegisterWakeUpFromRxMsgHandler(halCANHandler_t xhalCANHandler, TickType_t xPriority);
-ListItem_t *pxhalCANRegisterErrorHandler(halCANHandler_t xhalCANHandler, TickType_t xPriority);
+ListItem_t *pxCANRegisterTxMailboxComplete(uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterTxMailboxAbort(uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterRxFifoMsgPending(uint8_t ucRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterRxFifoFull(uint8_t ucRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterSleep(CANHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterWakeUpFromRxMsg(CANHandler_t xHandler, TickType_t xDelay);
+ListItem_t *pxCANRegisterError(CANHandler_t xHandler, TickType_t xDelay);
 
 #endif // ifdef HAL_CAN_MODULE_ENABLED

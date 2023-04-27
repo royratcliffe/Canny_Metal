@@ -4,7 +4,7 @@
 
 #include "stm32xx_can_it.h"
 
-HAL_StatusTypeDef xhalCANActivateAllNotifications(halCANHandle_t xhalCAN) {
-  return HAL_CAN_ActivateNotification(xhalCAN, CAN_IT_TX_MAILBOX_EMPTY | halCAN_IT_RX_FIFO0 | halCAN_IT_RX_FIFO1 |
-                                                   (CAN_IT_WAKEUP | CAN_IT_SLEEP_ACK) | halCAN_IT_ERROR);
+HAL_StatusTypeDef xCANActivateAllNotifications(CANHandle_t xCAN) {
+  return HAL_CAN_ActivateNotification(xCAN, CAN_IT_TX_MAILBOX_EMPTY | CAN_IT_RX_FIFO0_ALL | CAN_IT_RX_FIFO1_ALL |
+                                                   (CAN_IT_WAKEUP | CAN_IT_SLEEP_ACK) | CAN_IT_ERROR_ALL);
 }
