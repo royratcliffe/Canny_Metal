@@ -198,10 +198,10 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    * stop notification.
    */
   vI2CUnregister(pxSlaveTxCplt);
-  (void)vI2CUnregister(pxSlaveRxCplt);
-  (void)vI2CUnregister(pxListenCplt);
-  (void)vI2CUnregister(pxAddr);
-  (void)vI2CUnregister(pxError);
+  vI2CUnregister(pxSlaveRxCplt);
+  vI2CUnregister(pxListenCplt);
+  vI2CUnregister(pxAddr);
+  vI2CUnregister(pxError);
   vI2CSeqDelete(xI2CSeq);
   vTaskDelete(NULL);
 }
