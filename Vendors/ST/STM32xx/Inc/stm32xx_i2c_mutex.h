@@ -17,8 +17,8 @@ BaseType_t xI2CTake(I2CHandle_t xI2C, TickType_t xTicksToWait);
 /*!
  * \brief Creates a recursive mutex for I2C sharing.
  *
- * Create the mutex first. The semaphore is static if FreeRTOS supports static allocation;
- * otherwise uses FreeRTOS heap.
+ * Create the mutex first. The semaphore is static if FreeRTOS supports static
+ * allocation; otherwise uses FreeRTOS heap.
  *
  * The recursive mutex allows nested locking operations for I2C.
  */
