@@ -147,11 +147,11 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
     portYIELD_FROM_ISR(xWoken);
   }
 
-  ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCpltHandler(xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
-  ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCpltHandler(xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
-  ListItem_t *pxListenCplt = pxI2CRegisterListenCpltHandler(xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
-  ListItem_t *pxAddr = pxI2CRegisterAddrHandler(xI2CSlave->xI2C, prvAddr, portMAX_DELAY);
-  ListItem_t *pxError = pxI2CRegisterErrorHandler(xI2CSlave->xI2C, prvError, portMAX_DELAY);
+  ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCplt(xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
+  ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCplt(xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
+  ListItem_t *pxListenCplt = pxI2CRegisterListenCplt(xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
+  ListItem_t *pxAddr = pxI2CRegisterAddr(xI2CSlave->xI2C, prvAddr, portMAX_DELAY);
+  ListItem_t *pxError = pxI2CRegisterError(xI2CSlave->xI2C, prvError, portMAX_DELAY);
 
   /*
    * Wait indefinitely for stop notification.
