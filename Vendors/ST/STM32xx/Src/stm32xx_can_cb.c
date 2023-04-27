@@ -23,13 +23,13 @@ static List_t xErrorForCAN[stm32xx_canMAX_INSTANCES];
  */
 static void __attribute__((constructor)) prvCANListInitialise() {
   for (size_t xCardinal = 0U; xCardinal < stm32xx_canMAX_INSTANCES; xCardinal++) {
-    for (uint8_t ucTxMailbox = 0U; ucTxMailbox < stm32xx_canTX_MAILBOX_MAX_INSTANCES; ucTxMailbox++) {
-      vListInitialise(xTxMailboxCompleteForCAN[xCardinal] + ucTxMailbox);
-      vListInitialise(xTxMailboxAbortForCAN[xCardinal] + ucTxMailbox);
+    for (uint32_t ulTxMailbox = 0U; ulTxMailbox < stm32xx_canTX_MAILBOX_MAX_INSTANCES; ulTxMailbox++) {
+      vListInitialise(xTxMailboxCompleteForCAN[xCardinal] + ulTxMailbox);
+      vListInitialise(xTxMailboxAbortForCAN[xCardinal] + ulTxMailbox);
     }
-    for (uint8_t ucRxFifo = 0U; ucRxFifo < stm32xx_canRX_FIFO_MAX_INSTANCES; ucRxFifo++) {
-      vListInitialise(xRxFifoMsgPendingForCAN[xCardinal] + ucRxFifo);
-      vListInitialise(xRxFifoFullForCAN[xCardinal] + ucRxFifo);
+    for (uint32_t ulRxFifo = 0U; ulRxFifo < stm32xx_canRX_FIFO_MAX_INSTANCES; ulRxFifo++) {
+      vListInitialise(xRxFifoMsgPendingForCAN[xCardinal] + ulRxFifo);
+      vListInitialise(xRxFifoFullForCAN[xCardinal] + ulRxFifo);
     }
     vListInitialise(&xSleepForCAN[xCardinal]);
     vListInitialise(&xWakeupFromRxMsgForCAN[xCardinal]);
@@ -206,18 +206,15 @@ void HAL_CAN_ErrorCallback(CANHandle_t xCAN)
   vListYield(&xErrorForCAN[xRegisteredCardinalOfCAN(xCAN)], xError);
 }
 
-ListItem_t *pxCANRegisterTxMailboxComplete(CANHandle_t xCAN, uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler,
-                                           TickType_t xDelay) {
-  List_t *pxForCAN = xTxMailboxCompleteForCAN[xRegisteredCardinalOfCAN(xCAN)] + ucTxMailbox;
+ListItem_t *pxCANRegisterTxMailboxComplete(CANHandle_t xCAN, uint32_t ulTxMailbox, CANTxMailboxHandler_t xHandler, TickType_t xDelay) {
+  List_t *pxForCAN = xTxMailboxCompleteForCAN[xRegisteredCardinalOfCAN(xCAN)] + ulTxMailbox;
 #if USE_HAL_CAN_REGISTER_CALLBACKS
   /*
    * Assume that the transmit mailbox call-back identifiers run contiguously: 0,
    * 1, 2.
    */
-  static void (*prvTxMailboxComplete[])(CANHandle_t xCAN) = {prvTxMailbox0Complete, prvTxMailbox1Complete,
-                                                             prvTxMailbox2Complete};
-  if (listLIST_IS_EMPTY(pxForCAN))
-    HAL_CAN_RegisterCallback(xCAN, HAL_CAN_TX_MAILBOX0_COMPLETE_CB_ID + ucTxMailbox, prvTxMailboxComplete[ucTxMailbox]);
+  static void (*prvTxMailboxComplete[])(CANHandle_t xCAN) = {prvTxMailbox0Complete, prvTxMailbox1Complete, prvTxMailbox2Complete};
+  if (listLIST_IS_EMPTY(pxForCAN)) HAL_CAN_RegisterCallback(xCAN, HAL_CAN_TX_MAILBOX0_COMPLETE_CB_ID + ulTxMailbox, prvTxMailboxComplete[ucTxMailbox]);
 #endif
   /*
    * Beware of race conditions.
@@ -228,20 +225,17 @@ ListItem_t *pxCANRegisterTxMailboxComplete(CANHandle_t xCAN, uint8_t ucTxMailbox
   return pxListInsertNew(pxForCAN, xHandler, xDelay);
 }
 
-ListItem_t *pxCANRegisterTxMailboxAbort(CANHandle_t xCAN, uint8_t ucTxMailbox, CANTxMailboxHandler_t xHandler,
-                                        TickType_t xDelay) {
-  List_t *pxForCAN = xTxMailboxAbortForCAN[xRegisteredCardinalOfCAN(xCAN)] + ucTxMailbox;
+ListItem_t *pxCANRegisterTxMailboxAbort(CANHandle_t xCAN, uint32_t ulTxMailbox, CANTxMailboxHandler_t xHandler, TickType_t xDelay) {
+  List_t *pxForCAN = xTxMailboxAbortForCAN[xRegisteredCardinalOfCAN(xCAN)] + ulTxMailbox;
 #if USE_HAL_CAN_REGISTER_CALLBACKS
   static void (*prvTxMailboxAbort[])(CANHandle_t xCAN) = {prvTxMailbox0Abort, prvTxMailbox1Abort, prvTxMailbox2Abort};
-  if (listLIST_IS_EMPTY(pxForCAN))
-    HAL_CAN_RegisterCallback(xCAN, HAL_CAN_TX_MAILBOX0_ABORT_CB_ID + ucTxMailbox, prvTxMailboxAbort[ucTxMailbox]);
+  if (listLIST_IS_EMPTY(pxForCAN)) HAL_CAN_RegisterCallback(xCAN, HAL_CAN_TX_MAILBOX0_ABORT_CB_ID + ulTxMailbox, prvTxMailboxAbort[ucTxMailbox]);
 #endif
   return pxListInsertNew(pxForCAN, xHandler, xDelay);
 }
 
-ListItem_t *pxCANRegisterRxFifoMsgPending(CANHandle_t xCAN, uint8_t ucRxFifo, CANRxFifoHandler_t xHandler,
-                                          TickType_t xDelay) {
-  List_t *pxForCAN = xRxFifoMsgPendingForCAN[xRegisteredCardinalOfCAN(xCAN)] + ucRxFifo;
+ListItem_t *pxCANRegisterRxFifoMsgPending(CANHandle_t xCAN, uint32_t ulRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay) {
+  List_t *pxForCAN = xRxFifoMsgPendingForCAN[xRegisteredCardinalOfCAN(xCAN)] + ulRxFifo;
 #if USE_HAL_CAN_REGISTER_CALLBACKS
   /*
    * The receiver FIFO message pending call-back identifiers do not run
@@ -249,20 +243,16 @@ ListItem_t *pxCANRegisterRxFifoMsgPending(CANHandle_t xCAN, uint8_t ucRxFifo, CA
    * 6 to 8, interleaved with the FIFO full identifiers.
    */
   static void (*prvRxFifoMsgPending[])(CANHandle_t xCAN) = {prvRxFifo0MsgPending, prvRxFifo1MsgPending};
-  if (listLIST_IS_EMPTY(pxForCAN))
-    HAL_CAN_RegisterCallback(xCAN, HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID + (ucRxFifo << 1U),
-                             prvRxFifoMsgPending[ucRxFifo]);
+  if (listLIST_IS_EMPTY(pxForCAN)) HAL_CAN_RegisterCallback(xCAN, HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID + (ucRxFifo << 1U), prvRxFifoMsgPending[ucRxFifo]);
 #endif
   return pxListInsertNew(pxForCAN, xHandler, xDelay);
 }
 
-ListItem_t *pxCANRegisterRxFifoFull(CANHandle_t xCAN, uint8_t ucRxFifo, CANRxFifoHandler_t xHandler,
-                                    TickType_t xDelay) {
-  List_t *pxForCAN = xRxFifoMsgPendingForCAN[xRegisteredCardinalOfCAN(xCAN)] + ucRxFifo;
+ListItem_t *pxCANRegisterRxFifoFull(CANHandle_t xCAN, uint32_t ulRxFifo, CANRxFifoHandler_t xHandler, TickType_t xDelay) {
+  List_t *pxForCAN = xRxFifoMsgPendingForCAN[xRegisteredCardinalOfCAN(xCAN)] + ulRxFifo;
 #if USE_HAL_CAN_REGISTER_CALLBACKS
   static void (*prvRxFifoFull[])(CANHandle_t xCAN) = {prvRxFifo0Full, prvRxFifo1Full};
-  if (listLIST_IS_EMPTY(pxForCAN))
-    HAL_CAN_RegisterCallback(xCAN, HAL_CAN_RX_FIFO0_FULL_CB_ID + (ucRxFifo << 1U), prvRxFifoFull[ucRxFifo]);
+  if (listLIST_IS_EMPTY(pxForCAN)) HAL_CAN_RegisterCallback(xCAN, HAL_CAN_RX_FIFO0_FULL_CB_ID + (ucRxFifo << 1U), prvRxFifoFull[ucRxFifo]);
 #endif
   return pxListInsertNew(pxForCAN, xHandler, xDelay);
 }
