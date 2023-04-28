@@ -5,10 +5,10 @@
 
 #ifdef HAL_CAN_MODULE_ENABLED
 
-#include "task.h"
+#  include "task.h"
 
 // standard library
-#include <string.h>
+#  include <string.h>
 
 HAL_StatusTypeDef xCANConfigFilterFifo0IdMask32Bit(CAN_HandleTypeDef *pxCAN) {
   CAN_FilterTypeDef CANFilter = {.FilterIdHigh = 0x0000U,
@@ -42,5 +42,9 @@ HAL_StatusTypeDef xCANGetRxMessage(CAN_HandleTypeDef *pxCAN, struct CANRx *pxCAN
   configASSERT(IS_CAN_RX_FIFO(pxCANRx->ulRxFifo));
   return HAL_CAN_GetRxMessage(pxCAN, pxCANRx->ulRxFifo, &pxCANRx->xRxHeader, pxCANRx->ucRxData);
 }
+
+BaseType_t xCANRxIsData(struct CANRx *pxCANRx) { return pxCANRx->xRxHeader.RTR == CAN_RTR_DATA; }
+
+BaseType_t xCANRxIsRemote(struct CANRx *pxCANRx) { return pxCANRx->xRxHeader.RTR == CAN_RTR_REMOTE; }
 
 #endif // ifdef HAL_CAN_MODULE_ENABLED

@@ -91,6 +91,10 @@ void vCANRxInit(struct CANRx *pxCANRx, uint32_t ulRxFifo);
 
 HAL_StatusTypeDef xCANGetRxMessage(CAN_HandleTypeDef *pxCAN, struct CANRx *pxCANRx);
 
+BaseType_t xCANRxIsData(struct CANRx *pxCANRx);
+
+BaseType_t xCANRxIsRemote(struct CANRx *pxCANRx);
+
 /*!
  * \brief Does the CAN receive header have a matching standard identifier?
  */
