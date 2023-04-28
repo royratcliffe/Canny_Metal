@@ -7,6 +7,10 @@
 
 #ifdef HAL_I2C_MODULE_ENABLED
 
+#if STM32__ == L4
+#include "stm32l4xx_ll_i2c.h"
+#endif
+
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -206,6 +210,10 @@ int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq) {
 }
 
 void vI2CSeqNAck(I2CSeqHandle_t xI2CSeq) { __HAL_I2C_GENERATE_NACK(xI2CSeq->xI2C); }
+
+void vI2CSeqAck(I2CSeqHandle_t xI2CSeq) {
+  LL_I2C_AcknowledgeNextData(xI2CSeq->xI2C->Instance, LL_I2C_ACK);
+}
 
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq) { return HAL_I2C_GetError(xI2CSeq->xI2C); }
 

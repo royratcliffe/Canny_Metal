@@ -127,6 +127,12 @@ int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq);
  */
 void vI2CSeqNAck(I2CSeqHandle_t xI2CSeq);
 
+/*!
+ * \brief Acknowledge matching transfers.
+ * Uses the low-lower driver to switch off the NACK.
+ */
+void vI2CSeqAck(I2CSeqHandle_t xI2CSeq);
+
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq);
 
 #endif
