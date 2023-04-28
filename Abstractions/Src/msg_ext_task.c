@@ -2,8 +2,9 @@
  * msg_ext_task.c
  */
 
+#include "msg_ext_task.h"
+
 #include <memory.h>
-#include <msg_ext_task.h>
 
 BaseType_t xMsgBindTask(MsgBindingHandle_t xMsgBinding, TaskHandle_t xTask) {
   return xMsgBindExtWithBody(xMsgBinding, msgEXT_TYPE_TASK, &xTask, sizeof(xTask));
