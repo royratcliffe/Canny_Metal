@@ -25,7 +25,7 @@ int msgpack_version_revision(void);
 
 #include "version_master.h"
 
-#define MSGPACK_STR(v) #v
+#define MSGPACK_STR(v)                   #v
 #define MSGPACK_VERSION_I(maj, min, rev) MSGPACK_STR(maj) "." MSGPACK_STR(min) "." MSGPACK_STR(rev)
 
 #define MSGPACK_VERSION MSGPACK_VERSION_I(MSGPACK_VERSION_MAJOR, MSGPACK_VERSION_MINOR, MSGPACK_VERSION_REVISION)

@@ -14,9 +14,9 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#if defined(unix) || defined(__unix) || defined(__linux__) || defined(__APPLE__) || defined(__OpenBSD__) ||            \
+#if defined(unix) || defined(__unix) || defined(__linux__) || defined(__APPLE__) || defined(__OpenBSD__) || \
     defined(__NetBSD__) || defined(__QNX__) || defined(__QNXTO__) || defined(__HAIKU__)
-#include <sys/uio.h>
+#  include <sys/uio.h>
 typedef struct iovec msgpack_iovec;
 #else
 struct msgpack_iovec {
@@ -57,11 +57,11 @@ typedef struct msgpack_vrefbuffer {
 } msgpack_vrefbuffer;
 
 #ifndef MSGPACK_VREFBUFFER_REF_SIZE
-#define MSGPACK_VREFBUFFER_REF_SIZE 32
+#  define MSGPACK_VREFBUFFER_REF_SIZE 32
 #endif
 
 #ifndef MSGPACK_VREFBUFFER_CHUNK_SIZE
-#define MSGPACK_VREFBUFFER_CHUNK_SIZE 256
+#  define MSGPACK_VREFBUFFER_CHUNK_SIZE 256
 #endif
 
 MSGPACK_DLLEXPORT
@@ -102,7 +102,7 @@ static inline msgpack_vrefbuffer *msgpack_vrefbuffer_new(size_t ref_size, size_t
 }
 
 static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer *vbuf) {
-  if (vbuf == NULL) { return; }
+  if (vbuf == NULL) return;
   msgpack_vrefbuffer_destroy(vbuf);
   free(vbuf);
 }
@@ -113,11 +113,10 @@ static inline int msgpack_vrefbuffer_write(void *data, const char *buf, size_t l
 
   if (!buf) return 0;
 
-  if (len < vbuf->ref_size) {
+  if (len < vbuf->ref_size)
     return msgpack_vrefbuffer_append_copy(vbuf, buf, len);
-  } else {
+  else
     return msgpack_vrefbuffer_append_ref(vbuf, buf, len);
-  }
 }
 
 static inline const msgpack_iovec *msgpack_vrefbuffer_vec(const msgpack_vrefbuffer *vref) { return vref->array; }

@@ -60,7 +60,7 @@ typedef struct msgpack_unpacker {
 } msgpack_unpacker;
 
 #ifndef MSGPACK_UNPACKER_INIT_BUFFER_SIZE
-#define MSGPACK_UNPACKER_INIT_BUFFER_SIZE 128
+#  define MSGPACK_UNPACKER_INIT_BUFFER_SIZE 128
 #endif
 
 /**
@@ -90,7 +90,7 @@ MSGPACK_DLLEXPORT
 void msgpack_unpacker_free(msgpack_unpacker *mpac);
 
 #ifndef MSGPACK_UNPACKER_RESERVE_SIZE
-#define MSGPACK_UNPACKER_RESERVE_SIZE 64
+#  define MSGPACK_UNPACKER_RESERVE_SIZE 64
 #endif
 
 /**
@@ -200,7 +200,7 @@ MSGPACK_DLLEXPORT
 bool msgpack_unpacker_expand_buffer(msgpack_unpacker *mpac, size_t size);
 
 static inline bool msgpack_unpacker_reserve_buffer(msgpack_unpacker *mpac, size_t size) {
-  if (mpac->free >= size) { return true; }
+  if (mpac->free >= size) return true;
   return msgpack_unpacker_expand_buffer(mpac, size);
 }
 

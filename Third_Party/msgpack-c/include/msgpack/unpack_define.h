@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 #ifndef MSGPACK_EMBED_STACK_SIZE
-#define MSGPACK_EMBED_STACK_SIZE 32
+#  define MSGPACK_EMBED_STACK_SIZE 32
 #endif
 
 typedef enum {

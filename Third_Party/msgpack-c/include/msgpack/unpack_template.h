@@ -9,38 +9,38 @@
  */
 
 #ifndef msgpack_unpack_func
-#error msgpack_unpack_func template is not defined
+#  error msgpack_unpack_func template is not defined
 #endif
 
 #ifndef msgpack_unpack_callback
-#error msgpack_unpack_callback template is not defined
+#  error msgpack_unpack_callback template is not defined
 #endif
 
 #ifndef msgpack_unpack_struct
-#error msgpack_unpack_struct template is not defined
+#  error msgpack_unpack_struct template is not defined
 #endif
 
 #ifndef msgpack_unpack_struct_decl
-#define msgpack_unpack_struct_decl(name) msgpack_unpack_struct(name)
+#  define msgpack_unpack_struct_decl(name) msgpack_unpack_struct(name)
 #endif
 
 #ifndef msgpack_unpack_object
-#error msgpack_unpack_object type is not defined
+#  error msgpack_unpack_object type is not defined
 #endif
 
 #ifndef msgpack_unpack_user
-#error msgpack_unpack_user type is not defined
+#  error msgpack_unpack_user type is not defined
 #endif
 
 #ifndef USE_CASE_RANGE
-#if !defined(_MSC_VER)
-#define USE_CASE_RANGE
-#endif
+#  if !defined(_MSC_VER)
+#    define USE_CASE_RANGE
+#  endif
 #endif
 
 #if defined(_KERNEL_MODE)
-#undef assert
-#define assert NT_ASSERT
+#  undef assert
+#  define assert NT_ASSERT
 #endif
 
 msgpack_unpack_struct_decl(_stack) {
@@ -106,68 +106,68 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
 
     int ret;
 
-#define push_simple_value(func)                                                                                        \
-  ret = msgpack_unpack_callback(func)(user, &obj);                                                                     \
-  if (ret < 0) { goto _failed; }                                                                                       \
+#define push_simple_value(func)                    \
+  ret = msgpack_unpack_callback(func)(user, &obj); \
+  if (ret < 0) { goto _failed; }                   \
   goto _push
-#define push_fixed_value(func, arg)                                                                                    \
-  ret = msgpack_unpack_callback(func)(user, arg, &obj);                                                                \
-  if (ret < 0) { goto _failed; }                                                                                       \
+#define push_fixed_value(func, arg)                     \
+  ret = msgpack_unpack_callback(func)(user, arg, &obj); \
+  if (ret < 0) { goto _failed; }                        \
   goto _push
-#define push_variable_value(func, base, pos, len)                                                                      \
-  ret = msgpack_unpack_callback(func)(user, (const char *)base, (const char *)pos, len, &obj);                         \
-  if (ret < 0) { goto _failed; }                                                                                       \
+#define push_variable_value(func, base, pos, len)                                              \
+  ret = msgpack_unpack_callback(func)(user, (const char *)base, (const char *)pos, len, &obj); \
+  if (ret < 0) { goto _failed; }                                                               \
   goto _push
 
-#define again_fixed_trail(_cs, trail_len)                                                                              \
-  trail = trail_len;                                                                                                   \
-  cs = _cs;                                                                                                            \
+#define again_fixed_trail(_cs, trail_len) \
+  trail = trail_len;                      \
+  cs = _cs;                               \
   goto _fixed_trail_again
-#define again_fixed_trail_if_zero(_cs, trail_len, ifzero)                                                              \
-  trail = trail_len;                                                                                                   \
-  if (trail == 0) { goto ifzero; }                                                                                     \
-  cs = _cs;                                                                                                            \
+#define again_fixed_trail_if_zero(_cs, trail_len, ifzero) \
+  trail = trail_len;                                      \
+  if (trail == 0) { goto ifzero; }                        \
+  cs = _cs;                                               \
   goto _fixed_trail_again
 
-#define start_container(func, count_, ct_)                                                                             \
-  if (top >= MSGPACK_EMBED_STACK_SIZE) {                                                                               \
-    ret = MSGPACK_UNPACK_NOMEM_ERROR;                                                                                  \
-    goto _failed;                                                                                                      \
-  } /* FIXME */                                                                                                        \
-  ret = msgpack_unpack_callback(func)(user, count_, &stack[top].obj);                                                  \
-  if (ret < 0) { goto _failed; }                                                                                       \
-  if ((count_) == 0) {                                                                                                 \
-    obj = stack[top].obj;                                                                                              \
-    goto _push;                                                                                                        \
-  }                                                                                                                    \
-  stack[top].ct = ct_;                                                                                                 \
-  stack[top].count = count_;                                                                                           \
-  ++top;                                                                                                               \
+#define start_container(func, count_, ct_)                            \
+  if (top >= MSGPACK_EMBED_STACK_SIZE) {                              \
+    ret = MSGPACK_UNPACK_NOMEM_ERROR;                                 \
+    goto _failed;                                                     \
+  } /* FIXME */                                                       \
+  ret = msgpack_unpack_callback(func)(user, count_, &stack[top].obj); \
+  if (ret < 0) { goto _failed; }                                      \
+  if ((count_) == 0) {                                                \
+    obj = stack[top].obj;                                             \
+    goto _push;                                                       \
+  }                                                                   \
+  stack[top].ct = ct_;                                                \
+  stack[top].count = count_;                                          \
+  ++top;                                                              \
   goto _header_again
 
 #define NEXT_CS(p) ((unsigned int)*p & 0x1f)
 
 #ifdef USE_CASE_RANGE
-#define SWITCH_RANGE_BEGIN switch (*p) {
-#define SWITCH_RANGE(FROM, TO) case FROM ... TO:
-#define SWITCH_RANGE_DEFAULT default:
-#define SWITCH_RANGE_END }
+#  define SWITCH_RANGE_BEGIN     switch (*p) {
+#  define SWITCH_RANGE(FROM, TO) case FROM ... TO:
+#  define SWITCH_RANGE_DEFAULT   default:
+#  define SWITCH_RANGE_END       }
 #else
-#define SWITCH_RANGE_BEGIN                                                                                             \
-  {                                                                                                                    \
-    if (0) {
-#define SWITCH_RANGE(FROM, TO)                                                                                         \
-  }                                                                                                                    \
-  else if (FROM <= *p && *p <= TO) {
-#define SWITCH_RANGE_DEFAULT                                                                                           \
-  }                                                                                                                    \
-  else {
-#define SWITCH_RANGE_END                                                                                               \
-  }                                                                                                                    \
-  }
+#  define SWITCH_RANGE_BEGIN \
+    {                        \
+      if (0) {
+#  define SWITCH_RANGE(FROM, TO) \
+    }                            \
+    else if (FROM <= *p && *p <= TO) {
+#  define SWITCH_RANGE_DEFAULT \
+    }                          \
+    else {
+#  define SWITCH_RANGE_END \
+    }                      \
+    }
 #endif
 
-    if (p == pe) { goto _out; }
+    if (p == pe) goto _out;
     do {
       switch (cs) {
       case MSGPACK_CS_HEADER:
@@ -244,7 +244,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
         // fallthrough
 
       default:
-        if ((size_t)(pe - p) < trail) { goto _out; }
+        if ((size_t)(pe - p) < trail) goto _out;
         n = p;
         p += trail - 1;
         switch (cs) {
@@ -255,6 +255,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
             uint32_t i;
             float f;
           } mem;
+
           _msgpack_load32(uint32_t, n, &mem.i);
           push_fixed_value(_float, mem.f);
         }
@@ -263,6 +264,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
             uint64_t i;
             double f;
           } mem;
+
           _msgpack_load64(uint64_t, n, &mem.i);
 #if defined(TARGET_OS_IPHONE)
           // ok
@@ -393,12 +395,12 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
       }
 
     _push:
-      if (top == 0) { goto _finish; }
+      if (top == 0) goto _finish;
       c = &stack[top - 1];
       switch (c->ct) {
       case MSGPACK_CT_ARRAY_ITEM:
         ret = msgpack_unpack_callback(_array_item)(user, &c->obj, obj);
-        if (ret < 0) { goto _failed; }
+        if (ret < 0) goto _failed;
         if (--c->count == 0) {
           obj = c->obj;
           --top;
@@ -412,7 +414,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context) * ctx, const 
         goto _header_again;
       case MSGPACK_CT_MAP_VALUE:
         ret = msgpack_unpack_callback(_map_item)(user, &c->obj, c->map_key, obj);
-        if (ret < 0) { goto _failed; }
+        if (ret < 0) goto _failed;
         if (--c->count == 0) {
           obj = c->obj;
           --top;
