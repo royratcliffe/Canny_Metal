@@ -142,11 +142,18 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
 
   void prvError(I2CHandle_t xI2C) {
     (void)xI2C;
+    /*
+     * No need to check the I2C handle. The slave task only registers for one
+     * channel. Use multiple slaves for multiple channels.
+     */
     BaseType_t xWoken;
     xTaskNotifyFromISR(xTask, i2cslaveERROR_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
+  /*
+   * Register for slave transmit, receive, listen, address and error interrupts.
+   */
   ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCplt(xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
   ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCplt(xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
   ListItem_t *pxListenCplt = pxI2CRegisterListenCplt(xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
@@ -175,10 +182,18 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
         /*
          * Perform a dummy transfer when no device exists. Always try at least
          * one frame. This may fail if the master fails to acknowledge such as
-         * when the master performs a device address ping using
+         * when the master performs a device address ping using \c
          * HAL_I2C_IsDeviceReady. Set up the transfer nevertheless. Adjust the
          * slave mask to avoid overlap with non-emulated peripherals sharing the
          * same bus.
+         *
+         * Tempting to send a non-acknowledge using a \c vI2CSeqNAck(xI2CSeq)
+         * call. Equivalent to calling the \c
+         * __HAL_I2C_GENERATE_NACK(xI2CSlave->xI2C) macro. However, the
+         * hardware-abstraction layer does \e not enable the \c NACKI interrupt
+         * using \c __HAL_I2C_ENABLE_IT(xI2CSlave->xI2C, I2C_IT_NACKI) so the
+         * non-acknowledge persists indefinitely. Performing a dummy transfer
+         * provides a temporary but functional workaround.
          */
         if ((ulNotified & i2cslaveADDR_NOTIFIED)) {
           vI2CSeqBufferLength(xI2CSeq, 1UL);

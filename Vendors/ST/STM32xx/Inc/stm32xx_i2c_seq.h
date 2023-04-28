@@ -122,7 +122,8 @@ int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq);
 /*!
  * \brief Generates a stop condition.
  *
- * Tells the master to discard the current transfer.
+ * Tells the master to discard the current transfer. Sets the CR2 register's
+ * NACK bit which remains enabled until explicitly disabled.
  */
 void vI2CSeqNAck(I2CSeqHandle_t xI2CSeq);
 
