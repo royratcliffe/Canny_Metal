@@ -31,7 +31,7 @@ extern "C" {
 #define O1HEAP_VERSION_MAJOR 2
 
 /// The guaranteed alignment depends on the platform pointer width.
-#define O1HEAP_ALIGNMENT (sizeof(void*) * 4U)
+#define O1HEAP_ALIGNMENT (sizeof(void *) * 4U)
 
 /// The definition is private, so the user code can only operate on pointers. This is done to enforce encapsulation.
 typedef struct O1HeapInstance O1HeapInstance;
@@ -41,29 +41,28 @@ typedef struct O1HeapInstance O1HeapInstance;
 /// If assertion checks are not disabled, the library will perform automatic runtime self-diagnostics that trigger
 /// an assertion failure if a heap corruption is detected.
 /// Health checks and validation can be done with o1heapDoInvariantsHold().
-typedef struct
-{
-    /// The total amount of memory available for serving allocation requests (heap size).
-    /// The maximum allocation size is (capacity - O1HEAP_ALIGNMENT).
-    /// This parameter does not include the overhead used up by O1HeapInstance and arena alignment.
-    /// This parameter is constant.
-    size_t capacity;
+typedef struct {
+  /// The total amount of memory available for serving allocation requests (heap size).
+  /// The maximum allocation size is (capacity - O1HEAP_ALIGNMENT).
+  /// This parameter does not include the overhead used up by O1HeapInstance and arena alignment.
+  /// This parameter is constant.
+  size_t capacity;
 
-    /// The amount of memory that is currently allocated, including the per-fragment overhead and size alignment.
-    /// For example, if the application requested a fragment of size 1 byte, the value reported here may be 32 bytes.
-    size_t allocated;
+  /// The amount of memory that is currently allocated, including the per-fragment overhead and size alignment.
+  /// For example, if the application requested a fragment of size 1 byte, the value reported here may be 32 bytes.
+  size_t allocated;
 
-    /// The maximum value of 'allocated' seen since initialization. This parameter is never decreased.
-    size_t peak_allocated;
+  /// The maximum value of 'allocated' seen since initialization. This parameter is never decreased.
+  size_t peak_allocated;
 
-    /// The largest amount of memory that the allocator has attempted to allocate (perhaps unsuccessfully)
-    /// since initialization (not including the rounding and the allocator's own per-fragment overhead,
-    /// so the total is larger). This parameter is never decreased. The initial value is zero.
-    size_t peak_request_size;
+  /// The largest amount of memory that the allocator has attempted to allocate (perhaps unsuccessfully)
+  /// since initialization (not including the rounding and the allocator's own per-fragment overhead,
+  /// so the total is larger). This parameter is never decreased. The initial value is zero.
+  size_t peak_request_size;
 
-    /// The number of times an allocation request could not be completed due to the lack of memory or
-    /// excessive fragmentation. OOM stands for "out of memory". This parameter is never decreased.
-    uint64_t oom_count;
+  /// The number of times an allocation request could not be completed due to the lack of memory or
+  /// excessive fragmentation. OOM stands for "out of memory". This parameter is never decreased.
+  uint64_t oom_count;
 } O1HeapDiagnostics;
 
 /// The arena base pointer shall be aligned at O1HEAP_ALIGNMENT, otherwise NULL is returned.
@@ -82,7 +81,7 @@ typedef struct
 /// it can be discarded without any de-initialization procedures.
 ///
 /// The heap is not thread-safe; external synchronization may be required.
-O1HeapInstance* o1heapInit(void* const base, const size_t size);
+O1HeapInstance *o1heapInit(void *const base, const size_t size);
 
 /// The semantics follows malloc() with additional guarantees the full list of which is provided below.
 ///
@@ -94,7 +93,7 @@ O1HeapInstance* o1heapInit(void* const base, const size_t size);
 ///
 /// The function is executed in constant time.
 /// The allocated memory is NOT zero-filled (because zero-filling is a variable-complexity operation).
-void* o1heapAllocate(O1HeapInstance* const handle, const size_t amount);
+void *o1heapAllocate(O1HeapInstance *const handle, const size_t amount);
 
 /// The semantics follows free() with additional guarantees the full list of which is provided below.
 ///
@@ -102,21 +101,21 @@ void* o1heapAllocate(O1HeapInstance* const handle, const size_t amount);
 /// Builds where assertion checks are enabled may trigger an assertion failure for some invalid inputs.
 ///
 /// The function is executed in constant time.
-void o1heapFree(O1HeapInstance* const handle, void* const pointer);
+void o1heapFree(O1HeapInstance *const handle, void *const pointer);
 
 /// Performs a basic sanity check on the heap.
 /// This function can be used as a weak but fast method of heap corruption detection.
 /// If the handle pointer is NULL, the behavior is undefined.
 /// The time complexity is constant.
 /// The return value is truth if the heap looks valid, falsity otherwise.
-bool o1heapDoInvariantsHold(const O1HeapInstance* const handle);
+bool o1heapDoInvariantsHold(const O1HeapInstance *const handle);
 
 /// Samples and returns a copy of the diagnostic information, see O1HeapDiagnostics.
 /// This function merely copies the structure from an internal storage, so it is fast to return.
 /// If the handle pointer is NULL, the behavior is undefined.
-O1HeapDiagnostics o1heapGetDiagnostics(const O1HeapInstance* const handle);
+O1HeapDiagnostics o1heapGetDiagnostics(const O1HeapInstance *const handle);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // O1HEAP_H_INCLUDED
+#endif // O1HEAP_H_INCLUDED
