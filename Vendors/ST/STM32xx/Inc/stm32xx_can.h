@@ -19,9 +19,9 @@ typedef CAN_TypeDef *CAN_t;
 
 typedef CAN_HandleTypeDef *CANHandle_t;
 
-typedef void (*CANTxMailboxHandler_t)(CANHandle_t xCAN, uint8_t ucTxMailbox);
+typedef void (*CANTxMailboxHandler_t)(CANHandle_t xCAN, uint32_t ulTxMailbox);
 
-typedef void (*CANRxFifoHandler_t)(CANHandle_t xCAN, uint8_t ucRxFifo);
+typedef void (*CANRxFifoHandler_t)(CANHandle_t xCAN, uint32_t ulRxFifo);
 
 typedef void (*CANHandler_t)(CANHandle_t xCAN);
 
