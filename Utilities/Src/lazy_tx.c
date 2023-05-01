@@ -5,14 +5,16 @@
 
 struct LazyTx {
   StreamBufferHandle_t xStreamBuffer;
-  TxHandler_t Handler;
+  TxHandler_t xHandler;
   void *pvSender;
   TaskHandle_t xTask;
 };
 
 /*!
+ * \brief Lazy transmitter code.
+ *
  * Receives data from a stream buffer. Writes the transmit data to the HAL
- * interrupt interface, or some other node in a transmitter chain.
+ * interrupt interface, typically, or some other node in a transmitter chain.
  *
  * Three parameters determine when the stream empties: the lazy buffer length in
  * bytes, the lazy delay in ticks, but also the lazy transmit stream's trigger
@@ -24,18 +26,17 @@ static portTASK_FUNCTION(prvLazyTxTask, pvParameters) {
     uint8_t ucTxData[lazytxBUFFER_LENGTH_BYTES];
     size_t xBufferLengthBytes =
         xStreamBufferReceive(xLazyTx->xStreamBuffer, ucTxData, sizeof(ucTxData), lazytxDELAY_TICKS);
-    (*xLazyTx->Handler)(xLazyTx->pvSender, xBufferLengthBytes ? ucTxData : NULL, xBufferLengthBytes);
+    xLazyTx->xHandler(xLazyTx->pvSender, xBufferLengthBytes ? ucTxData : NULL, xBufferLengthBytes);
   }
 }
 
-LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t Handler) {
+LazyTxHandle_t xLazyTxCreate(void *pvSender, TxHandler_t xHandler) {
   LazyTxHandle_t xLazyTx = pvPortMalloc(sizeof(*xLazyTx));
   configASSERT(xLazyTx != NULL);
   xLazyTx->xStreamBuffer = xStreamBufferCreate(lazytxBUFFER_SIZE_BYTES, lazytxTRIGGER_LEVEL_BYTES);
   xLazyTx->pvSender = pvSender;
-  xLazyTx->Handler = Handler;
-  xTaskCreate(prvLazyTxTask, "lazytx", configMINIMAL_STACK_SIZE + lazytxBUFFER_LENGTH_BYTES, xLazyTx, lazytxPRIORITY,
-              &xLazyTx->xTask);
+  xLazyTx->xHandler = xHandler;
+  xTaskCreate(prvLazyTxTask, "lazytx", lazytxSTACK_DEPTH, xLazyTx, lazytxPRIORITY, &xLazyTx->xTask);
   configASSERT(xLazyTx->xTask != NULL);
   return xLazyTx;
 }

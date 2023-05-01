@@ -17,7 +17,7 @@
  */
 
 #ifndef msgunifierINITIAL_BUFFER_SIZE_BYTES
-#define msgunifierINITIAL_BUFFER_SIZE_BYTES 16U
+#define msgunifierINITIAL_BUFFER_SIZE_BYTES 256U
 #endif
 
 enum msgUnify { eMsgUnifyMemError = -2, eMsgUnifyParseError, eMsgUnifyContinue, eMsgUnifyExtraBytes, eMsgUnifySuccess };

@@ -39,13 +39,13 @@ static inline msgpack_sbuffer *msgpack_sbuffer_new(void) {
 }
 
 static inline void msgpack_sbuffer_free(msgpack_sbuffer *sbuf) {
-  if (sbuf == NULL) { return; }
+  if (sbuf == NULL) return;
   msgpack_sbuffer_destroy(sbuf);
   free(sbuf);
 }
 
 #ifndef MSGPACK_SBUFFER_INIT_SIZE
-#define MSGPACK_SBUFFER_INIT_SIZE 256
+#  define MSGPACK_SBUFFER_INIT_SIZE 256
 #endif
 
 static inline int msgpack_sbuffer_write(void *data, const char *buf, size_t len) {
@@ -68,7 +68,7 @@ static inline int msgpack_sbuffer_write(void *data, const char *buf, size_t len)
     }
 
     tmp = realloc(sbuf->data, nsize);
-    if (!tmp) { return -1; }
+    if (!tmp) return -1;
 
     sbuf->data = (char *)tmp;
     sbuf->alloc = nsize;

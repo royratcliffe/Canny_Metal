@@ -4,6 +4,8 @@
 
 #include "stm32xx_i2c_it.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #include "task_notify.h"
 
 HAL_StatusTypeDef xI2CMasterTransmitIT(I2CHandle_t xI2C, uint8_t ucAddr, const void *pvData, size_t xDataLengthBytes,
@@ -39,3 +41,5 @@ void vI2CMasterNotifyReceiveCpltFromISR(TaskHandle_t xTask) {
   xTaskNotifyFromISR(xTask, stm32xxI2C_MASTER_RX_CPLT_NOTIFIED, eSetBits, &xWoken);
   portYIELD_FROM_ISR(xWoken);
 }
+
+#endif

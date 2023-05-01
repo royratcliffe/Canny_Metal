@@ -9,290 +9,290 @@
  */
 
 #ifndef MSGPACK_ENDIAN_BIG_BYTE
-#define MSGPACK_ENDIAN_BIG_BYTE 0
+#  define MSGPACK_ENDIAN_BIG_BYTE 0
 #endif
 #ifndef MSGPACK_ENDIAN_LITTLE_BYTE
-#define MSGPACK_ENDIAN_LITTLE_BYTE 1
+#  define MSGPACK_ENDIAN_LITTLE_BYTE 1
 #endif
 
 #if MSGPACK_ENDIAN_LITTLE_BYTE
-#define TAKE8_8(d) ((uint8_t *)&d)[0]
-#define TAKE8_16(d) ((uint8_t *)&d)[0]
-#define TAKE8_32(d) ((uint8_t *)&d)[0]
-#define TAKE8_64(d) ((uint8_t *)&d)[0]
+#  define TAKE8_8(d)  ((uint8_t *)&d)[0]
+#  define TAKE8_16(d) ((uint8_t *)&d)[0]
+#  define TAKE8_32(d) ((uint8_t *)&d)[0]
+#  define TAKE8_64(d) ((uint8_t *)&d)[0]
 #elif MSGPACK_ENDIAN_BIG_BYTE
-#define TAKE8_8(d) ((uint8_t *)&d)[0]
-#define TAKE8_16(d) ((uint8_t *)&d)[1]
-#define TAKE8_32(d) ((uint8_t *)&d)[3]
-#define TAKE8_64(d) ((uint8_t *)&d)[7]
+#  define TAKE8_8(d)  ((uint8_t *)&d)[0]
+#  define TAKE8_16(d) ((uint8_t *)&d)[1]
+#  define TAKE8_32(d) ((uint8_t *)&d)[3]
+#  define TAKE8_64(d) ((uint8_t *)&d)[7]
 #else
-#error msgpack-c supports only big endian and little endian
+#  error msgpack-c supports only big endian and little endian
 #endif
 
 #ifndef msgpack_pack_inline_func
-#error msgpack_pack_inline_func template is not defined
+#  error msgpack_pack_inline_func template is not defined
 #endif
 
 #ifndef msgpack_pack_user
-#error msgpack_pack_user type is not defined
+#  error msgpack_pack_user type is not defined
 #endif
 
 #ifndef msgpack_pack_append_buffer
-#error msgpack_pack_append_buffer callback is not defined
+#  error msgpack_pack_append_buffer callback is not defined
 #endif
 
 #if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable : 4204) /* nonstandard extension used: non-constant aggregate initializer                      \
-                                 */
+#  pragma warning(push)
+#  pragma warning(disable : 4204) /* nonstandard extension used: non-constant aggregate initializer \
+                                   */
 #endif
 
 /*
  * Integer
  */
 
-#define msgpack_pack_real_uint8(x, d)                                                                                  \
-  do {                                                                                                                 \
-    if (d < (1 << 7)) {                                                                                                \
-      /* fixnum */                                                                                                     \
-      msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);                                                                   \
-    } else {                                                                                                           \
-      /* unsigned 8 */                                                                                                 \
-      unsigned char buf[2] = {0xcc, TAKE8_8(d)};                                                                       \
-      msgpack_pack_append_buffer(x, buf, 2);                                                                           \
-    }                                                                                                                  \
+#define msgpack_pack_real_uint8(x, d)                \
+  do {                                               \
+    if (d < (1 << 7)) {                              \
+      /* fixnum */                                   \
+      msgpack_pack_append_buffer(x, &TAKE8_8(d), 1); \
+    } else {                                         \
+      /* unsigned 8 */                               \
+      unsigned char buf[2] = {0xcc, TAKE8_8(d)};     \
+      msgpack_pack_append_buffer(x, buf, 2);         \
+    }                                                \
   } while (0)
 
-#define msgpack_pack_real_uint16(x, d)                                                                                 \
-  do {                                                                                                                 \
-    if (d < (1 << 7)) {                                                                                                \
-      /* fixnum */                                                                                                     \
-      msgpack_pack_append_buffer(x, &TAKE8_16(d), 1);                                                                  \
-    } else if (d < (1 << 8)) {                                                                                         \
-      /* unsigned 8 */                                                                                                 \
-      unsigned char buf[2] = {0xcc, TAKE8_16(d)};                                                                      \
-      msgpack_pack_append_buffer(x, buf, 2);                                                                           \
-    } else {                                                                                                           \
-      /* unsigned 16 */                                                                                                \
-      unsigned char buf[3];                                                                                            \
-      buf[0] = 0xcd;                                                                                                   \
-      _msgpack_store16(&buf[1], (uint16_t)d);                                                                          \
-      msgpack_pack_append_buffer(x, buf, 3);                                                                           \
-    }                                                                                                                  \
+#define msgpack_pack_real_uint16(x, d)                \
+  do {                                                \
+    if (d < (1 << 7)) {                               \
+      /* fixnum */                                    \
+      msgpack_pack_append_buffer(x, &TAKE8_16(d), 1); \
+    } else if (d < (1 << 8)) {                        \
+      /* unsigned 8 */                                \
+      unsigned char buf[2] = {0xcc, TAKE8_16(d)};     \
+      msgpack_pack_append_buffer(x, buf, 2);          \
+    } else {                                          \
+      /* unsigned 16 */                               \
+      unsigned char buf[3];                           \
+      buf[0] = 0xcd;                                  \
+      _msgpack_store16(&buf[1], (uint16_t)d);         \
+      msgpack_pack_append_buffer(x, buf, 3);          \
+    }                                                 \
   } while (0)
 
-#define msgpack_pack_real_uint32(x, d)                                                                                 \
-  do {                                                                                                                 \
-    if (d < (1 << 8)) {                                                                                                \
-      if (d < (1 << 7)) {                                                                                              \
-        /* fixnum */                                                                                                   \
-        msgpack_pack_append_buffer(x, &TAKE8_32(d), 1);                                                                \
-      } else {                                                                                                         \
-        /* unsigned 8 */                                                                                               \
-        unsigned char buf[2] = {0xcc, TAKE8_32(d)};                                                                    \
-        msgpack_pack_append_buffer(x, buf, 2);                                                                         \
-      }                                                                                                                \
-    } else {                                                                                                           \
-      if (d < (1 << 16)) {                                                                                             \
-        /* unsigned 16 */                                                                                              \
-        unsigned char buf[3];                                                                                          \
-        buf[0] = 0xcd;                                                                                                 \
-        _msgpack_store16(&buf[1], (uint16_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 3);                                                                         \
-      } else {                                                                                                         \
-        /* unsigned 32 */                                                                                              \
-        unsigned char buf[5];                                                                                          \
-        buf[0] = 0xce;                                                                                                 \
-        _msgpack_store32(&buf[1], (uint32_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 5);                                                                         \
-      }                                                                                                                \
-    }                                                                                                                  \
+#define msgpack_pack_real_uint32(x, d)                  \
+  do {                                                  \
+    if (d < (1 << 8)) {                                 \
+      if (d < (1 << 7)) {                               \
+        /* fixnum */                                    \
+        msgpack_pack_append_buffer(x, &TAKE8_32(d), 1); \
+      } else {                                          \
+        /* unsigned 8 */                                \
+        unsigned char buf[2] = {0xcc, TAKE8_32(d)};     \
+        msgpack_pack_append_buffer(x, buf, 2);          \
+      }                                                 \
+    } else {                                            \
+      if (d < (1 << 16)) {                              \
+        /* unsigned 16 */                               \
+        unsigned char buf[3];                           \
+        buf[0] = 0xcd;                                  \
+        _msgpack_store16(&buf[1], (uint16_t)d);         \
+        msgpack_pack_append_buffer(x, buf, 3);          \
+      } else {                                          \
+        /* unsigned 32 */                               \
+        unsigned char buf[5];                           \
+        buf[0] = 0xce;                                  \
+        _msgpack_store32(&buf[1], (uint32_t)d);         \
+        msgpack_pack_append_buffer(x, buf, 5);          \
+      }                                                 \
+    }                                                   \
   } while (0)
 
-#define msgpack_pack_real_uint64(x, d)                                                                                 \
-  do {                                                                                                                 \
-    if (d < (1ULL << 8)) {                                                                                             \
-      if (d < (1ULL << 7)) {                                                                                           \
-        /* fixnum */                                                                                                   \
-        msgpack_pack_append_buffer(x, &TAKE8_64(d), 1);                                                                \
-      } else {                                                                                                         \
-        /* unsigned 8 */                                                                                               \
-        unsigned char buf[2] = {0xcc, TAKE8_64(d)};                                                                    \
-        msgpack_pack_append_buffer(x, buf, 2);                                                                         \
-      }                                                                                                                \
-    } else {                                                                                                           \
-      if (d < (1ULL << 16)) {                                                                                          \
-        /* unsigned 16 */                                                                                              \
-        unsigned char buf[3];                                                                                          \
-        buf[0] = 0xcd;                                                                                                 \
-        _msgpack_store16(&buf[1], (uint16_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 3);                                                                         \
-      } else if (d < (1ULL << 32)) {                                                                                   \
-        /* unsigned 32 */                                                                                              \
-        unsigned char buf[5];                                                                                          \
-        buf[0] = 0xce;                                                                                                 \
-        _msgpack_store32(&buf[1], (uint32_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 5);                                                                         \
-      } else {                                                                                                         \
-        /* unsigned 64 */                                                                                              \
-        unsigned char buf[9];                                                                                          \
-        buf[0] = 0xcf;                                                                                                 \
-        _msgpack_store64(&buf[1], d);                                                                                  \
-        msgpack_pack_append_buffer(x, buf, 9);                                                                         \
-      }                                                                                                                \
-    }                                                                                                                  \
+#define msgpack_pack_real_uint64(x, d)                  \
+  do {                                                  \
+    if (d < (1ULL << 8)) {                              \
+      if (d < (1ULL << 7)) {                            \
+        /* fixnum */                                    \
+        msgpack_pack_append_buffer(x, &TAKE8_64(d), 1); \
+      } else {                                          \
+        /* unsigned 8 */                                \
+        unsigned char buf[2] = {0xcc, TAKE8_64(d)};     \
+        msgpack_pack_append_buffer(x, buf, 2);          \
+      }                                                 \
+    } else {                                            \
+      if (d < (1ULL << 16)) {                           \
+        /* unsigned 16 */                               \
+        unsigned char buf[3];                           \
+        buf[0] = 0xcd;                                  \
+        _msgpack_store16(&buf[1], (uint16_t)d);         \
+        msgpack_pack_append_buffer(x, buf, 3);          \
+      } else if (d < (1ULL << 32)) {                    \
+        /* unsigned 32 */                               \
+        unsigned char buf[5];                           \
+        buf[0] = 0xce;                                  \
+        _msgpack_store32(&buf[1], (uint32_t)d);         \
+        msgpack_pack_append_buffer(x, buf, 5);          \
+      } else {                                          \
+        /* unsigned 64 */                               \
+        unsigned char buf[9];                           \
+        buf[0] = 0xcf;                                  \
+        _msgpack_store64(&buf[1], d);                   \
+        msgpack_pack_append_buffer(x, buf, 9);          \
+      }                                                 \
+    }                                                   \
   } while (0)
 
-#define msgpack_pack_real_int8(x, d)                                                                                   \
-  do {                                                                                                                 \
-    if (d < -(1 << 5)) {                                                                                               \
-      /* signed 8 */                                                                                                   \
-      unsigned char buf[2] = {0xd0, TAKE8_8(d)};                                                                       \
-      msgpack_pack_append_buffer(x, buf, 2);                                                                           \
-    } else {                                                                                                           \
-      /* fixnum */                                                                                                     \
-      msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);                                                                   \
-    }                                                                                                                  \
+#define msgpack_pack_real_int8(x, d)                 \
+  do {                                               \
+    if (d < -(1 << 5)) {                             \
+      /* signed 8 */                                 \
+      unsigned char buf[2] = {0xd0, TAKE8_8(d)};     \
+      msgpack_pack_append_buffer(x, buf, 2);         \
+    } else {                                         \
+      /* fixnum */                                   \
+      msgpack_pack_append_buffer(x, &TAKE8_8(d), 1); \
+    }                                                \
   } while (0)
 
-#define msgpack_pack_real_int16(x, d)                                                                                  \
-  do {                                                                                                                 \
-    if (d < -(1 << 5)) {                                                                                               \
-      if (d < -(1 << 7)) {                                                                                             \
-        /* signed 16 */                                                                                                \
-        unsigned char buf[3];                                                                                          \
-        buf[0] = 0xd1;                                                                                                 \
-        _msgpack_store16(&buf[1], (int16_t)d);                                                                         \
-        msgpack_pack_append_buffer(x, buf, 3);                                                                         \
-      } else {                                                                                                         \
-        /* signed 8 */                                                                                                 \
-        unsigned char buf[2] = {0xd0, TAKE8_16(d)};                                                                    \
-        msgpack_pack_append_buffer(x, buf, 2);                                                                         \
-      }                                                                                                                \
-    } else if (d < (1 << 7)) {                                                                                         \
-      /* fixnum */                                                                                                     \
-      msgpack_pack_append_buffer(x, &TAKE8_16(d), 1);                                                                  \
-    } else {                                                                                                           \
-      if (d < (1 << 8)) {                                                                                              \
-        /* unsigned 8 */                                                                                               \
-        unsigned char buf[2] = {0xcc, TAKE8_16(d)};                                                                    \
-        msgpack_pack_append_buffer(x, buf, 2);                                                                         \
-      } else {                                                                                                         \
-        /* unsigned 16 */                                                                                              \
-        unsigned char buf[3];                                                                                          \
-        buf[0] = 0xcd;                                                                                                 \
-        _msgpack_store16(&buf[1], (uint16_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 3);                                                                         \
-      }                                                                                                                \
-    }                                                                                                                  \
+#define msgpack_pack_real_int16(x, d)                 \
+  do {                                                \
+    if (d < -(1 << 5)) {                              \
+      if (d < -(1 << 7)) {                            \
+        /* signed 16 */                               \
+        unsigned char buf[3];                         \
+        buf[0] = 0xd1;                                \
+        _msgpack_store16(&buf[1], (int16_t)d);        \
+        msgpack_pack_append_buffer(x, buf, 3);        \
+      } else {                                        \
+        /* signed 8 */                                \
+        unsigned char buf[2] = {0xd0, TAKE8_16(d)};   \
+        msgpack_pack_append_buffer(x, buf, 2);        \
+      }                                               \
+    } else if (d < (1 << 7)) {                        \
+      /* fixnum */                                    \
+      msgpack_pack_append_buffer(x, &TAKE8_16(d), 1); \
+    } else {                                          \
+      if (d < (1 << 8)) {                             \
+        /* unsigned 8 */                              \
+        unsigned char buf[2] = {0xcc, TAKE8_16(d)};   \
+        msgpack_pack_append_buffer(x, buf, 2);        \
+      } else {                                        \
+        /* unsigned 16 */                             \
+        unsigned char buf[3];                         \
+        buf[0] = 0xcd;                                \
+        _msgpack_store16(&buf[1], (uint16_t)d);       \
+        msgpack_pack_append_buffer(x, buf, 3);        \
+      }                                               \
+    }                                                 \
   } while (0)
 
-#define msgpack_pack_real_int32(x, d)                                                                                  \
-  do {                                                                                                                 \
-    if (d < -(1 << 5)) {                                                                                               \
-      if (d < -(1 << 15)) {                                                                                            \
-        /* signed 32 */                                                                                                \
-        unsigned char buf[5];                                                                                          \
-        buf[0] = 0xd2;                                                                                                 \
-        _msgpack_store32(&buf[1], (int32_t)d);                                                                         \
-        msgpack_pack_append_buffer(x, buf, 5);                                                                         \
-      } else if (d < -(1 << 7)) {                                                                                      \
-        /* signed 16 */                                                                                                \
-        unsigned char buf[3];                                                                                          \
-        buf[0] = 0xd1;                                                                                                 \
-        _msgpack_store16(&buf[1], (int16_t)d);                                                                         \
-        msgpack_pack_append_buffer(x, buf, 3);                                                                         \
-      } else {                                                                                                         \
-        /* signed 8 */                                                                                                 \
-        unsigned char buf[2] = {0xd0, TAKE8_32(d)};                                                                    \
-        msgpack_pack_append_buffer(x, buf, 2);                                                                         \
-      }                                                                                                                \
-    } else if (d < (1 << 7)) {                                                                                         \
-      /* fixnum */                                                                                                     \
-      msgpack_pack_append_buffer(x, &TAKE8_32(d), 1);                                                                  \
-    } else {                                                                                                           \
-      if (d < (1 << 8)) {                                                                                              \
-        /* unsigned 8 */                                                                                               \
-        unsigned char buf[2] = {0xcc, TAKE8_32(d)};                                                                    \
-        msgpack_pack_append_buffer(x, buf, 2);                                                                         \
-      } else if (d < (1 << 16)) {                                                                                      \
-        /* unsigned 16 */                                                                                              \
-        unsigned char buf[3];                                                                                          \
-        buf[0] = 0xcd;                                                                                                 \
-        _msgpack_store16(&buf[1], (uint16_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 3);                                                                         \
-      } else {                                                                                                         \
-        /* unsigned 32 */                                                                                              \
-        unsigned char buf[5];                                                                                          \
-        buf[0] = 0xce;                                                                                                 \
-        _msgpack_store32(&buf[1], (uint32_t)d);                                                                        \
-        msgpack_pack_append_buffer(x, buf, 5);                                                                         \
-      }                                                                                                                \
-    }                                                                                                                  \
+#define msgpack_pack_real_int32(x, d)                 \
+  do {                                                \
+    if (d < -(1 << 5)) {                              \
+      if (d < -(1 << 15)) {                           \
+        /* signed 32 */                               \
+        unsigned char buf[5];                         \
+        buf[0] = 0xd2;                                \
+        _msgpack_store32(&buf[1], (int32_t)d);        \
+        msgpack_pack_append_buffer(x, buf, 5);        \
+      } else if (d < -(1 << 7)) {                     \
+        /* signed 16 */                               \
+        unsigned char buf[3];                         \
+        buf[0] = 0xd1;                                \
+        _msgpack_store16(&buf[1], (int16_t)d);        \
+        msgpack_pack_append_buffer(x, buf, 3);        \
+      } else {                                        \
+        /* signed 8 */                                \
+        unsigned char buf[2] = {0xd0, TAKE8_32(d)};   \
+        msgpack_pack_append_buffer(x, buf, 2);        \
+      }                                               \
+    } else if (d < (1 << 7)) {                        \
+      /* fixnum */                                    \
+      msgpack_pack_append_buffer(x, &TAKE8_32(d), 1); \
+    } else {                                          \
+      if (d < (1 << 8)) {                             \
+        /* unsigned 8 */                              \
+        unsigned char buf[2] = {0xcc, TAKE8_32(d)};   \
+        msgpack_pack_append_buffer(x, buf, 2);        \
+      } else if (d < (1 << 16)) {                     \
+        /* unsigned 16 */                             \
+        unsigned char buf[3];                         \
+        buf[0] = 0xcd;                                \
+        _msgpack_store16(&buf[1], (uint16_t)d);       \
+        msgpack_pack_append_buffer(x, buf, 3);        \
+      } else {                                        \
+        /* unsigned 32 */                             \
+        unsigned char buf[5];                         \
+        buf[0] = 0xce;                                \
+        _msgpack_store32(&buf[1], (uint32_t)d);       \
+        msgpack_pack_append_buffer(x, buf, 5);        \
+      }                                               \
+    }                                                 \
   } while (0)
 
-#define msgpack_pack_real_int64(x, d)                                                                                  \
-  do {                                                                                                                 \
-    if (d < -(1LL << 5)) {                                                                                             \
-      if (d < -(1LL << 15)) {                                                                                          \
-        if (d < -(1LL << 31)) {                                                                                        \
-          /* signed 64 */                                                                                              \
-          unsigned char buf[9];                                                                                        \
-          buf[0] = 0xd3;                                                                                               \
-          _msgpack_store64(&buf[1], d);                                                                                \
-          msgpack_pack_append_buffer(x, buf, 9);                                                                       \
-        } else {                                                                                                       \
-          /* signed 32 */                                                                                              \
-          unsigned char buf[5];                                                                                        \
-          buf[0] = 0xd2;                                                                                               \
-          _msgpack_store32(&buf[1], (int32_t)d);                                                                       \
-          msgpack_pack_append_buffer(x, buf, 5);                                                                       \
-        }                                                                                                              \
-      } else {                                                                                                         \
-        if (d < -(1 << 7)) {                                                                                           \
-          /* signed 16 */                                                                                              \
-          unsigned char buf[3];                                                                                        \
-          buf[0] = 0xd1;                                                                                               \
-          _msgpack_store16(&buf[1], (int16_t)d);                                                                       \
-          msgpack_pack_append_buffer(x, buf, 3);                                                                       \
-        } else {                                                                                                       \
-          /* signed 8 */                                                                                               \
-          unsigned char buf[2] = {0xd0, TAKE8_64(d)};                                                                  \
-          msgpack_pack_append_buffer(x, buf, 2);                                                                       \
-        }                                                                                                              \
-      }                                                                                                                \
-    } else if (d < (1 << 7)) {                                                                                         \
-      /* fixnum */                                                                                                     \
-      msgpack_pack_append_buffer(x, &TAKE8_64(d), 1);                                                                  \
-    } else {                                                                                                           \
-      if (d < (1LL << 16)) {                                                                                           \
-        if (d < (1 << 8)) {                                                                                            \
-          /* unsigned 8 */                                                                                             \
-          unsigned char buf[2] = {0xcc, TAKE8_64(d)};                                                                  \
-          msgpack_pack_append_buffer(x, buf, 2);                                                                       \
-        } else {                                                                                                       \
-          /* unsigned 16 */                                                                                            \
-          unsigned char buf[3];                                                                                        \
-          buf[0] = 0xcd;                                                                                               \
-          _msgpack_store16(&buf[1], (uint16_t)d);                                                                      \
-          msgpack_pack_append_buffer(x, buf, 3);                                                                       \
-        }                                                                                                              \
-      } else {                                                                                                         \
-        if (d < (1LL << 32)) {                                                                                         \
-          /* unsigned 32 */                                                                                            \
-          unsigned char buf[5];                                                                                        \
-          buf[0] = 0xce;                                                                                               \
-          _msgpack_store32(&buf[1], (uint32_t)d);                                                                      \
-          msgpack_pack_append_buffer(x, buf, 5);                                                                       \
-        } else {                                                                                                       \
-          /* unsigned 64 */                                                                                            \
-          unsigned char buf[9];                                                                                        \
-          buf[0] = 0xcf;                                                                                               \
-          _msgpack_store64(&buf[1], d);                                                                                \
-          msgpack_pack_append_buffer(x, buf, 9);                                                                       \
-        }                                                                                                              \
-      }                                                                                                                \
-    }                                                                                                                  \
+#define msgpack_pack_real_int64(x, d)                 \
+  do {                                                \
+    if (d < -(1LL << 5)) {                            \
+      if (d < -(1LL << 15)) {                         \
+        if (d < -(1LL << 31)) {                       \
+          /* signed 64 */                             \
+          unsigned char buf[9];                       \
+          buf[0] = 0xd3;                              \
+          _msgpack_store64(&buf[1], d);               \
+          msgpack_pack_append_buffer(x, buf, 9);      \
+        } else {                                      \
+          /* signed 32 */                             \
+          unsigned char buf[5];                       \
+          buf[0] = 0xd2;                              \
+          _msgpack_store32(&buf[1], (int32_t)d);      \
+          msgpack_pack_append_buffer(x, buf, 5);      \
+        }                                             \
+      } else {                                        \
+        if (d < -(1 << 7)) {                          \
+          /* signed 16 */                             \
+          unsigned char buf[3];                       \
+          buf[0] = 0xd1;                              \
+          _msgpack_store16(&buf[1], (int16_t)d);      \
+          msgpack_pack_append_buffer(x, buf, 3);      \
+        } else {                                      \
+          /* signed 8 */                              \
+          unsigned char buf[2] = {0xd0, TAKE8_64(d)}; \
+          msgpack_pack_append_buffer(x, buf, 2);      \
+        }                                             \
+      }                                               \
+    } else if (d < (1 << 7)) {                        \
+      /* fixnum */                                    \
+      msgpack_pack_append_buffer(x, &TAKE8_64(d), 1); \
+    } else {                                          \
+      if (d < (1LL << 16)) {                          \
+        if (d < (1 << 8)) {                           \
+          /* unsigned 8 */                            \
+          unsigned char buf[2] = {0xcc, TAKE8_64(d)}; \
+          msgpack_pack_append_buffer(x, buf, 2);      \
+        } else {                                      \
+          /* unsigned 16 */                           \
+          unsigned char buf[3];                       \
+          buf[0] = 0xcd;                              \
+          _msgpack_store16(&buf[1], (uint16_t)d);     \
+          msgpack_pack_append_buffer(x, buf, 3);      \
+        }                                             \
+      } else {                                        \
+        if (d < (1LL << 32)) {                        \
+          /* unsigned 32 */                           \
+          unsigned char buf[5];                       \
+          buf[0] = 0xce;                              \
+          _msgpack_store32(&buf[1], (uint32_t)d);     \
+          msgpack_pack_append_buffer(x, buf, 5);      \
+        } else {                                      \
+          /* unsigned 64 */                           \
+          unsigned char buf[9];                       \
+          buf[0] = 0xcf;                              \
+          _msgpack_store64(&buf[1], d);               \
+          msgpack_pack_append_buffer(x, buf, 9);      \
+        }                                             \
+      }                                               \
+    }                                                 \
   } while (0)
 
 #ifdef msgpack_pack_inline_func_fixint
@@ -349,7 +349,7 @@ msgpack_pack_inline_func_fixint(_int64)(msgpack_pack_user x, int64_t d) {
   msgpack_pack_append_buffer(x, buf, 9);
 }
 
-#undef msgpack_pack_inline_func_fixint
+#  undef msgpack_pack_inline_func_fixint
 #endif
 
 msgpack_pack_inline_func(_uint8)(msgpack_pack_user x, uint8_t d) { msgpack_pack_real_uint8(x, d); }
@@ -370,13 +370,13 @@ msgpack_pack_inline_func(_int64)(msgpack_pack_user x, int64_t d) { msgpack_pack_
 
 msgpack_pack_inline_func(_char)(msgpack_pack_user x, char d) {
 #if defined(CHAR_MIN)
-#if CHAR_MIN < 0
+#  if CHAR_MIN < 0
   msgpack_pack_real_int8(x, d);
-#else
+#  else
   msgpack_pack_real_uint8(x, d);
-#endif
+#  endif
 #else
-#error CHAR_MIN is not defined
+#  error CHAR_MIN is not defined
 #endif
 }
 
@@ -387,246 +387,238 @@ msgpack_pack_inline_func(_unsigned_char)(msgpack_pack_user x, unsigned char d) {
 #ifdef msgpack_pack_inline_func_cint
 
 msgpack_pack_inline_func_cint(_short)(msgpack_pack_user x, short d) {
-#if defined(SIZEOF_SHORT)
-#if SIZEOF_SHORT == 2
+#  if defined(SIZEOF_SHORT)
+#    if SIZEOF_SHORT == 2
   msgpack_pack_real_int16(x, d);
-#elif SIZEOF_SHORT == 4
+#    elif SIZEOF_SHORT == 4
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#elif defined(SHRT_MAX)
-#if SHRT_MAX == 0x7fff
+#  elif defined(SHRT_MAX)
+#    if SHRT_MAX == 0x7fff
   msgpack_pack_real_int16(x, d);
-#elif SHRT_MAX == 0x7fffffff
+#    elif SHRT_MAX == 0x7fffffff
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(short) == 2) {
+#  else
+  if (sizeof(short) == 2)
     msgpack_pack_real_int16(x, d);
-  } else if (sizeof(short) == 4) {
+  else if (sizeof(short) == 4)
     msgpack_pack_real_int32(x, d);
-  } else {
+  else
     msgpack_pack_real_int64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_int)(msgpack_pack_user x, int d) {
-#if defined(SIZEOF_INT)
-#if SIZEOF_INT == 2
+#  if defined(SIZEOF_INT)
+#    if SIZEOF_INT == 2
   msgpack_pack_real_int16(x, d);
-#elif SIZEOF_INT == 4
+#    elif SIZEOF_INT == 4
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#elif defined(INT_MAX)
-#if INT_MAX == 0x7fff
+#  elif defined(INT_MAX)
+#    if INT_MAX == 0x7fff
   msgpack_pack_real_int16(x, d);
-#elif INT_MAX == 0x7fffffff
+#    elif INT_MAX == 0x7fffffff
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(int) == 2) {
+#  else
+  if (sizeof(int) == 2)
     msgpack_pack_real_int16(x, d);
-  } else if (sizeof(int) == 4) {
+  else if (sizeof(int) == 4)
     msgpack_pack_real_int32(x, d);
-  } else {
+  else
     msgpack_pack_real_int64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_long)(msgpack_pack_user x, long d) {
-#if defined(SIZEOF_LONG)
-#if SIZEOF_LONG == 2
+#  if defined(SIZEOF_LONG)
+#    if SIZEOF_LONG == 2
   msgpack_pack_real_int16(x, d);
-#elif SIZEOF_LONG == 4
+#    elif SIZEOF_LONG == 4
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#elif defined(LONG_MAX)
-#if LONG_MAX == 0x7fffL
+#  elif defined(LONG_MAX)
+#    if LONG_MAX == 0x7fffL
   msgpack_pack_real_int16(x, d);
-#elif LONG_MAX == 0x7fffffffL
+#    elif LONG_MAX == 0x7fffffffL
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(long) == 2) {
+#  else
+  if (sizeof(long) == 2)
     msgpack_pack_real_int16(x, d);
-  } else if (sizeof(long) == 4) {
+  else if (sizeof(long) == 4)
     msgpack_pack_real_int32(x, d);
-  } else {
+  else
     msgpack_pack_real_int64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_long_long)(msgpack_pack_user x, long long d) {
-#if defined(SIZEOF_LONG_LONG)
-#if SIZEOF_LONG_LONG == 2
+#  if defined(SIZEOF_LONG_LONG)
+#    if SIZEOF_LONG_LONG == 2
   msgpack_pack_real_int16(x, d);
-#elif SIZEOF_LONG_LONG == 4
+#    elif SIZEOF_LONG_LONG == 4
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#elif defined(LLONG_MAX)
-#if LLONG_MAX == 0x7fffL
+#  elif defined(LLONG_MAX)
+#    if LLONG_MAX == 0x7fffL
   msgpack_pack_real_int16(x, d);
-#elif LLONG_MAX == 0x7fffffffL
+#    elif LLONG_MAX == 0x7fffffffL
   msgpack_pack_real_int32(x, d);
-#else
+#    else
   msgpack_pack_real_int64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(long long) == 2) {
+#  else
+  if (sizeof(long long) == 2)
     msgpack_pack_real_int16(x, d);
-  } else if (sizeof(long long) == 4) {
+  else if (sizeof(long long) == 4)
     msgpack_pack_real_int32(x, d);
-  } else {
+  else
     msgpack_pack_real_int64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_unsigned_short)(msgpack_pack_user x, unsigned short d) {
-#if defined(SIZEOF_SHORT)
-#if SIZEOF_SHORT == 2
+#  if defined(SIZEOF_SHORT)
+#    if SIZEOF_SHORT == 2
   msgpack_pack_real_uint16(x, d);
-#elif SIZEOF_SHORT == 4
+#    elif SIZEOF_SHORT == 4
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#elif defined(USHRT_MAX)
-#if USHRT_MAX == 0xffffU
+#  elif defined(USHRT_MAX)
+#    if USHRT_MAX == 0xffffU
   msgpack_pack_real_uint16(x, d);
-#elif USHRT_MAX == 0xffffffffU
+#    elif USHRT_MAX == 0xffffffffU
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(unsigned short) == 2) {
+#  else
+  if (sizeof(unsigned short) == 2)
     msgpack_pack_real_uint16(x, d);
-  } else if (sizeof(unsigned short) == 4) {
+  else if (sizeof(unsigned short) == 4)
     msgpack_pack_real_uint32(x, d);
-  } else {
+  else
     msgpack_pack_real_uint64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_unsigned_int)(msgpack_pack_user x, unsigned int d) {
-#if defined(SIZEOF_INT)
-#if SIZEOF_INT == 2
+#  if defined(SIZEOF_INT)
+#    if SIZEOF_INT == 2
   msgpack_pack_real_uint16(x, d);
-#elif SIZEOF_INT == 4
+#    elif SIZEOF_INT == 4
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#elif defined(UINT_MAX)
-#if UINT_MAX == 0xffffU
+#  elif defined(UINT_MAX)
+#    if UINT_MAX == 0xffffU
   msgpack_pack_real_uint16(x, d);
-#elif UINT_MAX == 0xffffffffU
+#    elif UINT_MAX == 0xffffffffU
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(unsigned int) == 2) {
+#  else
+  if (sizeof(unsigned int) == 2)
     msgpack_pack_real_uint16(x, d);
-  } else if (sizeof(unsigned int) == 4) {
+  else if (sizeof(unsigned int) == 4)
     msgpack_pack_real_uint32(x, d);
-  } else {
+  else
     msgpack_pack_real_uint64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_unsigned_long)(msgpack_pack_user x, unsigned long d) {
-#if defined(SIZEOF_LONG)
-#if SIZEOF_LONG == 2
+#  if defined(SIZEOF_LONG)
+#    if SIZEOF_LONG == 2
   msgpack_pack_real_uint16(x, d);
-#elif SIZEOF_LONG == 4
+#    elif SIZEOF_LONG == 4
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#elif defined(ULONG_MAX)
-#if ULONG_MAX == 0xffffUL
+#  elif defined(ULONG_MAX)
+#    if ULONG_MAX == 0xffffUL
   msgpack_pack_real_uint16(x, d);
-#elif ULONG_MAX == 0xffffffffUL
+#    elif ULONG_MAX == 0xffffffffUL
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(unsigned long) == 2) {
+#  else
+  if (sizeof(unsigned long) == 2)
     msgpack_pack_real_uint16(x, d);
-  } else if (sizeof(unsigned long) == 4) {
+  else if (sizeof(unsigned long) == 4)
     msgpack_pack_real_uint32(x, d);
-  } else {
+  else
     msgpack_pack_real_uint64(x, d);
-  }
-#endif
+#  endif
 }
 
 msgpack_pack_inline_func_cint(_unsigned_long_long)(msgpack_pack_user x, unsigned long long d) {
-#if defined(SIZEOF_LONG_LONG)
-#if SIZEOF_LONG_LONG == 2
+#  if defined(SIZEOF_LONG_LONG)
+#    if SIZEOF_LONG_LONG == 2
   msgpack_pack_real_uint16(x, d);
-#elif SIZEOF_LONG_LONG == 4
+#    elif SIZEOF_LONG_LONG == 4
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#elif defined(ULLONG_MAX)
-#if ULLONG_MAX == 0xffffUL
+#  elif defined(ULLONG_MAX)
+#    if ULLONG_MAX == 0xffffUL
   msgpack_pack_real_uint16(x, d);
-#elif ULLONG_MAX == 0xffffffffUL
+#    elif ULLONG_MAX == 0xffffffffUL
   msgpack_pack_real_uint32(x, d);
-#else
+#    else
   msgpack_pack_real_uint64(x, d);
-#endif
+#    endif
 
-#else
-  if (sizeof(unsigned long long) == 2) {
+#  else
+  if (sizeof(unsigned long long) == 2)
     msgpack_pack_real_uint16(x, d);
-  } else if (sizeof(unsigned long long) == 4) {
+  else if (sizeof(unsigned long long) == 4)
     msgpack_pack_real_uint32(x, d);
-  } else {
+  else
     msgpack_pack_real_uint64(x, d);
-  }
-#endif
+#  endif
 }
 
-#undef msgpack_pack_inline_func_cint
+#  undef msgpack_pack_inline_func_cint
 #endif
 
 /*
@@ -635,10 +627,12 @@ msgpack_pack_inline_func_cint(_unsigned_long_long)(msgpack_pack_user x, unsigned
 
 msgpack_pack_inline_func(_float)(msgpack_pack_user x, float d) {
   unsigned char buf[5];
+
   union {
     float f;
     uint32_t i;
   } mem;
+
   mem.f = d;
   buf[0] = 0xca;
   _msgpack_store32(&buf[1], mem.i);
@@ -647,10 +641,12 @@ msgpack_pack_inline_func(_float)(msgpack_pack_user x, float d) {
 
 msgpack_pack_inline_func(_double)(msgpack_pack_user x, double d) {
   unsigned char buf[9];
+
   union {
     double f;
     uint64_t i;
   } mem;
+
   mem.f = d;
   buf[0] = 0xcb;
 #if defined(TARGET_OS_IPHONE)
@@ -920,5 +916,5 @@ msgpack_pack_inline_func(_timestamp)(msgpack_pack_user x, const msgpack_timestam
 #undef msgpack_pack_real_int64
 
 #if defined(_MSC_VER)
-#pragma warning(pop)
+#  pragma warning(pop)
 #endif

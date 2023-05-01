@@ -27,6 +27,14 @@ PREDEFINED            += HAL_I2C_MODULE_ENABLED
 
 HAVE_DOT               = YES
 
+DOT_IMAGE_FORMAT       = svg
+
+INTERACTIVE_SVG        = YES
+
+UML_LOOK               = YES
+
+DOT_UML_DETAILS        = YES
+
 CALL_GRAPH             = YES
 
 CALLER_GRAPH           = YES

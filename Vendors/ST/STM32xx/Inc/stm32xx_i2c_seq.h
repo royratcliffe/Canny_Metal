@@ -1,6 +1,5 @@
-/*
- * stm32xx_i2c_seq.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -29,6 +28,8 @@
  * master wants to read. The transfer also includes a matching address code.
  */
 typedef struct I2CSeq *I2CSeqHandle_t;
+
+#ifdef HAL_I2C_MODULE_ENABLED
 
 /*!
  * \brief Creates a new dynamic I2C sequencer.
@@ -118,4 +119,20 @@ int xI2CSeqLastFrame(I2CSeqHandle_t xI2CSeq);
 
 int xI2CSeqNoOptionFrame(I2CSeqHandle_t xI2CSeq);
 
+/*!
+ * \brief Generates a stop condition.
+ *
+ * Tells the master to discard the current transfer. Sets the CR2 register's
+ * NACK bit which remains enabled until explicitly disabled.
+ */
+void vI2CSeqNAck(I2CSeqHandle_t xI2CSeq);
+
+/*!
+ * \brief Acknowledge matching transfers.
+ * Uses the low-lower driver to switch off the NACK.
+ */
+void vI2CSeqAck(I2CSeqHandle_t xI2CSeq);
+
 uint32_t xI2CSeqError(I2CSeqHandle_t xI2CSeq);
+
+#endif

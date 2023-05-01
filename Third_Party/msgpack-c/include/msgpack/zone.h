@@ -49,7 +49,7 @@ typedef struct msgpack_zone {
 } msgpack_zone;
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
-#define MSGPACK_ZONE_CHUNK_SIZE 256
+#  define MSGPACK_ZONE_CHUNK_SIZE 256
 #endif
 
 MSGPACK_DLLEXPORT
@@ -78,7 +78,7 @@ void msgpack_zone_clear(msgpack_zone *zone);
 /** @} */
 
 #ifndef MSGPACK_ZONE_ALIGN
-#define MSGPACK_ZONE_ALIGN sizeof(void *)
+#  define MSGPACK_ZONE_ALIGN sizeof(void *)
 #endif
 
 MSGPACK_DLLEXPORT
@@ -88,7 +88,7 @@ static inline void *msgpack_zone_malloc_no_align(msgpack_zone *zone, size_t size
   char *ptr;
   msgpack_zone_chunk_list *cl = &zone->chunk_list;
 
-  if (zone->chunk_list.free < size) { return msgpack_zone_malloc_expand(zone, size); }
+  if (zone->chunk_list.free < size) return msgpack_zone_malloc_expand(zone, size);
 
   ptr = cl->ptr;
   cl->free -= size;
@@ -108,7 +108,7 @@ static inline void *msgpack_zone_malloc(msgpack_zone *zone, size_t size) {
   }
   {
     void *ptr = msgpack_zone_malloc_expand(zone, size + (MSGPACK_ZONE_ALIGN - 1));
-    if (ptr) { return (char *)((uintptr_t)(ptr) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1)); }
+    if (ptr) return (char *)((uintptr_t)(ptr) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1));
   }
   return NULL;
 }
@@ -119,7 +119,7 @@ static inline bool msgpack_zone_push_finalizer(msgpack_zone *zone, void (*func)(
   msgpack_zone_finalizer_array *const fa = &zone->finalizer_array;
   msgpack_zone_finalizer *fin = fa->tail;
 
-  if (fin == fa->end) { return msgpack_zone_push_finalizer_expand(zone, func, data); }
+  if (fin == fa->end) return msgpack_zone_push_finalizer_expand(zone, func, data);
 
   fin->func = func;
   fin->data = data;

@@ -43,6 +43,15 @@
 BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding, TickType_t xTicksToWait);
 
 /*!
+ * \brief Sends message to mailbox waiting indefinitely.
+ *
+ * Silently fails if the mailbox parameter resolves to no mailbox; it does \e
+ * not send a message. Otherwise, it waits for the mailbox's message buffer to
+ * find space for the message send to complete successfully.
+ */
+void vMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding);
+
+/*!
  * \brief Receives a message from a mailbox.
  * \param[in] xMailbox Mailbox to receive from, else \c NULL for the current
  * task's mailbox.

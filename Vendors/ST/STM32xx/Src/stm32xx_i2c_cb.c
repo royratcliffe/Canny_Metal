@@ -1,6 +1,5 @@
-/*
- * stm32xx_i2c_cb.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "stm32xx_i2c_cb.h"
 
@@ -51,7 +50,7 @@ void HAL_I2C_MasterTxCpltCallback(I2CHandle_t xI2C)
   vListYield(xMasterTxCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterMasterTxCpltHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterMasterTxCplt(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xMasterTxCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_MASTER_TX_COMPLETE_CB_ID, prvMasterTxCplt);
@@ -82,7 +81,7 @@ void HAL_I2C_MasterRxCpltCallback(I2CHandle_t xI2C)
   vListYield(xMasterRxCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterMasterRxCpltHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterMasterRxCplt(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xMasterRxCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_MASTER_RX_COMPLETE_CB_ID, prvMasterRxCplt);
@@ -113,7 +112,7 @@ void HAL_I2C_SlaveTxCpltCallback(I2CHandle_t xI2C)
   vListYield(xSlaveTxCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterSlaveTxCpltHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterSlaveTxCplt(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xSlaveTxCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_SLAVE_TX_COMPLETE_CB_ID, prvSlaveTxCplt);
@@ -144,7 +143,7 @@ void HAL_I2C_SlaveRxCpltCallback(I2CHandle_t xI2C)
   vListYield(xSlaveRxCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterSlaveRxCpltHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterSlaveRxCplt(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xSlaveRxCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_SLAVE_RX_COMPLETE_CB_ID, prvSlaveRxCplt);
@@ -175,7 +174,7 @@ void HAL_I2C_AddrCallback(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_
   vListYield(xAddrForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterAddrHandler(I2CHandle_t xI2C, I2CAddrHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterAddr(I2CHandle_t xI2C, I2CAddrHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xAddrForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterAddrCallback(xI2C, prvAddr);
@@ -206,7 +205,7 @@ void HAL_I2C_ListenCpltCallback(I2CHandle_t xI2C)
   vListYield(xListenCpltForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterListenCpltHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterListenCplt(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xListenCpltForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_LISTEN_COMPLETE_CB_ID, prvListenCplt);
@@ -237,7 +236,7 @@ void HAL_I2C_ErrorCallback(I2CHandle_t xI2C)
   vListYield(xErrorForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterErrorHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterError(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xErrorForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_ERROR_CB_ID, prvError);
@@ -268,7 +267,7 @@ void HAL_I2C_AbortCallback(I2CHandle_t xI2C)
   vListYield(xAbortForI2C + xRegisteredCardinalOfI2C(xI2C), xYield);
 }
 
-ListItem_t *pxI2CRegisterAbortHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
+ListItem_t *pxI2CRegisterAbort(I2CHandle_t xI2C, I2CHandler_t xHandler, TickType_t xDelay) {
   List_t *pxForI2C = xAbortForI2C + xRegisteredCardinalOfI2C(xI2C);
 #if USE_HAL_I2C_REGISTER_CALLBACKS
   if (listLIST_IS_EMPTY(pxForI2C)) HAL_I2C_RegisterCallback(xI2C, HAL_I2C_ABORT_CB_ID, prvAbort);
@@ -276,9 +275,9 @@ ListItem_t *pxI2CRegisterAbortHandler(I2CHandle_t xI2C, I2CHandler_t xHandler, T
   return pxListInsertNew(pxForI2C, xHandler, xDelay);
 }
 
-void vI2CUnregister(ListItem_t *pxRegistered) {
-  (void)uxListRemove(pxRegistered);
-  vPortFree(pxRegistered);
+void vI2CUnregister(ListItem_t *pxRegisteredForI2C) {
+  (void)uxListRemove(pxRegisteredForI2C);
+  vPortFree(pxRegisteredForI2C);
 }
 
 /*!

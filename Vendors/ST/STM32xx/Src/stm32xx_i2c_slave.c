@@ -34,9 +34,12 @@ struct I2CSlave {
   TaskHandle_t xTask;
   void *pvAddrs[i2cslaveMAX_DEVICES];
   struct I2CDevice *pxDevices[i2cslaveMAX_DEVICES];
+  struct RegisteredOpaques xRegisteredOpaques;
 };
 
 static size_t prvHashOfAddr(void *pvOpaque) { return (size_t)pvOpaque; }
+
+static void *pvOpaqueOfAddr(uint8_t ucAddr) { return (void *)(0xdeadbe00UL | ucAddr); }
 
 /*!
  * \brief Registers address.
@@ -47,18 +50,20 @@ static size_t prvHashOfAddr(void *pvOpaque) { return (size_t)pvOpaque; }
  * slots. Avoid stepping on the registration semantics.
  */
 static size_t prvRegisteredCardinalOfAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
-  struct RegisteredOpaques prvRegisteredOpaques = {.ppvOpaques = xI2CSlave->pvAddrs,
-                                                   .xNumberOfOpaques = i2cslaveMAX_DEVICES,
-                                                   .pxHashOfOpaqueFunction = prvHashOfAddr};
-  return xRegisteredCardinalOfOpaque(&prvRegisteredOpaques, (void *)(0xdeadbe00UL | ucAddr));
+  return xRegisteredCardinalOfOpaque(&xI2CSlave->xRegisteredOpaques, pvOpaqueOfAddr(ucAddr));
 }
 
 static struct I2CDevice **prvRegisteredDeviceOfAddr(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
   return xI2CSlave->pxDevices + prvRegisteredCardinalOfAddr(xI2CSlave, ucAddr);
 }
 
+static BaseType_t prvAddrIsRegistered(I2CSlaveHandle_t xI2CSlave, uint8_t ucAddr) {
+  return xOpaqueIsRegistered(&xI2CSlave->xRegisteredOpaques, pvOpaqueOfAddr(ucAddr));
+}
+
 #define i2cslaveSLAVE_TX_CPLT_NOTIFIED (1UL << ('T' - '@'))
 #define i2cslaveSLAVE_RX_CPLT_NOTIFIED (1UL << ('R' - '@'))
+#define i2cslaveLISTEN_CPLT_NOTIFIED   (1UL << ('L' - '@'))
 #define i2cslaveADDR_NOTIFIED          (1UL << ('A' - '@'))
 #define i2cslaveERROR_NOTIFIED         (1UL << ('E' - '@'))
 #define i2cslaveSTOP_NOTIFIED          (1UL << ('_' - '@'))
@@ -110,8 +115,9 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
 
   void prvListenCplt(I2CHandle_t xI2C) {
     (void)xI2C;
-    HAL_StatusTypeDef xStatus = HAL_I2C_EnableListen_IT(xI2C);
-    configASSERT(xStatus == HAL_OK);
+    BaseType_t xWoken;
+    xTaskNotifyFromISR(xTask, i2cslaveLISTEN_CPLT_NOTIFIED, eSetBits, &xWoken);
+    portYIELD_FROM_ISR(xWoken);
   }
 
   /*
@@ -119,7 +125,11 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    * the master wants to transmit and therefore the slave needs to receive.
    *
    * The implementation captures the I2C sequencer and updates its transfer
-   * direction and address. The updating runs at interrupt time.
+   * direction and address. The updating runs at interrupt time. This makes some
+   * important assumptions about the asynchronous transfer process. It assumes
+   * that the "address" event never overlaps a transfer in progress which
+   * therefore implies that the sequencer is not currently in use: a normal and
+   * fair assumption to make given that I2C transfers never overlap on the bus.
    */
   void prvAddr(I2CHandle_t xI2C, uint8_t ucTransferDirection, uint16_t usAddrMatchCode) {
     (void)xI2C;
@@ -132,16 +142,23 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
 
   void prvError(I2CHandle_t xI2C) {
     (void)xI2C;
+    /*
+     * No need to check the I2C handle. The slave task only registers for one
+     * channel. Use multiple slaves for multiple channels.
+     */
     BaseType_t xWoken;
     xTaskNotifyFromISR(xTask, i2cslaveERROR_NOTIFIED, eSetBits, &xWoken);
     portYIELD_FROM_ISR(xWoken);
   }
 
-  ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCpltHandler(xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
-  ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCpltHandler(xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
-  ListItem_t *pxListenCplt = pxI2CRegisterListenCpltHandler(xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
-  ListItem_t *pxAddr = pxI2CRegisterAddrHandler(xI2CSlave->xI2C, prvAddr, portMAX_DELAY);
-  ListItem_t *pxError = pxI2CRegisterErrorHandler(xI2CSlave->xI2C, prvError, portMAX_DELAY);
+  /*
+   * Register for slave transmit, receive, listen, address and error interrupts.
+   */
+  ListItem_t *pxSlaveTxCplt = pxI2CRegisterSlaveTxCplt(xI2CSlave->xI2C, prvSlaveTxCplt, portMAX_DELAY);
+  ListItem_t *pxSlaveRxCplt = pxI2CRegisterSlaveRxCplt(xI2CSlave->xI2C, prvSlaveRxCplt, portMAX_DELAY);
+  ListItem_t *pxListenCplt = pxI2CRegisterListenCplt(xI2CSlave->xI2C, prvListenCplt, portMAX_DELAY);
+  ListItem_t *pxAddr = pxI2CRegisterAddr(xI2CSlave->xI2C, prvAddr, portMAX_DELAY);
+  ListItem_t *pxError = pxI2CRegisterError(xI2CSlave->xI2C, prvError, portMAX_DELAY);
 
   /*
    * Wait indefinitely for stop notification.
@@ -151,13 +168,39 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
     do {
       xTaskNotifyWait(0UL, ULONG_MAX, &ulNotified, portMAX_DELAY);
       uint8_t ucAddr = ucI2CSeqAddr(xI2CSeq);
-      struct I2CDevice *pxDevice = *prvRegisteredDeviceOfAddr(xI2CSlave, ucAddr);
-      if (pxDevice) {
-        if ((ulNotified & i2cslaveSLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt) pxDevice->pvSlaveTxCplt(xI2CSeq);
-        if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt) pxDevice->pvSlaveRxCplt(xI2CSeq);
-        if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
-        if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
-      }
+      if (prvAddrIsRegistered(xI2CSlave, ucAddr)) {
+        struct I2CDevice *pxDevice = *prvRegisteredDeviceOfAddr(xI2CSlave, ucAddr);
+        if (pxDevice) {
+          if ((ulNotified & i2cslaveSLAVE_TX_CPLT_NOTIFIED) && pxDevice->pvSlaveTxCplt)
+            pxDevice->pvSlaveTxCplt(xI2CSeq);
+          if ((ulNotified & i2cslaveSLAVE_RX_CPLT_NOTIFIED) && pxDevice->pvSlaveRxCplt)
+            pxDevice->pvSlaveRxCplt(xI2CSeq);
+          if ((ulNotified & i2cslaveADDR_NOTIFIED) && pxDevice->pvAddr) pxDevice->pvAddr(xI2CSeq);
+          if ((ulNotified & i2cslaveERROR_NOTIFIED) && pxDevice->pvError) pxDevice->pvError(xI2CSeq);
+        }
+      } else
+        /*
+         * Perform a dummy transfer when no device exists. Always try at least
+         * one frame. This may fail if the master fails to acknowledge such as
+         * when the master performs a device address ping using \c
+         * HAL_I2C_IsDeviceReady. Set up the transfer nevertheless. Adjust the
+         * slave mask to avoid overlap with non-emulated peripherals sharing the
+         * same bus.
+         *
+         * Tempting to send a non-acknowledge using a \c vI2CSeqNAck(xI2CSeq)
+         * call. Equivalent to calling the \c
+         * __HAL_I2C_GENERATE_NACK(xI2CSlave->xI2C) macro. However, the
+         * hardware-abstraction layer does \e not enable the \c NACKI interrupt
+         * using \c __HAL_I2C_ENABLE_IT(xI2CSlave->xI2C, I2C_IT_NACKI) so the
+         * non-acknowledge persists indefinitely. Performing a dummy transfer
+         * provides a temporary but functional workaround.
+         */
+        if ((ulNotified & i2cslaveADDR_NOTIFIED)) {
+          vI2CSeqBufferLength(xI2CSeq, 1UL);
+          *((uint8_t *)pvI2CSeqBuffer(xI2CSeq)) = 0xa5U;
+          xI2CSeqLastFrame(xI2CSeq);
+        }
+      if ((ulNotified & i2cslaveLISTEN_CPLT_NOTIFIED)) HAL_I2C_EnableListen_IT(xI2CSlave->xI2C);
     } while ((ulNotified & i2cslaveSTOP_NOTIFIED) == 0UL);
   }
 
@@ -170,10 +213,10 @@ static portTASK_FUNCTION(prvI2CSlaveTask, pvParameters) {
    * stop notification.
    */
   vI2CUnregister(pxSlaveTxCplt);
-  (void)vI2CUnregister(pxSlaveRxCplt);
-  (void)vI2CUnregister(pxListenCplt);
-  (void)vI2CUnregister(pxAddr);
-  (void)vI2CUnregister(pxError);
+  vI2CUnregister(pxSlaveRxCplt);
+  vI2CUnregister(pxListenCplt);
+  vI2CUnregister(pxAddr);
+  vI2CUnregister(pxError);
   vI2CSeqDelete(xI2CSeq);
   vTaskDelete(NULL);
 }
@@ -183,6 +226,9 @@ I2CSlaveHandle_t xI2CSlaveCreate(I2CHandle_t xI2C) {
   configASSERT(xI2CSlave);
   (void)memset(xI2CSlave, 0, sizeof(*xI2CSlave));
   xI2CSlave->xI2C = xI2C;
+  xI2CSlave->xRegisteredOpaques.ppvOpaques = xI2CSlave->pvAddrs;
+  xI2CSlave->xRegisteredOpaques.xNumberOfOpaques = i2cslaveMAX_DEVICES;
+  xI2CSlave->xRegisteredOpaques.pxHashOfOpaqueFunction = prvHashOfAddr;
   return xI2CSlave;
 }
 

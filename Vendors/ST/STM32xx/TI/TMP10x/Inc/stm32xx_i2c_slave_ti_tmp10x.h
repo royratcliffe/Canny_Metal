@@ -6,6 +6,8 @@
 
 #include "stm32xx_i2c_slave.h"
 
+#ifdef HAL_I2C_MODULE_ENABLED
+
 #ifndef ti_tmp10xTASK_NAME
 #define ti_tmp10xTASK_NAME "TMP10x"
 #endif
@@ -27,3 +29,5 @@ BaseType_t xTI_TMP10xStart(TI_TMP10xHandle_t xTMP10x);
 void vTI_TMP10xStop(TI_TMP10xHandle_t xTMP10x);
 
 void vTI_TMP10xDelete(TI_TMP10xHandle_t xTMP10x);
+
+#endif

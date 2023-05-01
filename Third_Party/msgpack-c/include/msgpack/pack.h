@@ -127,7 +127,7 @@ inline void msgpack_packer_init(msgpack_packer *pk, void *data, msgpack_packer_w
 
 inline msgpack_packer *msgpack_packer_new(void *data, msgpack_packer_write callback) {
   msgpack_packer *pk = (msgpack_packer *)calloc(1, sizeof(msgpack_packer));
-  if (!pk) { return NULL; }
+  if (!pk) return NULL;
   msgpack_packer_init(pk, data, callback);
   return pk;
 }
@@ -136,19 +136,19 @@ inline void msgpack_packer_free(msgpack_packer *pk) { free(pk); }
 
 inline int msgpack_pack_str_with_body(msgpack_packer *pk, const void *b, size_t l) {
   int ret = msgpack_pack_str(pk, l);
-  if (ret != 0) { return ret; }
+  if (ret != 0) return ret;
   return msgpack_pack_str_body(pk, b, l);
 }
 
 inline int msgpack_pack_bin_with_body(msgpack_packer *pk, const void *b, size_t l) {
   int ret = msgpack_pack_bin(pk, l);
-  if (ret != 0) { return ret; }
+  if (ret != 0) return ret;
   return msgpack_pack_bin_body(pk, b, l);
 }
 
 inline int msgpack_pack_ext_with_body(msgpack_packer *pk, const void *b, size_t l, int8_t type) {
   int ret = msgpack_pack_ext(pk, l, type);
-  if (ret != 0) { return ret; }
+  if (ret != 0) return ret;
   return msgpack_pack_ext_body(pk, b, l);
 }
 

@@ -8,12 +8,16 @@
 #include <memory.h>
 
 BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding, TickType_t xTicksToWait) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
   return xMsgBindingSend(xMsgBinding, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
 }
 
+void vMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding) {
+  if (xMailboxOrSelf(&xMailbox) == pdPASS) (void)xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
+}
+
 BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
   /*
    * Throw away the size of the message received. The size does not matter. The
    * unifier knows the size. Answer pass or fail.
@@ -22,12 +26,12 @@ BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgU
 }
 
 BaseType_t xMailboxRelayMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
   return xMsgUnifierRelay(xMsgUnifier, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
 }
 
 BaseType_t xMsgBindMailbox(MsgBindingHandle_t xMsgPack, MailboxHandle_t xMailbox) {
-  if (xMailbox == NULL && (xMailbox = xMailboxSelf()) == NULL) return pdFAIL;
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
   return xMsgBindExtWithBody(xMsgPack, msgEXT_TYPE_MAILBOX, &xMailbox, sizeof(xMailbox));
 }
 
