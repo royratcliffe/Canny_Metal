@@ -31,13 +31,9 @@ void vCANTxDataInit(struct CANTx *pxCANTx) {
   vCANTxData(pxCANTx);
 }
 
-void vCANTxData(struct CANTx *pxCANTx) {
-  pxCANTx->xTxHeader.RTR = CAN_RTR_DATA;
-}
+void vCANTxData(struct CANTx *pxCANTx) { pxCANTx->xTxHeader.RTR = CAN_RTR_DATA; }
 
-void vCANTxRemote(struct CANTx *pxCANTx) {
-  pxCANTx->xTxHeader.RTR = CAN_RTR_REMOTE;
-}
+void vCANTxRemote(struct CANTx *pxCANTx) { pxCANTx->xTxHeader.RTR = CAN_RTR_REMOTE; }
 
 HAL_StatusTypeDef xCANAddTxMessage(CAN_HandleTypeDef *pxCAN, struct CANTx *pxCANTx) {
   return HAL_CAN_AddTxMessage(pxCAN, &pxCANTx->xTxHeader, pxCANTx->ucTxData, &pxCANTx->ulTxMailbox);
