@@ -12,4 +12,8 @@
 
 BaseType_t xMsgBindOpaque(MsgBindingHandle_t xMsgBinding, void *pvOpaque);
 
+static inline BaseType_t xMsgBindStrOpaque(MsgBindingHandle_t xMsgBinding, const char *pcStr, void *pvOpaque) {
+  return xMsgBindStr(xMsgBinding, pcStr) && xMsgBindOpaque(xMsgBinding, pvOpaque);
+}
+
 BaseType_t xMsgUnifyOpaque(MsgUnifierHandle_t xMsgUnifier, void **ppvOpaque);
