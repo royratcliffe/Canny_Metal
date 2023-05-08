@@ -56,4 +56,55 @@ BaseType_t xCANRxIsData(struct CANRx *pxCANRx) { return pxCANRx->xRxHeader.RTR =
 
 BaseType_t xCANRxIsRemote(struct CANRx *pxCANRx) { return pxCANRx->xRxHeader.RTR == CAN_RTR_REMOTE; }
 
+/*!
+ * \brief Error fields to \c NULL terminated vector of string pointers.
+ *
+ * \param[in] ulError Error bits.
+ *
+ * \returns Answers a dynamically-allocated vector of error string pointers terminated by a \c NULL string pointer. Free
+ * the non-\c NULL return vector using \c pvPortFree. Answers \c NULL if no errors.
+ *
+ * First, quickly count the number of bits in the error word. Reduces the
+ * number of re-allocations required.
+ */
+const char **pcCANErrorStrs(uint32_t ulError) {
+  static struct {
+    uint32_t ulError;
+    const char *pcStr;
+  } const sErrorAndStr[] = {
+      {HAL_CAN_ERROR_EWG, "Protocol Error Warning"},
+      {HAL_CAN_ERROR_EPV, "Error Passive"},
+      {HAL_CAN_ERROR_BOF, "Bus-off error"},
+      {HAL_CAN_ERROR_STF, "Stuff error"},
+      {HAL_CAN_ERROR_FOR, "Form error"},
+      {HAL_CAN_ERROR_ACK, "Acknowledgement error"},
+      {HAL_CAN_ERROR_BR, "Bit recessive error"},
+      {HAL_CAN_ERROR_BD, "Bit dominant error"},
+      {HAL_CAN_ERROR_CRC, "CRC error"},
+      {HAL_CAN_ERROR_RX_FOV0, "Rx FIFO0 overrun error"},
+      {HAL_CAN_ERROR_RX_FOV1, "Rx FIFO1 overrun error"},
+      {HAL_CAN_ERROR_TX_ALST0, "TxMailbox 0 transmit failure due to arbitration lost"},
+      {HAL_CAN_ERROR_TX_TERR0, "TxMailbox 0 transmit failure due to transmit error"},
+      {HAL_CAN_ERROR_TX_ALST1, "TxMailbox 1 transmit failure due to arbitration lost"},
+      {HAL_CAN_ERROR_TX_TERR1, "TxMailbox 1 transmit failure due to transmit error"},
+      {HAL_CAN_ERROR_TX_ALST2, "TxMailbox 2 transmit failure due to arbitration lost"},
+      {HAL_CAN_ERROR_TX_TERR2, "TxMailbox 2 transmit failure due to transmit error"},
+      {HAL_CAN_ERROR_TIMEOUT, "Timeout error"},
+      {HAL_CAN_ERROR_NOT_INITIALIZED, "Peripheral not initialized"},
+      {HAL_CAN_ERROR_NOT_READY, "Peripheral not ready"},
+      {HAL_CAN_ERROR_NOT_STARTED, "Peripheral not started"},
+      {HAL_CAN_ERROR_PARAM, "Parameter error"},
+  };
+
+  uint8_t xErrorCount = ucCount32Bits(ulError);
+  if (xErrorCount == 0U) return NULL;
+  const char **ppcErrorStrs = pvPortMalloc(sizeof(*ppcErrorStrs) * xErrorCount + 1U);
+  configASSERT(ppcErrorStrs);
+  size_t xErrorStrs = 0U;
+  for (size_t xErrorAndStr = 0U; xErrorAndStr < DIM_OF(sErrorAndStr); xErrorAndStr++)
+    if (ulError & sErrorAndStr[xErrorAndStr].ulError) ppcErrorStrs[xErrorStrs++] = sErrorAndStr[xErrorAndStr].pcStr;
+  ppcErrorStrs[xErrorStrs] = NULL;
+  return ppcErrorStrs;
+}
+
 #endif // ifdef HAL_CAN_MODULE_ENABLED
