@@ -45,6 +45,8 @@ struct CANTx {
 
 void vCANTxInit(struct CANTx *pxCANTx);
 
+void vCANTxDataInit(struct CANTx *pxCANTx);
+
 HAL_StatusTypeDef xCANAddTxMessage(CAN_HandleTypeDef *pxCAN, struct CANTx *pxCANTx);
 
 /*!
@@ -71,6 +73,10 @@ static inline void vCANTxStdId(struct CANTx *pxCANTx, uint32_t ulStdId) {
 static inline void vCANTxExtId(struct CANTx *pxCANTx, uint32_t ulExtId) {
   vCANTxHeaderStdId(&pxCANTx->xTxHeader, ulExtId);
 }
+
+void vCANTxData(struct CANTx *pxCANTx);
+
+void vCANTxRemote(struct CANTx *pxCANTx);
 
 /*!
  * \}
