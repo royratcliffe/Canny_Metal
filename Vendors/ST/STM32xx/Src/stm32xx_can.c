@@ -7,6 +7,10 @@
 
 #  include "task.h"
 
+#  include "count_bits.h"
+
+#  include "dimof.h"
+
 // standard library
 #  include <string.h>
 
