@@ -146,6 +146,9 @@ BaseType_t xMsgUnifyArray(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItem
 BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems);
 
 /*!
+ * \brief Unifies with map item where string matches key.
+ * \param[in] pzStrKey String to match key.
+ *
  * Requires an initial unification. Unifies the key by string comparison.
  * Unifies with the matched item's value on success. Either unifies with any
  * message material after the map on failure, or the end of the buffer in the
