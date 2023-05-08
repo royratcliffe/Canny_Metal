@@ -68,6 +68,26 @@ BaseType_t xMsgBindStrWithBody(MsgBindingHandle_t xMsgBinding, const char *pcStr
 
 BaseType_t xMsgBindStr(MsgBindingHandle_t xMsgBinding, const char *pcStr);
 
+static inline BaseType_t xMsgBindStrNil(MsgBindingHandle_t xMsgBinding, const char *pcStr) {
+  return xMsgBindStr(xMsgBinding, pcStr) && xMsgBindNil(xMsgBinding);
+}
+
+static inline BaseType_t xMsgBindStrBool(MsgBindingHandle_t xMsgBinding, const char *pcStr, BaseType_t xValue) {
+  return xMsgBindStr(xMsgBinding, pcStr) && xMsgBindBool(xMsgBinding, xValue);
+}
+
+static inline BaseType_t xMsgBindStrInt(MsgBindingHandle_t xMsgBinding, const char *pcStr, int lValue) {
+  return xMsgBindStr(xMsgBinding, pcStr) && xMsgBindInt(xMsgBinding, lValue);
+}
+
+static inline BaseType_t xMsgBindStrUInt(MsgBindingHandle_t xMsgBinding, const char *pcStr, unsigned int ulValue) {
+  return xMsgBindStr(xMsgBinding, pcStr) && xMsgBindUInt(xMsgBinding, ulValue);
+}
+
+static inline BaseType_t xMsgBindStrFloat(MsgBindingHandle_t xMsgBinding, const char *pcStr, float lValue) {
+  return xMsgBindStr(xMsgBinding, pcStr) && xMsgBindFloat(xMsgBinding, lValue);
+}
+
 BaseType_t xMsgBindArray(MsgBindingHandle_t xMsgBinding, size_t xNumberOfElements);
 
 BaseType_t xMsgBindMap(MsgBindingHandle_t xMsgBinding, size_t xNumberOfEntries);
