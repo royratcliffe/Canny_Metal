@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <memory.h>
 
-size_t xCOBSEncode(const void *pvData, size_t xDataLengthBytes, void *pvCOBS) {
+size_t xCOBSStuff(const void *pvData, size_t xDataLengthBytes, void *pvCOBS) {
   size_t xCOBSLengthBytes = 0UL;
   while (xDataLengthBytes) {
     uint8_t uc = xDataLengthBytes < 0xffU ? xDataLengthBytes : 0xfeU;
@@ -31,7 +31,7 @@ size_t xCOBSEncode(const void *pvData, size_t xDataLengthBytes, void *pvCOBS) {
   return xCOBSLengthBytes + 1UL;
 }
 
-size_t xCOBSDecode(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData) {
+size_t xCOBSUnStuff(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData) {
   size_t xDataLengthBytes = 0UL;
   while (xCOBSLengthBytes > 1UL) {
     uint8_t uc = *(const uint8_t *)pvCOBS++;

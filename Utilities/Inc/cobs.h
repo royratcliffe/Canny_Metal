@@ -11,7 +11,7 @@
  *
  * \note Makes use of void pointer arithmetic.
  */
-size_t xCOBSEncode(const void *pvData, size_t xDataLengthBytes, void *pvCOBS);
+size_t xCOBSStuff(const void *pvData, size_t xDataLengthBytes, void *pvCOBS);
 
 /*!
  * \param[in] pvCOBS Encoded bytes including its trailing null.
@@ -26,4 +26,4 @@ size_t xCOBSEncode(const void *pvData, size_t xDataLengthBytes, void *pvCOBS);
  * invalid COBS sequence, the buffer may mutate for partial results if \c pvData
  * is not \c NULL.
  */
-size_t xCOBSDecode(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData);
+size_t xCOBSUnStuff(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData);
