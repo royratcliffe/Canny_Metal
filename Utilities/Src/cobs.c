@@ -35,8 +35,7 @@ size_t xCOBSUnStuff(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData) {
   size_t xDataLengthBytes = 0UL;
   while (xCOBSLengthBytes > 1UL) {
     uint8_t uc = *(const uint8_t *)pvCOBS++;
-    if (uc == 0x00U || --uc >= xCOBSLengthBytes--) return 0UL;
-    if (memchr(pvCOBS, 0x00U, uc)) return 0UL;
+    if (uc == 0x00U || --uc >= xCOBSLengthBytes-- || memchr(pvCOBS, 0x00U, uc)) return 0UL;
     if (uc) {
       if (pvData) {
         (void)memcpy(pvData, pvCOBS, uc);
