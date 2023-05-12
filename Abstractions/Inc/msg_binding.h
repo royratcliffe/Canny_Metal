@@ -38,7 +38,7 @@ void vMsgBindingClear(MsgBindingHandle_t xMsgBinding);
  * \brief Accesses the packed binding buffer.
  * \returns Size of buffer.
  */
-size_t xMsgBindingBuffer(MsgBindingHandle_t xMsgBinding, const void **ppvBuffer);
+size_t xMsgBindingBuffer(const MsgBindingHandle_t xMsgBinding, const void **ppvBuffer);
 
 size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait);
 

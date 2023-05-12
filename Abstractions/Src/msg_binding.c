@@ -41,7 +41,7 @@ void vMsgBindingDestroy(MsgBindingHandle_t xMsgBinding) {
 
 void vMsgBindingClear(MsgBindingHandle_t xMsgBinding) { msgpack_sbuffer_clear(&xMsgBinding->xBuffer); }
 
-size_t xMsgBindingBuffer(MsgBindingHandle_t xMsgBinding, const void **ppvBuffer) {
+size_t xMsgBindingBuffer(const MsgBindingHandle_t xMsgBinding, const void **ppvBuffer) {
   if (ppvBuffer) *ppvBuffer = xMsgBinding->xBuffer.data;
   return xMsgBinding->xBuffer.size;
 }
