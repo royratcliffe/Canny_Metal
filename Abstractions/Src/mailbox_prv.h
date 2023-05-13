@@ -15,4 +15,5 @@ struct Mailbox {
   TaskHandle_t xTask;
   List_t xLinking;
   ListItem_t xLinked;
+  volatile uint32_t ulSendingFailures;
 };

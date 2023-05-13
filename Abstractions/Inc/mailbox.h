@@ -194,6 +194,14 @@ MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox);
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait);
 
 /*!
+ * \brief Sends a mailbox message from an interrupt-service routine.
+ */
+size_t xMailboxSendFromISR(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes,
+                           BaseType_t *pxWoken);
+
+uint32_t ulMailboxSendingFailures(const MailboxHandle_t xMailbox);
+
+/*!
  * \brief Notifies mailbox message sent.
  * \returns \c pdPASS if the mailbox has spawned, i.e. its associated task
  * exists.
