@@ -48,11 +48,11 @@ size_t xMsgBindingBuffer(const MsgBindingHandle_t xMsgBinding, const void **ppvB
 
 size_t xMsgBindingSend(const MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer,
                        TickType_t xTicksToWait) {
-  BaseType_t xCritical = xTicksToWait == 0U;
-  if (xCritical) taskENTER_CRITICAL();
+  BaseType_t xCriticalTask = xTicksToWait == 0U;
+  if (xCriticalTask) taskENTER_CRITICAL();
   size_t xBytesSent =
       xMessageBufferSend(xMessageBuffer, xMsgBinding->xBuffer.data, xMsgBinding->xBuffer.size, xTicksToWait);
-  if (xCritical) taskEXIT_CRITICAL();
+  if (xCriticalTask) taskEXIT_CRITICAL();
   return xBytesSent;
 }
 
