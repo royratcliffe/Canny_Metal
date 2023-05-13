@@ -1,6 +1,5 @@
-/*
- * mailbox_msg.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "mailbox_msg.h"
 #include "mailbox_prv.h"
