@@ -187,6 +187,9 @@ MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox);
  * caution.
  *
  * The message includes the sending mailbox.
+ *
+ * The mailbox allows for multiple writers by entering a critical section
+ * when waiting for zero ticks while sending.
  */
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait);
 

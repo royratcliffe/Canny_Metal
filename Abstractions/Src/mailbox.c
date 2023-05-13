@@ -115,7 +115,13 @@ MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox) {
 
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return 0UL;
-  return xMessageBufferSend(xMailbox, pvTxData, xDataLengthBytes, xTicksToWait);
+  BaseType_t xCriticalTask = xTicksToWait == 0U;
+  if (xCriticalTask) taskENTER_CRITICAL();
+  size_t xBytesSent = xMessageBufferSend(xMailbox->xMessageBuffer, pvTxData, xDataLengthBytes, xTicksToWait);
+  if (xCriticalTask) taskEXIT_CRITICAL();
+  return xBytesSent;
+}
+
 }
 
 BaseType_t xMailboxSent(MailboxHandle_t xMailbox) {
