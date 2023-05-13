@@ -84,13 +84,13 @@ void vMailboxLinkOwner(MailboxHandle_t xMailbox, void *pvOwner) {
   listSET_LIST_ITEM_OWNER(&xMailbox->xLinked, pvOwner);
 }
 
-void *pvMailboxLinkOwner(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_OWNER(&xMailbox->xLinked); }
+void *pvMailboxLinkOwner(const MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_OWNER(&xMailbox->xLinked); }
 
 void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue) {
   listSET_LIST_ITEM_VALUE(&xMailbox->xLinked, xValue);
 }
 
-TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked); }
+TickType_t xMailboxLinkValue(const MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked); }
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox)) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return NULL;

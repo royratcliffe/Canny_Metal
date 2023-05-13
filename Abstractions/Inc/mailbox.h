@@ -152,7 +152,7 @@ void vMailboxUnlinkAll(MailboxHandle_t xMailbox);
  */
 void vMailboxLinkOwner(MailboxHandle_t xMailbox, void *pvOwner);
 
-void *pvMailboxLinkOwner(MailboxHandle_t xMailbox);
+void *pvMailboxLinkOwner(const MailboxHandle_t xMailbox);
 
 /*!
  * \brief Resets the link value of the mailbox.
@@ -168,7 +168,7 @@ void *pvMailboxLinkOwner(MailboxHandle_t xMailbox);
  */
 void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue);
 
-TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox);
+TickType_t xMailboxLinkValue(const MailboxHandle_t xMailbox);
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox));
 
