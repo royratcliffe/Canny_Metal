@@ -7,13 +7,26 @@
 
 #include <memory.h>
 
+#ifndef mailbox_send_msgUSE_MSG_BINDING_SEND
+#  define mailbox_send_msgUSE_MSG_BINDING_SEND 0
+#endif
+
 BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding, TickType_t xTicksToWait) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
-  return xMsgBindingSend(xMsgBinding, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
+  size_t xBytesSent;
+#if mailbox_send_msgUSE_MSG_BINDING_SEND
+  xBytesSent = xMsgBindingSend(xMsgBinding, xMailbox->xMessageBuffer, xTicksToWait) != 0UL;
+#else
+  const void *pvBuffer;
+  size_t xBufferLengthBytes = xMsgBindingBuffer(xMsgBinding, &pvBuffer);
+  xBytesSent = xMailboxSend(xMailbox, pvBuffer, xBufferLengthBytes, xTicksToWait);
+#endif
+  if (xBytesSent) (void)xMailboxSent(xMailbox);
+  return xBytesSent;
 }
 
 void vMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding) {
-  if (xMailboxOrSelf(&xMailbox) == pdPASS) (void)xMailboxSendMsg(xMailbox, xMsgBinding, portMAX_DELAY);
+  if (xMailboxOrSelf(&xMailbox) == pdPASS) (void)xMailboxSendMsg(xMailbox, xMsgBinding, 0U);
 }
 
 BaseType_t xMailboxReceiveMsg(MailboxHandle_t xMailbox, MsgUnifierHandle_t xMsgUnifier, TickType_t xTicksToWait) {

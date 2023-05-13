@@ -43,11 +43,21 @@
 BaseType_t xMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding, TickType_t xTicksToWait);
 
 /*!
- * \brief Sends message to mailbox waiting indefinitely.
+ * \brief Sends message to mailbox without every blocking.
  *
  * Silently fails if the mailbox parameter resolves to no mailbox; it does \e
- * not send a message. Otherwise, it waits for the mailbox's message buffer to
- * find space for the message send to complete successfully.
+ * not send a message. Otherwise, it never waits for the mailbox's message
+ * buffer to find space for the message send to complete successfully. Instead,
+ * it silently fails.
+ *
+ * Use this version of sending for multiple-sender scenarios.
+ *
+ * Automatically notifies "sent" if the destingation mailbox task already exists
+ * and the bytes were successfully sent. This might lead to multiple
+ * notifications when sending more than one message. The task will absorb the
+ * multiplicity by folding them to a single wake up. However, depending on
+ * relative priorities, the sends could conceivably overlap the receiving
+ * mailbox handler and leave a trailing redundant no-message notification.
  */
 void vMailboxSendMsg(MailboxHandle_t xMailbox, MsgBindingHandle_t xMsgBinding);
 
