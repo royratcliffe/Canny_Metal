@@ -40,7 +40,14 @@ void vMsgBindingClear(MsgBindingHandle_t xMsgBinding);
  */
 size_t xMsgBindingBuffer(const MsgBindingHandle_t xMsgBinding, const void **ppvBuffer);
 
-size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait);
+/*!
+ * \brief Transfers binding buffer to message buffer.
+ *
+ * Supports multi-writer access to the message buffer by placing the send within
+ * a critical section if \c xTicksToWait equals \c 0.
+ */
+size_t xMsgBindingSend(const MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer,
+                       TickType_t xTicksToWait);
 
 /*!
  * \brief Binds a nil.
