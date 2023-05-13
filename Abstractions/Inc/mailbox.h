@@ -80,15 +80,15 @@
  * notification bits.
  */
 #if configUSE_TASK_NOTIFICATIONS == 1
-#ifndef mailboxSENT_NOTIFIED
-#define mailboxSENT_NOTIFIED (1UL << ('^' - '@'))
-#endif
+#  ifndef mailboxSENT_NOTIFIED
+#    define mailboxSENT_NOTIFIED (1UL << ('^' - '@'))
+#  endif
 #endif
 
 #if configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0
-#ifndef mailboxTASK_TLS_INDEX
-#define mailboxTASK_TLS_INDEX 0U
-#endif
+#  ifndef mailboxTASK_TLS_INDEX
+#    define mailboxTASK_TLS_INDEX 0U
+#  endif
 #endif
 
 /*!
