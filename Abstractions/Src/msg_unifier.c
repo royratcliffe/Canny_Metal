@@ -1,6 +1,5 @@
-/*
- * msg_unifier.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "msg_unifier.h"
 
@@ -47,7 +46,8 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
    * buffer to drain. The mailbox becomes stuck with continuous receive failure.
    * Ensure that the unifier matches the message buffer size.
    */
-  msgpack_unpacker_reset(&xMsgUnifier->xUnpacker);
+  msgpack_unpacker_destroy(&xMsgUnifier->xUnpacker);
+  msgpack_unpacker_init(&xMsgUnifier->xUnpacker, xMsgUnifier->xUnpacker.initial_buffer_size);
   size_t xReceivedBytes =
       xMessageBufferReceive(xMessageBuffer, msgpack_unpacker_buffer(&xMsgUnifier->xUnpacker),
                             msgpack_unpacker_buffer_capacity(&xMsgUnifier->xUnpacker), xTicksToWait);
@@ -170,13 +170,12 @@ BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems)
 BaseType_t xMsgUnifyMapStrKey(MsgUnifierHandle_t xMsgUnifier, const char *pzStrKey) {
   size_t xNumberOfItems;
   if (!xMsgUnifyMap(xMsgUnifier, &xNumberOfItems)) return pdFAIL;
-  for (; xNumberOfItems != 0UL && xMsgUnify(xMsgUnifier); xNumberOfItems--)
-    {
-      BaseType_t xUnifyKey = xMsgUnifyStrCmp(xMsgUnifier, pzStrKey);
-      BaseType_t xUnifyValue = xMsgUnify(xMsgUnifier);
-      if (xUnifyKey) return xUnifyValue;
-      if (!xUnifyValue) break;
-    }
+  for (; xNumberOfItems != 0UL && xMsgUnify(xMsgUnifier); xNumberOfItems--) {
+    BaseType_t xUnifyKey = xMsgUnifyStrCmp(xMsgUnifier, pzStrKey);
+    BaseType_t xUnifyValue = xMsgUnify(xMsgUnifier);
+    if (xUnifyKey) return xUnifyValue;
+    if (!xUnifyValue) break;
+  }
   return pdFAIL;
 }
 

@@ -80,15 +80,15 @@
  * notification bits.
  */
 #if configUSE_TASK_NOTIFICATIONS == 1
-#ifndef mailboxSENT_NOTIFIED
-#define mailboxSENT_NOTIFIED (1UL << ('^' - '@'))
-#endif
+#  ifndef mailboxSENT_NOTIFIED
+#    define mailboxSENT_NOTIFIED (1UL << ('^' - '@'))
+#  endif
 #endif
 
 #if configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0
-#ifndef mailboxTASK_TLS_INDEX
-#define mailboxTASK_TLS_INDEX 0U
-#endif
+#  ifndef mailboxTASK_TLS_INDEX
+#    define mailboxTASK_TLS_INDEX 0U
+#  endif
 #endif
 
 /*!
@@ -152,7 +152,7 @@ void vMailboxUnlinkAll(MailboxHandle_t xMailbox);
  */
 void vMailboxLinkOwner(MailboxHandle_t xMailbox, void *pvOwner);
 
-void *pvMailboxLinkOwner(MailboxHandle_t xMailbox);
+void *pvMailboxLinkOwner(const MailboxHandle_t xMailbox);
 
 /*!
  * \brief Resets the link value of the mailbox.
@@ -168,7 +168,7 @@ void *pvMailboxLinkOwner(MailboxHandle_t xMailbox);
  */
 void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue);
 
-TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox);
+TickType_t xMailboxLinkValue(const MailboxHandle_t xMailbox);
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox));
 
@@ -187,8 +187,19 @@ MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox);
  * caution.
  *
  * The message includes the sending mailbox.
+ *
+ * The mailbox allows for multiple writers by entering a critical section
+ * when waiting for zero ticks while sending.
  */
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait);
+
+/*!
+ * \brief Sends a mailbox message from an interrupt-service routine.
+ */
+size_t xMailboxSendFromISR(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes,
+                           BaseType_t *pxWoken);
+
+uint32_t ulMailboxSendingFailures(const MailboxHandle_t xMailbox);
 
 /*!
  * \brief Notifies mailbox message sent.
@@ -210,6 +221,8 @@ size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xData
  * \endcode
  */
 BaseType_t xMailboxSent(MailboxHandle_t xMailbox);
+
+BaseType_t xMailboxSentFromISR(MailboxHandle_t xMailbox, BaseType_t *pxWoken);
 
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait);
 

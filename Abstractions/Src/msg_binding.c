@@ -1,6 +1,5 @@
-/*
- * msg_binding.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "msg_binding.h"
 
@@ -41,13 +40,19 @@ void vMsgBindingDestroy(MsgBindingHandle_t xMsgBinding) {
 
 void vMsgBindingClear(MsgBindingHandle_t xMsgBinding) { msgpack_sbuffer_clear(&xMsgBinding->xBuffer); }
 
-size_t xMsgBindingBuffer(MsgBindingHandle_t xMsgBinding, const void **ppvBuffer) {
+size_t xMsgBindingBuffer(const MsgBindingHandle_t xMsgBinding, const void **ppvBuffer) {
   if (ppvBuffer) *ppvBuffer = xMsgBinding->xBuffer.data;
   return xMsgBinding->xBuffer.size;
 }
 
-size_t xMsgBindingSend(MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer, TickType_t xTicksToWait) {
-  return xMessageBufferSend(xMessageBuffer, xMsgBinding->xBuffer.data, xMsgBinding->xBuffer.size, xTicksToWait);
+size_t xMsgBindingSend(const MsgBindingHandle_t xMsgBinding, MessageBufferHandle_t xMessageBuffer,
+                       TickType_t xTicksToWait) {
+  BaseType_t xCriticalTask = xTicksToWait == 0U;
+  if (xCriticalTask) taskENTER_CRITICAL();
+  size_t xBytesSent =
+      xMessageBufferSend(xMessageBuffer, xMsgBinding->xBuffer.data, xMsgBinding->xBuffer.size, xTicksToWait);
+  if (xCriticalTask) taskEXIT_CRITICAL();
+  return xBytesSent;
 }
 
 BaseType_t xMsgBindNil(MsgBindingHandle_t xMsgBinding) { return msgpack_pack_nil(&xMsgBinding->xPacker) == 0; }

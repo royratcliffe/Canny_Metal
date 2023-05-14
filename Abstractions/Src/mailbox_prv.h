@@ -1,6 +1,5 @@
-/*
- * mailbox_prv.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -15,4 +14,5 @@ struct Mailbox {
   TaskHandle_t xTask;
   List_t xLinking;
   ListItem_t xLinked;
+  volatile uint32_t ulSendingFailures;
 };

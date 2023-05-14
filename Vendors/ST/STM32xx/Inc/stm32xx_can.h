@@ -45,6 +45,8 @@ struct CANTx {
 
 void vCANTxInit(struct CANTx *pxCANTx);
 
+void vCANTxDataInit(struct CANTx *pxCANTx);
+
 HAL_StatusTypeDef xCANAddTxMessage(CAN_HandleTypeDef *pxCAN, struct CANTx *pxCANTx);
 
 /*!
@@ -71,6 +73,10 @@ static inline void vCANTxStdId(struct CANTx *pxCANTx, uint32_t ulStdId) {
 static inline void vCANTxExtId(struct CANTx *pxCANTx, uint32_t ulExtId) {
   vCANTxHeaderStdId(&pxCANTx->xTxHeader, ulExtId);
 }
+
+void vCANTxData(struct CANTx *pxCANTx);
+
+void vCANTxRemote(struct CANTx *pxCANTx);
 
 /*!
  * \}
@@ -109,5 +115,18 @@ static inline BaseType_t xCANRxIsStdID(const struct CANRx *pxCANRx, uint32_t ulS
 /*!
  * \}
  */
+
+/*!
+ * \brief Error fields to \c NULL terminated vector of string pointers.
+ *
+ * \param[in] ulError Error bits.
+ *
+ * \returns Answers a dynamically-allocated vector of error string pointers terminated by a \c NULL string pointer. Free
+ * the non-\c NULL return vector using \c pvPortFree. Answers \c NULL if no errors.
+ *
+ * First, quickly count the number of bits in the error word. Reduces the
+ * number of re-allocations required.
+ */
+const char **pcCANErrorStrs(uint32_t ulError);
 
 #endif // ifdef HAL_CAN_MODULE_ENABLED

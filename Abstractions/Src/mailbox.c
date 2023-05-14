@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "containerof.h"
+#include "atomic.h"
 
 MailboxHandle_t xMailboxCreate(size_t xBufferSizeBytes) {
   MailboxHandle_t xMailbox = pvPortMalloc(sizeof(*xMailbox));
@@ -83,13 +84,13 @@ void vMailboxLinkOwner(MailboxHandle_t xMailbox, void *pvOwner) {
   listSET_LIST_ITEM_OWNER(&xMailbox->xLinked, pvOwner);
 }
 
-void *pvMailboxLinkOwner(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_OWNER(&xMailbox->xLinked); }
+void *pvMailboxLinkOwner(const MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_OWNER(&xMailbox->xLinked); }
 
 void vMailboxLinkValue(MailboxHandle_t xMailbox, TickType_t xValue) {
   listSET_LIST_ITEM_VALUE(&xMailbox->xLinked, xValue);
 }
 
-TickType_t xMailboxLinkValue(MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked); }
+TickType_t xMailboxLinkValue(const MailboxHandle_t xMailbox) { return listGET_LIST_ITEM_VALUE(&xMailbox->xLinked); }
 
 MailboxHandle_t xMailboxYieldLinked(MailboxHandle_t xMailbox, BaseType_t (*pxYield)(MailboxHandle_t xMailbox)) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return NULL;
@@ -115,14 +116,39 @@ MailboxHandle_t xMailboxLinking(MailboxHandle_t xMailbox) {
 
 size_t xMailboxSend(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return 0UL;
-  return xMessageBufferSend(xMailbox, pvTxData, xDataLengthBytes, xTicksToWait);
+  BaseType_t xCriticalTask = xTicksToWait == 0U;
+  if (xCriticalTask) taskENTER_CRITICAL();
+  size_t xBytesSent = xMessageBufferSend(xMailbox->xMessageBuffer, pvTxData, xDataLengthBytes, xTicksToWait);
+  if (xCriticalTask) taskEXIT_CRITICAL();
+  if (xBytesSent == 0UL) Atomic_Increment_u32(&xMailbox->ulSendingFailures);
+  return xBytesSent;
 }
+
+size_t xMailboxSendFromISR(MailboxHandle_t xMailbox, const void *pvTxData, size_t xDataLengthBytes,
+                           BaseType_t *pxWoken) {
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return 0UL;
+  size_t xBytesSent = xMessageBufferSendFromISR(xMailbox->xMessageBuffer, pvTxData, xDataLengthBytes, pxWoken);
+  if (xBytesSent == 0UL) Atomic_Increment_u32(&xMailbox->ulSendingFailures);
+  return xBytesSent;
+}
+
+uint32_t ulMailboxSendingFailures(const MailboxHandle_t xMailbox) { return xMailbox->ulSendingFailures; }
 
 BaseType_t xMailboxSent(MailboxHandle_t xMailbox) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
 #ifdef mailboxSENT_NOTIFIED
   if (xMailbox->xTask == NULL) return pdFAIL;
   return xTaskNotify(xMailbox->xTask, mailboxSENT_NOTIFIED, eSetBits);
+#else
+  return pdFAIL;
+#endif
+}
+
+BaseType_t xMailboxSentFromISR(MailboxHandle_t xMailbox, BaseType_t *pxWoken) {
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
+#ifdef mailboxSENT_NOTIFIED
+  if (xMailbox->xTask == NULL) return pdFAIL;
+  return xTaskNotifyFromISR(xMailbox->xTask, mailboxSENT_NOTIFIED, eSetBits, pxWoken);
 #else
   return pdFAIL;
 #endif

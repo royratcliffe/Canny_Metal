@@ -7,6 +7,10 @@
 
 #  include "task.h"
 
+#  include "count_bits.h"
+
+#  include "dimof.h"
+
 // standard library
 #  include <string.h>
 
@@ -25,6 +29,15 @@ HAL_StatusTypeDef xCANConfigFilterFifo0IdMask32Bit(CAN_HandleTypeDef *pxCAN) {
 }
 
 void vCANTxInit(struct CANTx *pxCANTx) { (void)memset(pxCANTx, 0, sizeof(*pxCANTx)); }
+
+void vCANTxDataInit(struct CANTx *pxCANTx) {
+  vCANTxInit(pxCANTx);
+  vCANTxData(pxCANTx);
+}
+
+void vCANTxData(struct CANTx *pxCANTx) { pxCANTx->xTxHeader.RTR = CAN_RTR_DATA; }
+
+void vCANTxRemote(struct CANTx *pxCANTx) { pxCANTx->xTxHeader.RTR = CAN_RTR_REMOTE; }
 
 HAL_StatusTypeDef xCANAddTxMessage(CAN_HandleTypeDef *pxCAN, struct CANTx *pxCANTx) {
   return HAL_CAN_AddTxMessage(pxCAN, &pxCANTx->xTxHeader, pxCANTx->ucTxData, &pxCANTx->ulTxMailbox);
@@ -46,5 +59,45 @@ HAL_StatusTypeDef xCANGetRxMessage(CAN_HandleTypeDef *pxCAN, struct CANRx *pxCAN
 BaseType_t xCANRxIsData(struct CANRx *pxCANRx) { return pxCANRx->xRxHeader.RTR == CAN_RTR_DATA; }
 
 BaseType_t xCANRxIsRemote(struct CANRx *pxCANRx) { return pxCANRx->xRxHeader.RTR == CAN_RTR_REMOTE; }
+
+const char **pcCANErrorStrs(uint32_t ulError) {
+  static struct {
+    uint32_t ulError;
+    const char *pcStr;
+  } const sErrorAndStr[] = {
+      {HAL_CAN_ERROR_EWG, "Protocol Error Warning"},
+      {HAL_CAN_ERROR_EPV, "Error Passive"},
+      {HAL_CAN_ERROR_BOF, "Bus-off error"},
+      {HAL_CAN_ERROR_STF, "Stuff error"},
+      {HAL_CAN_ERROR_FOR, "Form error"},
+      {HAL_CAN_ERROR_ACK, "Acknowledgement error"},
+      {HAL_CAN_ERROR_BR, "Bit recessive error"},
+      {HAL_CAN_ERROR_BD, "Bit dominant error"},
+      {HAL_CAN_ERROR_CRC, "CRC error"},
+      {HAL_CAN_ERROR_RX_FOV0, "Rx FIFO0 overrun error"},
+      {HAL_CAN_ERROR_RX_FOV1, "Rx FIFO1 overrun error"},
+      {HAL_CAN_ERROR_TX_ALST0, "TxMailbox 0 transmit failure due to arbitration lost"},
+      {HAL_CAN_ERROR_TX_TERR0, "TxMailbox 0 transmit failure due to transmit error"},
+      {HAL_CAN_ERROR_TX_ALST1, "TxMailbox 1 transmit failure due to arbitration lost"},
+      {HAL_CAN_ERROR_TX_TERR1, "TxMailbox 1 transmit failure due to transmit error"},
+      {HAL_CAN_ERROR_TX_ALST2, "TxMailbox 2 transmit failure due to arbitration lost"},
+      {HAL_CAN_ERROR_TX_TERR2, "TxMailbox 2 transmit failure due to transmit error"},
+      {HAL_CAN_ERROR_TIMEOUT, "Timeout error"},
+      {HAL_CAN_ERROR_NOT_INITIALIZED, "Peripheral not initialized"},
+      {HAL_CAN_ERROR_NOT_READY, "Peripheral not ready"},
+      {HAL_CAN_ERROR_NOT_STARTED, "Peripheral not started"},
+      {HAL_CAN_ERROR_PARAM, "Parameter error"},
+  };
+
+  uint8_t xErrorCount = ucCount32Bits(ulError);
+  if (xErrorCount == 0U) return NULL;
+  const char **ppcErrorStrs = pvPortMalloc(sizeof(*ppcErrorStrs) * xErrorCount + 1U);
+  configASSERT(ppcErrorStrs);
+  size_t xErrorStrs = 0U;
+  for (size_t xErrorAndStr = 0U; xErrorAndStr < DIM_OF(sErrorAndStr); xErrorAndStr++)
+    if (ulError & sErrorAndStr[xErrorAndStr].ulError) ppcErrorStrs[xErrorStrs++] = sErrorAndStr[xErrorAndStr].pcStr;
+  ppcErrorStrs[xErrorStrs] = NULL;
+  return ppcErrorStrs;
+}
 
 #endif // ifdef HAL_CAN_MODULE_ENABLED
