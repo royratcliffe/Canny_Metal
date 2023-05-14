@@ -15,6 +15,7 @@ int msgpack_abuffer_write(void *data, const msgpack_abuffer_data_t *buf, size_t 
   msgpack_abuffer_t *abuf = (msgpack_abuffer_t *)data;
   if (abuf->max_size - abuf->cur_size < len) return -1;
   (void)memcpy(abuf->data + abuf->cur_size, buf, len);
+  abuf->cur_size += len;
   return 0;
 }
 
