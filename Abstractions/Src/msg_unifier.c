@@ -171,13 +171,12 @@ BaseType_t xMsgUnifyMap(MsgUnifierHandle_t xMsgUnifier, size_t *pxNumberOfItems)
 BaseType_t xMsgUnifyMapStrKey(MsgUnifierHandle_t xMsgUnifier, const char *pzStrKey) {
   size_t xNumberOfItems;
   if (!xMsgUnifyMap(xMsgUnifier, &xNumberOfItems)) return pdFAIL;
-  for (; xNumberOfItems != 0UL && xMsgUnify(xMsgUnifier); xNumberOfItems--)
-    {
-      BaseType_t xUnifyKey = xMsgUnifyStrCmp(xMsgUnifier, pzStrKey);
-      BaseType_t xUnifyValue = xMsgUnify(xMsgUnifier);
-      if (xUnifyKey) return xUnifyValue;
-      if (!xUnifyValue) break;
-    }
+  for (; xNumberOfItems != 0UL && xMsgUnify(xMsgUnifier); xNumberOfItems--) {
+    BaseType_t xUnifyKey = xMsgUnifyStrCmp(xMsgUnifier, pzStrKey);
+    BaseType_t xUnifyValue = xMsgUnify(xMsgUnifier);
+    if (xUnifyKey) return xUnifyValue;
+    if (!xUnifyValue) break;
+  }
   return pdFAIL;
 }
 
