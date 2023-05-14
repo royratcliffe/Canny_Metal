@@ -222,6 +222,8 @@ uint32_t ulMailboxSendingFailures(const MailboxHandle_t xMailbox);
  */
 BaseType_t xMailboxSent(MailboxHandle_t xMailbox);
 
+BaseType_t xMailboxSentFromISR(MailboxHandle_t xMailbox, BaseType_t *pxWoken);
+
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait);
 
 /*!

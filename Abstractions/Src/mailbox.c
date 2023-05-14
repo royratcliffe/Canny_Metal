@@ -144,6 +144,16 @@ BaseType_t xMailboxSent(MailboxHandle_t xMailbox) {
 #endif
 }
 
+BaseType_t xMailboxSentFromISR(MailboxHandle_t xMailbox, BaseType_t *pxWoken) {
+  if (xMailboxOrSelf(&xMailbox) == pdFAIL) return pdFAIL;
+#ifdef mailboxSENT_NOTIFIED
+  if (xMailbox->xTask == NULL) return pdFAIL;
+  return xTaskNotifyFromISR(xMailbox->xTask, mailboxSENT_NOTIFIED, eSetBits, pxWoken);
+#else
+  return pdFAIL;
+#endif
+}
+
 size_t vMailboxReceive(MailboxHandle_t xMailbox, void *pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait) {
   if (xMailboxOrSelf(&xMailbox) == pdFAIL) return 0UL;
   return xMessageBufferReceive(xMailbox, pvRxData, xBufferLengthBytes, xTicksToWait);
