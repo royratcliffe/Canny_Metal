@@ -1,6 +1,5 @@
-/*
- * msg_unifier.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "msg_unifier.h"
 

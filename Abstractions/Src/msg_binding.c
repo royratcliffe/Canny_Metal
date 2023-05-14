@@ -1,6 +1,5 @@
-/*
- * msg_binding.c
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #include "msg_binding.h"
 

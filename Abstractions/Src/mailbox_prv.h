@@ -1,6 +1,5 @@
-/*
- * mailbox_prv.h
- */
+// Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
