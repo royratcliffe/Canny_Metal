@@ -47,7 +47,8 @@ size_t xMsgUnifierReceive(MsgUnifierHandle_t xMsgUnifier, MessageBufferHandle_t 
    * buffer to drain. The mailbox becomes stuck with continuous receive failure.
    * Ensure that the unifier matches the message buffer size.
    */
-  msgpack_unpacker_reset(&xMsgUnifier->xUnpacker);
+  msgpack_unpacker_destroy(&xMsgUnifier->xUnpacker);
+  msgpack_unpacker_init(&xMsgUnifier->xUnpacker, xMsgUnifier->xUnpacker.initial_buffer_size);
   size_t xReceivedBytes =
       xMessageBufferReceive(xMessageBuffer, msgpack_unpacker_buffer(&xMsgUnifier->xUnpacker),
                             msgpack_unpacker_buffer_capacity(&xMsgUnifier->xUnpacker), xTicksToWait);
