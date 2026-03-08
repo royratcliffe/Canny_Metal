@@ -14,6 +14,16 @@ uint32_t clock32_ms(struct clock32 *clock) { return clock32_ticks(clock) / clock
 
 uint32_t clock32_s(struct clock32 *clock) { return clock32_ms(clock) / 1000UL; }
 
+/*!
+ * \brief Get the current time in milliseconds as a floating-point value.
+ * \param clock The clock to get the time from.
+ * \return The current time in milliseconds as a floating-point value.
+ * \note Returns the time in milliseconds as a floating-point value, which
+ * allows for fractional milliseconds. The result is calculated by dividing the
+ * number of ticks by the number of ticks per millisecond, both of which are
+ * obtained from the clock's implementation both separately converted to float
+ * to ensure floating-point division.
+ */
 float clock32_millis(struct clock32 *clock) { return (float)clock32_ticks(clock) / (float)clock32_ticks_per_ms(clock); }
 
 void clock32_setup(struct clock32 *clock, struct clock32 *src) {
