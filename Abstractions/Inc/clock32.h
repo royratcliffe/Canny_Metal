@@ -48,6 +48,8 @@ uint32_t clock32_ms(struct clock32 *clock);
 
 uint32_t clock32_s(struct clock32 *clock);
 
+float clock32_millis(struct clock32 *clock);
+
 /*!
  * \brief Synchronise the clock and its child clocks.
  * \param clock The clock to synchronise.

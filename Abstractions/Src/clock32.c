@@ -14,6 +14,8 @@ uint32_t clock32_ms(struct clock32 *clock) { return clock32_ticks(clock) / clock
 
 uint32_t clock32_s(struct clock32 *clock) { return clock32_ms(clock) / 1000UL; }
 
+float clock32_millis(struct clock32 *clock) { return (float)clock32_ticks(clock) / (float)clock32_ticks_per_ms(clock); }
+
 void clock32_setup(struct clock32 *clock, struct clock32 *src) {
   (void)cons_node(&clock->node, &src->node);
 }
