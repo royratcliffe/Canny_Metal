@@ -41,8 +41,11 @@ struct cons;
 /*! \brief Returns \c true if the cons cell is not \c CONS_NIL. */
 #define CONS_NOT_NIL_P(_cell) ((_cell) != CONS_NIL)
 
-/*! \brief Creates a new cons cell with the given \c car and \c cdr values. */
+/*! \brief Builds a cons cell with the given \c car and \c cdr values. */
 #define CONS(_car, _cdr) ((struct cons){.car = (_car), .cdr = (_cdr)})
+
+/*! \brief Builds a null cons cell structure. */
+#define CONS_NULL CONS(NULL, CONS_NIL)
 
 /*!
  * \brief Construct cell structure for building linked lists.
@@ -146,6 +149,18 @@ static inline void cons_init(struct cons *cell, void *car) {
 struct cons **cons(struct cons **list, struct cons *cell);
 
 /*!
+ * \brief Prepends a cons cell to a list, returning the updated list pointer.
+ * \param list Pointer to the list head to which the new cell will be
+ * prepended.
+ * \param cell The cons cell to prepend to the list.
+ * \return Pointer to the updated list pointer, now pointing to the new
+ * cell.
+ * \details A wrapper around \c cons that allows convenient chaining of
+ * cons cell additions without separately managing the list pointer.
+ */
+struct cons **cons_prepend(struct cons **list, struct cons *cell);
+
+/*!
  * \brief Loops through a list of cons cells, applying a predicate
  * function to each cell.
  * \param list Pointer to the list head to loop through. This is a
@@ -170,6 +185,16 @@ struct cons **cons(struct cons **list, struct cons *cell);
  * the search was unsuccessful.
  */
 struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, struct cons *cell, void *user), void *user);
+
+/*!
+ * \brief Finds the first cons cell in a list that matches a given identity.
+ * \param list Pointer to the list head to search through. This is a pointer
+ * to a pointer to a cons cell.
+ * \param cell The cons cell to find by identity.
+ * \return Pointer to the list pointer of the first cons cell that matches the
+ * specified identity, or \c NULL if no such cell is found.
+ */
+struct cons **cons_find(struct cons **list, void *cell);
 
 /*!
  * \brief Destructively deletes the \e first cons cell with the specified \c car

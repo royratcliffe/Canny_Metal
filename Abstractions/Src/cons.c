@@ -3,12 +3,12 @@
 /*!
  * \file cons.c
  * \brief Implementation of cons cell operations.
- * \details This file implements functions for manipulating cons cells, which
- * are fundamental data structures in Lisp-like languages. The functions create
- * new cons cells, delete cells from a list, and reverse a list of cons cells.
- * The operations work with the structure defined in \c cons.h to construct and
- * manipulate linked lists and other complex data structures.
- * \copyright 2026, Roy Ratcliffe, Northumberland, United Kingdom
+ * \details This file implements functions for manipulating cons cells,
+ * which are fundamental data structures in Lisp-like languages. The
+ * functions link caller-provided cons cells into lists, remove cells
+ * from a list, and reverse a list of cons cells. The operations work
+ * with the structure defined in \c cons.h to link and manipulate linked
+ * lists and other complex data structures.
  */
 #include <cons.h>
 
@@ -25,6 +25,11 @@ struct cons **cons(struct cons **list, struct cons *cell) {
   cons_rplacd(cell, *list);
   *list = cell;
   return &cell->cdr;
+}
+
+struct cons **cons_prepend(struct cons **list, struct cons *cell) {
+  (void)cons(list, cell);
+  return list;
 }
 
 struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, struct cons *cell, void *user), void *user) {
@@ -49,6 +54,15 @@ struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, str
   return NULL;
 }
 
+static bool cons_find_p(struct cons **list, struct cons *cell, void *user) {
+  (void)list;
+  return cell == user;
+}
+
+struct cons **cons_find(struct cons **list, void *cell) {
+  return cons_loop(list, cons_find_p, cell);
+}
+
 static bool cons_delete_p(struct cons **list, struct cons *cell, void *user) {
   (void)list;
   return cons_car(cell) == user;
@@ -64,13 +78,8 @@ struct cons *cons_delete(struct cons **list, void *car) {
   return deleted;
 }
 
-static bool cons_remove_p(struct cons **list, struct cons *cell, void *user) {
-  (void)list;
-  return cell == user;
-}
-
 struct cons *cons_remove(struct cons **list, struct cons *cell) {
-  struct cons **found = cons_loop(list, cons_remove_p, cell);
+  struct cons **found = cons_find(list, cell);
   if (found == NULL) {
     return CONS_NIL;
   }
