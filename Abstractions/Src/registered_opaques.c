@@ -8,11 +8,6 @@
 
 #include "registered_opaques.h"
 
-/*
- * Only for \c configASSERT macro.
- */
-#include "task.h"
-
 static void **ppvRegisteredOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque, size_t xCardinal);
 
 static size_t xRegisteredHashOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
@@ -22,13 +17,12 @@ size_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void 
   void **ppvOpaque = ppvRegisteredOpaque(xRegisteredOpaques, pvOpaque, xCardinal);
   if (ppvOpaque == NULL) {
     ppvOpaque = ppvRegisteredOpaque(xRegisteredOpaques, NULL, xCardinal);
-    configASSERT(ppvOpaque);
     *ppvOpaque = pvOpaque;
   }
   return ppvOpaque - xRegisteredOpaques->ppvOpaques;
 }
 
-BaseType_t xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque)
+bool xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque)
 {
   return ppvRegisteredOpaque(xRegisteredOpaques, pvOpaque, xRegisteredHashOfOpaque(xRegisteredOpaques, pvOpaque)) != NULL;
 }

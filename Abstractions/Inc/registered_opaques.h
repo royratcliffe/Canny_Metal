@@ -10,11 +10,11 @@
  * Hungarian naming conventions.
  */
 
-#pragma once
-
-#include "FreeRTOS.h"
+#ifndef REGISTERED_OPAQUES_H
+#define REGISTERED_OPAQUES_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 struct RegisteredOpaques {
   void **ppvOpaques;
@@ -41,4 +41,6 @@ size_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void 
  *
  * \returns \c pdPASS if the opaque has already been registered.
  */
-BaseType_t xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
+bool xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
+
+#endif /* REGISTERED_OPAQUES_H */
