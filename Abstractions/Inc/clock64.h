@@ -89,4 +89,19 @@ void clock64_setup(struct clock64 *clock, struct clock64 *src);
 
 void clock64_tick(struct clock64 *clock);
 
+/*!
+ * \brief Synchronises the clock and its child clocks.
+ * \param clock The clock to synchronise.
+ * \details Synchronising means giving compute time to the clock and its child
+ * clocks, allowing them to update any internal state and perform any
+ * clock-related operations. Recursively synchronises all child clocks
+ * (sub-nodes) of the clock. This ensures that the entire hierarchy of clocks
+ * rooted at this clock is synchronised.
+ * \note The clock's own \c tick function is not called by this function. It is
+ * the responsibility of the caller to call the clock's \c tick function before
+ * calling this function.
+ * \note This function does not synchronise the source clock of the given clock.
+ * It only synchronises the given clock and its sub-clocks. Synchronising the
+ * source clock is the responsibility of the caller, if needed.
+ */
 void clock64_sync(struct clock64 *clock);
