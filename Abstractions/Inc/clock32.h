@@ -24,7 +24,7 @@ struct clock32 {
   /*!
    * Call it a clock "pulse" function.
    */
-  void (*sync)(struct clock32 *clock);
+  void (*tick)(struct clock32 *clock);
 };
 
 struct clock32_impl {
@@ -55,7 +55,7 @@ float clock32_millis(struct clock32 *clock);
  * \param clock The clock to synchronise.
  * \details Synchronising means giving compute time to the clock and its
  * child clocks, allowing them to update any internal state and perform
- * any clock-related operations. This function calls the \c sync
+ * any clock-related operations. This function calls the \c tick
  * function of this clock, if defined, and then recursively synchronises
  * all child clocks (sub-nodes) of the clock. This ensures that the
  * entire hierarchy of clocks is synchronised.

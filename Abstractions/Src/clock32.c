@@ -31,7 +31,7 @@ void clock32_setup(struct clock32 *clock, struct clock32 *src) {
 }
 
 void clock32_sync(struct clock32 *clock) {
-  if (clock->sync) clock->sync(clock);
+  if (clock->tick) clock->tick(clock);
   for (struct cons_node *node = cons_sub_node(&clock->node); node != NULL; node = cons_cdr_node(node))
     clock32_sync(clock_of_node(node));
 }
