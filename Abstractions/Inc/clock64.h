@@ -90,7 +90,7 @@ void clock64_setup(struct clock64 *clock, struct clock64 *src);
 void clock64_tick(struct clock64 *clock);
 
 /*!
- * \brief Synchronises the clock and its child clocks.
+ * \brief Recursively synchronises the clock and its child clocks.
  * \param clock The clock to synchronise.
  * \details Synchronising means giving compute time to the clock and its child
  * clocks, allowing them to update any internal state and perform any
