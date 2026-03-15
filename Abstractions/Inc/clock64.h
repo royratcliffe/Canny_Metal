@@ -33,7 +33,7 @@ struct clock64 {
 
   const struct clock64_impl *impl;
 
-  void (*sync)(struct clock64 *clock);
+  void (*tick)(struct clock64 *clock);
 };
 
 struct clock64_impl {
@@ -86,5 +86,7 @@ uint64_t clock64_ms(struct clock64 *clock);
  * new source clock.
  */
 void clock64_setup(struct clock64 *clock, struct clock64 *src);
+
+void clock64_tick(struct clock64 *clock);
 
 void clock64_sync(struct clock64 *clock);
