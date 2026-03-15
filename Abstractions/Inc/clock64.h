@@ -34,6 +34,8 @@ struct clock64 {
   const struct clock64_impl *impl;
 
   void (*tick)(struct clock64 *clock);
+
+  uint64_t sync;
 };
 
 struct clock64_impl {

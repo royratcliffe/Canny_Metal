@@ -30,6 +30,11 @@ void clock64_tick(struct clock64 *clock) {
 }
 
 void clock64_sync(struct clock64 *clock) {
-  for (struct cons_node *node = cons_sub_node(&clock->node); node != NULL; node = cons_cdr_node(node))
-    clock64_sync(clock_of_node(node));
+  uint64_t ticks = clock64_ticks(clock);
+  if (clock->sync != ticks) {
+    clock->sync = ticks;
+    clock64_tick(clock);
+    for (struct cons_node *node = cons_sub_node(&clock->node); node != NULL; node = cons_cdr_node(node))
+      clock64_sync(clock_of_node(node));
+  }
 }
