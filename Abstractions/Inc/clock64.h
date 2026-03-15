@@ -31,7 +31,7 @@ struct clock64_impl;
 struct clock64 {
   struct cons_node node;
 
-  struct clock64_impl *impl;
+  const struct clock64_impl *impl;
 
   void (*sync)(struct clock64 *clock);
 };

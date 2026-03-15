@@ -20,7 +20,7 @@ struct clock32_impl;
  */
 struct clock32 {
   struct cons_node node;
-  struct clock32_impl *impl;
+  const struct clock32_impl *impl;
   /*!
    * Call it a clock "pulse" function.
    */
