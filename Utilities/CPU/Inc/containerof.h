@@ -7,7 +7,7 @@
 #define CONTAINEROF_H 1
 
 /*!
- * \file container_of.h
+ * \file containerof.h
  * \brief Container-of macro for C structures.
  * This header file defines the `CONTAINER_OF` macro, which is used to obtain a
  * pointer to the containing structure from a pointer to one of its members.
