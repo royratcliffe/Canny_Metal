@@ -39,7 +39,7 @@ struct clock64 {
 };
 
 struct clock64_impl {
-  uint64_t (*ticks)(void);
+  uint64_t (*now)(void);
 
   uint64_t (*ticks_per_us)(void);
 };
@@ -67,19 +67,25 @@ struct clock64 *clock64_src(struct clock64 *clock);
  * \param clock The clock64 instance to read the time from.
  * \retval The current time as a 64-bit unsigned integer.
  */
-uint64_t clock64_ticks(struct clock64 *clock);
+uint64_t clock64_now(struct clock64 *clock);
 
 uint64_t clock64_ticks_per_us(struct clock64 *clock);
 
-uint64_t clock64_us(struct clock64 *clock);
+uint64_t clock64_now_us(struct clock64 *clock);
 
-uint64_t clock64_ms(struct clock64 *clock);
+uint64_t clock64_now_ms(struct clock64 *clock);
+
+uint64_t clock64_ticks(struct clock64 *clock);
+
+uint64_t clock64_ticks_us(struct clock64 *clock);
+
+uint64_t clock64_ticks_ms(struct clock64 *clock);
 
 /*!
  * \brief Configures the source clock for a clock64 instance.
  * \param clock The clock64 instance to configure.
- * \param src The new source clock to associate with the clock64 instance, or NULL to just remove the current source
- * clock.
+ * \param super The new source clock to associate with the clock64
+ * instance, or NULL to just remove the current source clock.
  * \details This function sets up the source clock for a given clock64 instance by
  * modifying the linked list of sub-clocks associated with the source clock. If
  * the clock64 instance already has a source clock, it is first removed from the
@@ -87,23 +93,19 @@ uint64_t clock64_ms(struct clock64 *clock);
  * is provided, the clock64 instance is added to the list of sub-clocks of the
  * new source clock.
  */
-void clock64_setup(struct clock64 *clock, struct clock64 *src);
+void clock64_arm(struct clock64 *clock, struct clock64 *super);
+
+void clock64_on_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock));
 
 void clock64_tick(struct clock64 *clock);
 
 /*!
- * \brief Recursively synchronises the clock and its child clocks.
+ * \brief Recursively synchronises the clock and its sub-clocks.
  * \param clock The clock to synchronise.
- * \details Synchronising means giving compute time to the clock and its child
- * clocks, allowing them to update any internal state and perform any
- * clock-related operations. Recursively synchronises all child clocks
- * (sub-nodes) of the clock. This ensures that the entire hierarchy of clocks
- * rooted at this clock is synchronised.
- * \note The clock's own \c tick function is not called by this function. It is
- * the responsibility of the caller to call the clock's \c tick function before
- * calling this function.
- * \note This function does not synchronise the source clock of the given clock.
- * It only synchronises the given clock and its sub-clocks. Synchronising the
- * source clock is the responsibility of the caller, if needed.
+ * \details Synchronising means giving compute time to the clock and its
+ * sub-clocks, allowing them to update any internal state and perform
+ * any clock-related operations. Recursively synchronises all sub-clocks
+ * (sub-nodes) of the clock. This ensures that the entire hierarchy of
+ * clocks rooted at this clock is synchronised.
  */
 void clock64_sync(struct clock64 *clock);
