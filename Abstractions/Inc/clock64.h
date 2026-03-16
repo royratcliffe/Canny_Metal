@@ -38,6 +38,21 @@ struct clock64 {
    */
   struct cons_node node;
 
+  /*!
+   * \brief Pointer to the clock's optional implementation.
+   * \details The implementation provides the actual functions for getting the
+   * current time and the ticks per microsecond. If the clock does not have its
+   * own implementation, it can inherit these functions from its source clock.
+   * \note The implementation is optional, allowing for a flexible clock hierarchy
+   * where clocks can either have their own implementation or rely on their source
+   * clock's implementation.
+   * \note The implementation points to \c const storage, indicating that the
+   * functions it points to cannot be modified through this pointer, or not
+   * without a cast. This design choice emphasises that the implementation is
+   * meant to be a read-only configuration for the clock, and any modifications
+   * to the implementation should be done through other means, such as defining
+   * a new implementation structure and assigning it to the clock.
+   */
   const struct clock64_impl *impl;
 
   void (*tick)(struct clock64 *clock);
