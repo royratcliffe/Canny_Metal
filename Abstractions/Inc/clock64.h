@@ -88,11 +88,9 @@ uint64_t clock64_ticks_ms(struct clock64 *clock);
  * is provided, the clock64 instance is added to the list of sub-clocks of the
  * new source clock.
  */
-void clock64_arm(struct clock64 *clock, struct clock64 *super);
+void clock64_select(struct clock64 *clock, struct clock64 *super);
 
-void clock64_on_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock));
-
-void clock64_tick(struct clock64 *clock);
+void clock64_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock));
 
 /*!
  * \brief Recursively synchronises the clock and its sub-clocks.
