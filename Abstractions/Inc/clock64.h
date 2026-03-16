@@ -17,7 +17,7 @@ struct clock64_impl;
  * More than one root clock can exist at once. Typically, a root clock
  * corresponds to a piece of timer hardware.
  *
- * Clock do not start and stop. They are always running. The time
+ * Clocks do not start and stop. They always run. The time
  * function of a clock reads the current time from the clock, which is
  * typically derived from the source clock's time function, possibly
  * with some adjustments or transformations. The clock64_loop function
