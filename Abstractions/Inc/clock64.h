@@ -92,6 +92,15 @@ uint64_t clock64_now_us(struct clock64 *clock);
 
 uint64_t clock64_now_ms(struct clock64 *clock);
 
+/*!
+ * \brief Answers the ticks of the clock at the last synchronisation.
+ * \param clock The clock to query.
+ * \retval The number of ticks at the last synchronisation.
+ * \note The ticks are updated during synchronisation, which is typically
+ * triggered by periodic root-clock synchronisation events. The ticks represent
+ * the latched time from the clock at the last synchronisation, and they are
+ * used to determine if the clock's time has changed since the last tick.
+ */
 uint64_t clock64_ticks(struct clock64 *clock);
 
 uint64_t clock64_ticks_us(struct clock64 *clock);
