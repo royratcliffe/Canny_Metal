@@ -39,11 +39,18 @@
  * of a member within a structure, allowing the macro to compute the address of
  * the containing structure from the address of a member.
  */
+#ifdef __GNUC__
+/*
+ * This version of the macro uses a statement expression, which is a GNU C
+ * extension. It also relies on void-pointer arithmetic, a useful technique in C
+ * for implementing container-of functionality.
+ */
 #define CONTAINER_OF(ptr, type, member)            \
   ({                                               \
     void *void_ptr = (void *)(ptr);                \
     ((type *)(void_ptr - offsetof(type, member))); \
   })
+#endif /* __GNUC__ */
 
 /*!
  * \brief Alternative container-of macro without statement expression.
