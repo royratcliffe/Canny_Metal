@@ -37,11 +37,23 @@ uint64_t clock64_now(struct clock64 *clock) {
   return src ? clock64_now(src) : 0ULL;
 }
 
+/*
+ * Avoid division by zero by returning 1 if the clock does not have an
+ * implementation or a source clock. This ensures that the function behaves
+ * predictably even in cases where the clock is not fully initialised or
+ * configured.
+ *
+ * If the clock has its own implementation, use that to get the ticks per
+ * microsecond. If it does not have its own implementation but has a source
+ * clock, it will use the source clock to get the ticks per microsecond. If
+ * neither is available, return 1, indicating that there is no meaningful ticks
+ * per microsecond.
+ */
 uint64_t clock64_ticks_per_us(struct clock64 *clock) {
   const struct clock64_impl *const impl = clock->impl;
   if (impl && impl->ticks_per_us) return impl->ticks_per_us();
   struct clock64 *const src = clock64_src(clock);
-  return src ? clock64_ticks_per_us(src) : 0ULL;
+  return src ? clock64_ticks_per_us(src) : 1ULL;
 }
 
 uint64_t clock64_now_us(struct clock64 *clock) { return clock64_now(clock) / clock64_ticks_per_us(clock); }
