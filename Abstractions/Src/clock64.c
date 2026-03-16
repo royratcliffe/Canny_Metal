@@ -88,6 +88,23 @@ void clock64_sync(struct clock64 *clock) {
    * time and that any necessary updates are performed when the time changes. If
    * the time has not changed, there is no need to synchronise the sub-clocks,
    * as they will already be in sync with the current time.
+   *
+   * A change in the clock's time is detected by comparing the latched time with
+   * the clock's previous ticks (initially 0). If they are different, it
+   * indicates that the time has changed since the last tick, and the clock's
+   * ticks are updated to the new time. The clock's tick function is then called
+   * to perform any necessary updates based on the new time. Finally, all
+   * sub-clocks of the clock are synchronised by recursively calling
+   * clock64_sync on each sub-clock, ensuring that the entire hierarchy of
+   * clocks is synchronised to the new time.
+   *
+   * Conceptually, a synchronisation event emits a tick event if the clock has a
+   * tick function defined and the clock's time changes. In this case, the tick
+   * function is called whenever the clock's time changes, allowing the clock to
+   * perform any necessary updates or actions based on the new time. This design
+   * allows for a flexible and extensible clock hierarchy, where each clock can
+   * have its own implementation and tick function, while still being
+   * synchronised to a common time source.
    */
   uint64_t ticks = clock64_now(clock);
   if (clock->ticks != ticks) {
