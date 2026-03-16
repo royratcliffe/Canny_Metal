@@ -3,6 +3,14 @@
 #include "containerof.h"
 
 static struct clock64 *clock_of_node(struct cons_node *node) {
+  /*
+   * Always check for NULL before applying a container adjustment to the node
+   * member of the clock64 structure, as a NULL node indicates that there is no
+   * source clock associated with the clock. If the node is not NULL, it is safe
+   * to apply the adjustment and return a pointer to the containing clock64
+   * structure using containerof. If the node is NULL, return NULL to indicate
+   * that there is no source clock.
+   */
   return node != NULL ? containerof(node, struct clock64, node) : NULL;
 }
 
