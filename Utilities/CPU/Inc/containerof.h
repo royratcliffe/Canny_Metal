@@ -34,7 +34,7 @@
  * For example, if you have a linked list node and you want to access the
  * containing structure that holds the node, you can use this macro.
  *
- * It relies void pointer arithmetic and the \c offsetof macro, which is part of
+ * It relies on void pointer arithmetic and the \c offsetof macro, which is part of
  * the C standard library. The \c offsetof macro is used to calculate the offset
  * of a member within a structure, allowing the macro to compute the address of
  * the containing structure from the address of a member.
