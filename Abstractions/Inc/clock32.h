@@ -19,8 +19,30 @@ struct clock32_impl;
  * measuring long durations, a 64-bit clock should be used instead.
  */
 struct clock32 {
+  /*!
+   * \brief The cons node representing this clock in the clock hierarchy.
+   * \details This node links the clock into the hierarchical structure of
+   * clocks, enabling a source clock (super-clock) and zero or more sub-clocks.
+   * The \c car field points to the source clock, while the \c cdr field links
+   * sibling clocks together in a list of sub-clocks.
+   */
   struct cons_node node;
+
+  /*!
+   * \brief Pointer to the clock's optional implementation.
+   * \details The implementation provides the actual functions for getting the
+   * current time and the ticks per millisecond. Clocks without their own
+   * implementation inherit these functions from their source clock.
+   * \note The implementation is optional, allowing for a flexible clock hierarchy
+   * where clocks can either have their own implementation or rely on their source
+   * clock's implementation.
+   * \note The \c const storage prevents modifications through this pointer
+   * without a cast. This emphasizes that the implementation is a read-only
+   * configuration for the clock. Modifications require defining a new
+   * implementation structure and assigning it to the clock.
+   */
   const struct clock32_impl *impl;
+
   /*!
    * Call it a clock "pulse" function.
    */
