@@ -29,6 +29,14 @@ struct clock64_impl;
  * clocks in the system.
  */
 struct clock64 {
+  /*!
+   * \brief The cons node representing this clock in the clock hierarchy.
+   * \details This node is used to link the clock into the hierarchical
+   * structure of clocks, allowing it to have a source clock (super-clock) and
+   * zero or more sub-clocks. The \c car field of the cons cell points to the
+   * source clock, while the \c cdr field links sibling clocks together in a
+   * list of sub-clocks.
+   */
   struct cons_node node;
 
   const struct clock64_impl *impl;
