@@ -55,15 +55,40 @@ struct clock64 {
    */
   const struct clock64_impl *impl;
 
+  /*!
+   * \brief The clock's optional tick function.
+   * \details The tick function is called whenever the clock's time changes,
+   * which is typically triggered by periodic root-clock synchronisation events.
+   * The tick function allows the clock to perform any necessary updates or
+   * actions based on the new time. This design allows for a flexible and
+   * extensible clock hierarchy, where each clock can have its own tick function
+   * to respond to time changes, or it can rely on the tick function of its
+   * source clock if it does not have its own.
+   * \note The tick function is optional, allowing for clocks that do not need
+   * to perform any specific actions on time changes to simply not define a tick
+   * function. If a clock does not have its own tick function, it can still be
+   * synchronised and will still update its ticks based on the time changes of
+   * its source clock, if it has one.
+   */
   void (*tick)(struct clock64 *clock);
 
+  /*!
+   * \brief The latched time from the clock at the last synchronisation.
+   * \details The ticks represent the time that was latched from the clock during
+   * the last synchronisation event.
+   */
   uint64_t ticks;
 };
 
+/*!
+ * \brief Implementation of a clock64.
+ * \details The implementation provides the actual functions for getting the
+ * current time and the ticks per microsecond. Clocks without their own
+ * implementation inherit these functions from their source clock.
+ */
 struct clock64_impl {
-  uint64_t (*now)(void);
-
-  uint64_t (*ticks_per_us)(void);
+  uint64_t (*now)(void); /*!< Function to latch the current time. */
+  uint64_t (*ticks_per_us)(void); /*!< Function to access the number of ticks per microsecond. */
 };
 
 /*!
