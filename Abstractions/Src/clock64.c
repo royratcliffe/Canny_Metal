@@ -46,7 +46,7 @@ uint64_t clock64_ticks_us(struct clock64 *clock) { return clock64_ticks(clock) /
 
 uint64_t clock64_ticks_ms(struct clock64 *clock) { return clock64_ticks_us(clock) / 1000UL; }
 
-void clock64_select(struct clock64 *clock, struct clock64 *super) {
+void clock64_select(struct clock64 *clock, struct clock64 *src) {
   /*
    * Remove the clock from its current source's list of sub-clocks by
    * traversing the list of sub-clocks.
@@ -54,7 +54,7 @@ void clock64_select(struct clock64 *clock, struct clock64 *super) {
    * Prepend the clock to the new source's list of sub-clocks by linking the
    * clock to the current head of the source's sub-clock list.
    */
-  (void)cons_node(&clock->node, &super->node);
+  (void)cons_node(&clock->node, &src->node);
 }
 
 void clock64_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock)) { clock->tick = tick; }

@@ -77,9 +77,9 @@ uint64_t clock64_ticks_us(struct clock64 *clock);
 uint64_t clock64_ticks_ms(struct clock64 *clock);
 
 /*!
- * \brief Configures the source clock for a clock64 instance.
+ * \brief Selects the source clock for a clock64 instance.
  * \param clock The clock64 instance to configure.
- * \param super The new source clock to associate with the clock64
+ * \param src The new source clock to associate with the clock64
  * instance, or NULL to just remove the current source clock.
  * \details This function sets up the source clock for a given clock64 instance by
  * modifying the linked list of sub-clocks associated with the source clock. If
@@ -88,7 +88,7 @@ uint64_t clock64_ticks_ms(struct clock64 *clock);
  * is provided, the clock64 instance is added to the list of sub-clocks of the
  * new source clock.
  */
-void clock64_select(struct clock64 *clock, struct clock64 *super);
+void clock64_select(struct clock64 *clock, struct clock64 *src);
 
 void clock64_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock));
 
