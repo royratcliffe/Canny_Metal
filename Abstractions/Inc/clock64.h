@@ -7,26 +7,25 @@
 
 struct clock64_impl;
 
-/*
- * All clocks, apart from a root clock, live in a tree structure where
- * each clock has a single source clock and zero or more sub-clocks. The
- * source clock is stored in the \c car field of the cons cell, and the
- * sub-clocks are stored in a linked list of cons cells, with the head
- * of the list stored in the \c head field of the clock64 structure.
+/*!
+ * \brief A 64-bit clock.
+ * \details A clock is a source of time. It fundamentally provides a "now"
+ * function that returns the current time in ticks, and a "ticks per
+ * microsecond" function that scales time to real-world units.
  *
- * More than one root clock can exist at once. Typically, a root clock
- * corresponds to a piece of timer hardware.
+ * Clocks arrange in a hierarchy, where each clock has a source clock (its
+ * super-clock) and zero or more sub-clocks. This design allows for a flexible
+ * and extensible clock hierarchy, where each clock can have its own
+ * implementation or inherit from a source clock. All clocks, apart from a root
+ * clock, live in a tree structure. More than one root clock can exist at once.
+ * Typically, a root clock corresponds to a piece of timer hardware.
  *
- * Clocks do not start and stop. They always run. The time
- * function of a clock reads the current time from the clock, which is
- * typically derived from the source clock's time function, possibly
- * with some adjustments or transformations. The clock64_loop function
- * is responsible for updating the time of a clock and propagating the
- * time updates to its sub-clocks by calling their time functions in a
- * loop. This design allows for a hierarchical structure of clocks where
- * each clock can have its own time function that may depend on the time
- * of its source clock, enabling complex timing relationships between
- * clocks in the system.
+ * Clocks do not start and stop. They always run. The "now" function of a clock
+ * reads the current time from the clock, which is typically derived from the
+ * source clock's "now" function, possibly with some adjustments or
+ * transformations. This flexibility allows for complex timing relationships
+ * between clocks in the system, as each clock can have its own time function
+ * that may depend on the time of its source clock.
  */
 struct clock64 {
   /*!
