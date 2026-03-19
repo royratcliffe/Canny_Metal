@@ -22,7 +22,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#ifndef HAND_SIDE_H
+#define HAND_SIDE_H
 
 #include <stdarg.h>
 
@@ -137,3 +138,5 @@ void *right_for_left_stricmp_hand_side(struct hand_side **top, const char *left)
  * answering the string for some given pointer.
  */
 void *left_for_right_hand_side(struct hand_side **top, void *right);
+
+#endif /* HAND_SIDE_H */
