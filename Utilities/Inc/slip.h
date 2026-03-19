@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "FreeRTOS.h"
-
 #ifndef slipMAX_PACKET_LEN
 #define slipMAX_PACKET_LEN 256U
 #endif
