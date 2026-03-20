@@ -8,6 +8,8 @@ target_include_directories(Canny_Metal PUBLIC
     Utilities/CPU/Inc
 )
 target_sources(Canny_Metal PRIVATE
+    Abstractions/Src/cons.c
+    Abstractions/Src/cons_node.c
     Abstractions/Src/clock64.c
     Utilities/Src/cobs.c
     Utilities/CPU/Src/hand_side.c
