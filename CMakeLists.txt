@@ -1,4 +1,4 @@
-project(Canny_Metal)
+project(Canny_Metal LANGUAGES C)
 
 add_library(Canny_Metal)
 target_include_directories(Canny_Metal PUBLIC
