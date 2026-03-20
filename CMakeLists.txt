@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 project(Canny_Metal LANGUAGES C)
 
 add_library(Canny_Metal)
