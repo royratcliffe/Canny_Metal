@@ -11,6 +11,10 @@ target_sources(Canny_Metal PRIVATE
     Abstractions/Src/cons.c
     Abstractions/Src/cons_node.c
     Abstractions/Src/clock64.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_circ.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_item.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_yield.c
     Utilities/Src/cobs.c
     Utilities/CPU/Src/hand_side.c
 )
