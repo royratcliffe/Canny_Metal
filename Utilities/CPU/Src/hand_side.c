@@ -27,10 +27,6 @@
 #include <malloc.h>
 #include <string.h>
 
-#if __USE_POSIX
-#define stricmp(lhs, rhs) strcasecmp(lhs, rhs)
-#endif
-
 struct hand_side *push_hand_side(struct hand_side **top, void *left, void *right) {
   struct hand_side *push = malloc(sizeof(struct hand_side));
   if (push == NULL) return NULL;
@@ -96,10 +92,10 @@ void *right_for_left_hand_side(struct hand_side **top, void *left) {
   return for_left_and_right_hand_side(top, left_eq, left);
 }
 
-static void *left_stricmp(void *left, void *right, void *arg) { return stricmp(left, arg) == 0 ? right : NULL; }
+static void *left_strcmp(void *left, void *right, void *arg) { return strcmp(left, arg) == 0 ? right : NULL; }
 
-void *right_for_left_stricmp_hand_side(struct hand_side **top, const char *left) {
-  return for_left_and_right_hand_side(top, left_stricmp, (void *)left);
+void *right_for_left_strcmp_hand_side(struct hand_side **top, const char *left) {
+  return for_left_and_right_hand_side(top, left_strcmp, (void *)left);
 }
 
 static void *right_eq(void *left, void *right, void *arg) { return right == arg ? left : NULL; }
