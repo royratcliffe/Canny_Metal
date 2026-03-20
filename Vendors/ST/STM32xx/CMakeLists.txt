@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(Canny_Metal_STM32xx LANGUAGES C)
 
-include(CMake/arm_cortexM4lf_math.cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+include(arm_cortexM4lf_math)
 
 add_library(Canny_Metal_STM32xx)
 target_include_directories(Canny_Metal_STM32xx PUBLIC
