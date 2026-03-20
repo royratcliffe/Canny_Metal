@@ -44,7 +44,6 @@
  * \param y Second floating-point number.
  * \retval True if \c x and \c y compare equal.
  */
-// [[Rcpp::export]]
 static inline bool fepsiloneq(unsigned n, double x, double y) {
   return n * DBL_EPSILON >= fabs(x - y);
 }
@@ -56,7 +55,6 @@ static inline bool fepsiloneq(unsigned n, double x, double y) {
  * \param y Second floating-point number.
  * \retval True if \c x and \c y compare equal.
  */
-// [[Rcpp::export]]
 static inline bool fepsiloneqf(unsigned n, float x, float y) {
   return n * FLT_EPSILON >= fabsf(x - y);
 }
