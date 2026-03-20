@@ -3,18 +3,18 @@ project(Canny_Metal LANGUAGES C)
 
 add_library(Canny_Metal)
 target_include_directories(Canny_Metal PUBLIC
-    Abstractions/Inc
-    Utilities/Inc
-    Utilities/CPU/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/CPU/Inc
 )
 target_sources(Canny_Metal PRIVATE
-    Abstractions/Src/cons.c
-    Abstractions/Src/cons_node.c
-    Abstractions/Src/clock64.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/cons.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/cons_node.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/clock64.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_circ.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_item.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_yield.c
-    Utilities/Src/cobs.c
-    Utilities/CPU/Src/hand_side.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/cobs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/CPU/Src/hand_side.c
 )
