@@ -19,8 +19,6 @@
 
 static bool cons_delete_p(struct cons **list, struct cons *cell, void *user);
 
-static bool cons_remove_p(struct cons **list, struct cons *cell, void *user);
-
 struct cons **cons(struct cons **list, struct cons *cell) {
   cons_rplacd(cell, *list);
   *list = cell;
