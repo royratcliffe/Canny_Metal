@@ -30,12 +30,10 @@ struct cons **cons_prepend(struct cons **list, struct cons *cell) {
   return list;
 }
 
-struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, struct cons *cell, void *user), void *user) {
-  for (struct cons *cell = *list; CONS_NOT_NIL_P(cell); list = &cell->cdr, cell = cons_cdr(cell)) {
-    if (pred(list, cell, user)) {
-      return list;
-    }
-  }
+struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, struct cons *cell, void *user),
+                        void *user) {
+  for (struct cons *cell = *list; CONS_NOT_NIL_P(cell); list = &cell->cdr, cell = cons_cdr(cell))
+    if (pred(list, cell, user)) return list;
   /*
    * Returning NULL is correct. It is a NULL pointer to a pointer to a
    * cons cell---a pointer to the head of a list. Therefore not itself a
@@ -57,9 +55,7 @@ static bool cons_find_p(struct cons **list, struct cons *cell, void *user) {
   return cell == user;
 }
 
-struct cons **cons_find(struct cons **list, void *cell) {
-  return cons_loop(list, cons_find_p, cell);
-}
+struct cons **cons_find(struct cons **list, void *cell) { return cons_loop(list, cons_find_p, cell); }
 
 static bool cons_delete_p(struct cons **list, struct cons *cell, void *user) {
   (void)list;
@@ -68,9 +64,7 @@ static bool cons_delete_p(struct cons **list, struct cons *cell, void *user) {
 
 struct cons *cons_delete(struct cons **list, void *car) {
   struct cons **found = cons_loop(list, cons_delete_p, car);
-  if (found == NULL) {
-    return CONS_NIL;
-  }
+  if (found == NULL) return CONS_NIL;
   struct cons *deleted = *found;
   *found = cons_cdr(deleted);
   return deleted;
@@ -78,9 +72,7 @@ struct cons *cons_delete(struct cons **list, void *car) {
 
 struct cons *cons_remove(struct cons **list, struct cons *cell) {
   struct cons **found = cons_find(list, cell);
-  if (found == NULL) {
-    return CONS_NIL;
-  }
+  if (found == NULL) return CONS_NIL;
   struct cons *removed = *found;
   *found = cons_cdr(removed);
   return removed;
@@ -116,16 +108,13 @@ size_t cons_length(const struct cons *cell) {
 }
 
 struct cons *cons_last(struct cons *cell) {
-  if (CONS_NIL_P(cell)) {
-    return CONS_NIL;
-  }
+  if (CONS_NIL_P(cell)) return CONS_NIL;
   /*
    * The last cell in a list is the one having its cdr field equal to CONS_NIL.
    */
   struct cons *tail;
-  while (CONS_NOT_NIL_P(tail = cons_cdr(cell))) {
+  while (CONS_NOT_NIL_P(tail = cons_cdr(cell)))
     cell = tail;
-  }
   return cell;
 }
 
@@ -138,28 +127,21 @@ struct cons *cons_nth(struct cons *cell, size_t nth) {
 }
 
 struct cons *cons_member(struct cons *cell, void *car) {
-  for (; CONS_NOT_NIL_P(cell); cell = cons_cdr(cell)) {
-    if (cons_car(cell) == car) {
-      return cell;
-    }
-  }
+  for (; CONS_NOT_NIL_P(cell); cell = cons_cdr(cell))
+    if (cons_car(cell) == car) return cell;
   return CONS_NIL;
 }
 
 struct cons *cons_append(struct cons *cell1, struct cons *cell2) {
   struct cons *last = cons_last(cell1);
-  if (CONS_NIL_P(last)) {
-    return cell2;
-  }
+  if (CONS_NIL_P(last)) return cell2;
   cons_rplacd(last, cell2);
   return cell1;
 }
 
 struct cons *cons_heap(void *car) {
   struct cons *cell = (struct cons *)malloc(sizeof(struct cons));
-  if (CONS_NOT_NIL_P(cell)) {
-    cons_init(cell, car);
-  }
+  if (CONS_NOT_NIL_P(cell)) cons_init(cell, car);
   return cell;
 }
 
@@ -173,7 +155,5 @@ void cons_free(struct cons *cell) {
    * speaking, the implementation can free(NULL) without causing
    * undefined behavior.
    */
-  if (CONS_NOT_NIL_P(cell)) {
-    free(cell);
-  }
+  if (CONS_NOT_NIL_P(cell)) free(cell);
 }

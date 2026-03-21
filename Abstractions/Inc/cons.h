@@ -184,7 +184,8 @@ struct cons **cons_prepend(struct cons **list, struct cons *cell);
  * the function provides a clear and unambiguous way to indicate that
  * the search was unsuccessful.
  */
-struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, struct cons *cell, void *user), void *user);
+struct cons **cons_loop(struct cons **list, bool (*pred)(struct cons **list, struct cons *cell, void *user),
+                        void *user);
 
 /*!
  * \brief Finds the first cons cell in a list that matches a given identity.
@@ -220,15 +221,15 @@ struct cons *cons_delete(struct cons **list, void *car);
 
 /*!
  * \brief Destructively removes the specified cons cell from the list.
-  * \param list Pointer to the list head.
-  * \param cell The cons cell to remove from the list, matched by identity.
-  * \retval The removed cons cell if the specified cell was found and removed.
-  * \retval \c CONS_NIL if the specified cell was not found in the list.
-  * \details Traverses the list of cons cells, looking for the specified
-  * cell. If the cell is found, it is removed from the list by updating
-  * the \c cdr pointer of the previous cell (or the head pointer if the
-  * cell to remove is the first cell) to point to the next cell, thereby
-  * bypassing the removed cell.
+ * \param list Pointer to the list head.
+ * \param cell The cons cell to remove from the list, matched by identity.
+ * \retval The removed cons cell if the specified cell was found and removed.
+ * \retval \c CONS_NIL if the specified cell was not found in the list.
+ * \details Traverses the list of cons cells, looking for the specified
+ * cell. If the cell is found, it is removed from the list by updating
+ * the \c cdr pointer of the previous cell (or the head pointer if the
+ * cell to remove is the first cell) to point to the next cell, thereby
+ * bypassing the removed cell.
  */
 struct cons *cons_remove(struct cons **list, struct cons *cell);
 
