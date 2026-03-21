@@ -87,7 +87,7 @@ struct clock64 {
  * implementation inherit these functions from their source clock.
  */
 struct clock64_impl {
-  uint64_t (*now)(void); /*!< Function to latch the current time. */
+  uint64_t (*now)(void);          /*!< Function to latch the current time. */
   uint64_t (*ticks_per_us)(void); /*!< Function to access the number of ticks per microsecond. */
 };
 
