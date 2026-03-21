@@ -35,6 +35,9 @@ typedef struct RegisteredOpaques *RegisteredOpaques_t;
 
 /*!
  * \brief Cardinal for opaque pointer.
+ * \details Registers the opaque pointer if not already registered. Uses the hash
+ * function, if available, to place the opaque in a hash-optimised registry
+ * location.
  * \param xRegisteredOpaques The registry of opaque pointers to query.
  * \param pvOpaque The opaque pointer to register or query.
  * \retval The cardinal of the opaque pointer in the registry if it is already
@@ -42,13 +45,6 @@ typedef struct RegisteredOpaques *RegisteredOpaques_t;
  * registered.
  * \retval -ENOMEM if the registry is full and the opaque pointer could not be
  * registered.
- *
- * Registers the opaque pointer if not already registered. Uses the hash
- * function, if available, to place the opaque in a hash-optimised registry
- * location.
- *
- * Asserts if full. By design, always provide sufficient space for registered
- * opaque pointers. No function exists to unregister a pointer by design.
  */
 ptrdiff_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
 
@@ -56,7 +52,6 @@ ptrdiff_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, vo
  * \brief Non-mutating query of opaque by registry.
  * \param xRegisteredOpaques The registry of opaque pointers to query.
  * \param pvOpaque The opaque pointer to query.
- *
  * \retval \c true if the opaque has already been registered.
  * \retval \c false if the opaque has not been registered.
  */
