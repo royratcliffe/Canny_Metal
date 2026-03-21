@@ -35,18 +35,18 @@ struct correlate_f32 {
  * \param _name_ Name of the correlate_f32 instance.
  * \param _size_ Size of the expected and actual data buffers.
  */
-#define CORRELATE_F32_DEFINE_STATIC(_name_, _size_)                                                \
-  static float32_t _name_##_correlated[_size_ + _size_ - 1];                                       \
-  static float32_t _name_##_expected[_size_];                                                      \
-  static float32_t _name_##_actual[_size_];                                                        \
-  RING_BUF_DEFINE_STATIC(_name_##_buf_expected, sizeof(float[_size_]));                            \
-  RING_BUF_DEFINE_STATIC(_name_##_buf_actual, sizeof(float[_size_]));                              \
-  struct correlate_f32 _name_ = {                                                                  \
-      .correlated = _name_##_correlated,                                                           \
-      .expected = _name_##_expected,                                                               \
-      .actual = _name_##_actual,                                                                   \
-      .buf_expected = &_name_##_buf_expected,                                                      \
-      .buf_actual = &_name_##_buf_actual,                                                          \
+#define CORRELATE_F32_DEFINE_STATIC(_name_, _size_)                     \
+  static float32_t _name_##_correlated[_size_ + _size_ - 1];            \
+  static float32_t _name_##_expected[_size_];                           \
+  static float32_t _name_##_actual[_size_];                             \
+  RING_BUF_DEFINE_STATIC(_name_##_buf_expected, sizeof(float[_size_])); \
+  RING_BUF_DEFINE_STATIC(_name_##_buf_actual, sizeof(float[_size_]));   \
+  struct correlate_f32 _name_ = {                                       \
+      .correlated = _name_##_correlated,                                \
+      .expected = _name_##_expected,                                    \
+      .actual = _name_##_actual,                                        \
+      .buf_expected = &_name_##_buf_expected,                           \
+      .buf_actual = &_name_##_buf_actual,                               \
   }
 
 /*!

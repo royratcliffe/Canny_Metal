@@ -56,30 +56,23 @@ int correlate_f32(struct correlate_f32 *correlate) {
     correlate->correlated_len = 0U;
     return -EINVAL;
   }
-  arm_correlate_f32(correlate->expected, expected_len, correlate->actual, actual_len,
-                    correlate->correlated);
+  arm_correlate_f32(correlate->expected, expected_len, correlate->actual, actual_len, correlate->correlated);
   correlate->correlated_len = expected_len + actual_len - 1U;
   return 0;
 }
 
 size_t correlate_get_correlated_f32(const struct correlate_f32 *correlate, float32_t **correlated) {
-  if (correlated != NULL) {
-    *correlated = correlate->correlated;
-  }
+  if (correlated != NULL) *correlated = correlate->correlated;
   return correlate->correlated_len;
 }
 
 size_t correlate_get_expected_f32(const struct correlate_f32 *correlate, float32_t **expected) {
-  if (expected != NULL) {
-    *expected = correlate->expected;
-  }
+  if (expected != NULL) *expected = correlate->expected;
   return correlate->expected_len;
 }
 
 size_t correlate_get_actual_f32(const struct correlate_f32 *correlate, float32_t **actual) {
-  if (actual != NULL) {
-    *actual = correlate->actual;
-  }
+  if (actual != NULL) *actual = correlate->actual;
   return correlate->actual_len;
 }
 
@@ -91,9 +84,7 @@ size_t correlated_max_f32(const struct correlate_f32 *correlate, float32_t *max)
    * What does arm_max_f32() do if there are multiple maximum values?
    */
   arm_max_f32(correlate->correlated, correlate->correlated_len, &value, &index);
-  if (max != NULL) {
-    *max = value;
-  }
+  if (max != NULL) *max = value;
   return (size_t)index;
 }
 
@@ -101,16 +92,12 @@ size_t correlated_min_f32(const struct correlate_f32 *correlate, float32_t *min)
   float32_t value;
   uint32_t index;
   arm_min_f32(correlate->correlated, correlate->correlated_len, &value, &index);
-  if (min != NULL) {
-    *min = value;
-  }
+  if (min != NULL) *min = value;
   return (size_t)index;
 }
 
 int32_t correlate_zero_lag_f32(const struct correlate_f32 *correlate) {
-  if (correlate->actual_len == 0U) {
-    return INT32_MIN;
-  }
+  if (correlate->actual_len == 0U) return INT32_MIN;
   /*
    * For correlation between sequences of lengths Nx and Nh, the "zero lag"
    * index is (Nh - 1) where Nh is the length of the actual data. Positive lag
@@ -122,24 +109,19 @@ int32_t correlate_zero_lag_f32(const struct correlate_f32 *correlate) {
 int32_t correlate_peak_lag_f32(const struct correlate_f32 *correlate, float32_t *peak) {
   const size_t max_index = correlated_max_f32(correlate, peak);
   const int32_t zero_lag = correlate_zero_lag_f32(correlate);
-  if (zero_lag == INT32_MIN) {
-    return INT32_MIN;
-  }
+  if (zero_lag == INT32_MIN) return INT32_MIN;
   return (int32_t)max_index - zero_lag;
 }
 
 int correlate_normalise_f32(struct correlate_f32 *correlate) {
-  if (correlate->correlated_len == 0U) {
-    return -EINVAL;
-  }
+  if (correlate->correlated_len == 0U) return -EINVAL;
   float32_t expected_dot, actual_dot;
   /*
    * Normalise by sqrt(expected_dot * actual_dot) where expected_dot = sum
    * expected^2, actual_dot = sum actual^2 using CMSIS-DSP for dot product
    * calculation, i.e. the sum of the squares of the elements.
    */
-  arm_dot_prod_f32(correlate->expected, correlate->expected, correlate->expected_len,
-                   &expected_dot);
+  arm_dot_prod_f32(correlate->expected, correlate->expected, correlate->expected_len, &expected_dot);
   arm_dot_prod_f32(correlate->actual, correlate->actual, correlate->actual_len, &actual_dot);
   float32_t denom = sqrtf(expected_dot * actual_dot);
   /*
@@ -147,12 +129,9 @@ int correlate_normalise_f32(struct correlate_f32 *correlate) {
    * FLT_EPSILON is the smallest such that 1.0 + FLT_EPSILON != 1.0 in
    * single-precision floating point.
    */
-  if (FLT_EPSILON > denom) {
-    return -EDOM;
-  }
-  for (size_t n = 0; n < correlate->correlated_len; ++n) {
+  if (FLT_EPSILON > denom) return -EDOM;
+  for (size_t n = 0; n < correlate->correlated_len; ++n)
     correlate->correlated[n] /= denom;
-  }
   return 0;
 }
 
