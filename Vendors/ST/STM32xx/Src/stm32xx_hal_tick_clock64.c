@@ -1,3 +1,18 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2026, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
+/*!
+ * \file stm32xx_hal_tick_clock64.c
+ * \brief Provides a 64-bit tick clock implementation based on the HAL tick.
+ * \note This clock relies on the HAL tick, so it is important to ensure that
+ * the HAL tick is properly configured and running for this clock to function
+ * correctly. Additionally, since the HAL tick typically has a resolution of 1
+ * millisecond, the \c ticks_per_us function will return a value that reflects
+ * this resolution, which may affect the precision of timing calculations that
+ * use this clock.
+ */
 #include <stm32xx_hal.h>
 
 /*
