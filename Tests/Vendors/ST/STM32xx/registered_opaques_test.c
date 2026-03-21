@@ -11,6 +11,7 @@ int should_register_and_retrieve_opaques(void) {
   void *opaques[1] = {NULL};
   struct RegisteredOpaques registered_opaques = {
       .ppvOpaques = opaques, .xNumberOfOpaques = DIM_OF(opaques), .pxHashOfOpaqueFunction = NULL};
+  assert(!xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
   assert(xRegisteredCardinalOfOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0);
   assert(xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
   assert(xRegisteredCardinalOfOpaque(&registered_opaques, (void *)0x12345678UL) == -ENOMEM);
