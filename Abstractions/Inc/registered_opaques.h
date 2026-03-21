@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2023, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
 /*!
  * \file registered_opaques.h
  * \brief Header file for the RegisteredOpaques module.
@@ -9,7 +14,6 @@
  * module is designed to be flexible and extensible, allowing for the creation
  * of complex registries with various opaque pointers and behaviours.
  */
-
 #ifndef REGISTERED_OPAQUES_H
 #define REGISTERED_OPAQUES_H
 
@@ -23,6 +27,10 @@
  * an array of opaque pointers, the number of opaque pointers, and an optional
  * hash function for optimising the placement of opaque pointers in the
  * registry.
+ *
+ * The registered opaque structure has no counter. The number of registered
+ * opaque pointers corresponds to the total number of pointers less the number
+ * of \c NULL pointers.
  */
 struct RegisteredOpaques {
   void **ppvOpaques;       /*!< Array of opaque pointers. */
