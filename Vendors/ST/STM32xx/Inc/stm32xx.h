@@ -3,12 +3,21 @@
  */
 #pragma once
 
-#if !defined(STM32F405xx) && !defined(STM32F415xx) && !defined(STM32F407xx) && !defined(STM32F417xx) && \
-    !defined(STM32F427xx) && !defined(STM32F437xx) && !defined(STM32F429xx) && !defined(STM32F439xx) && \
-    !defined(STM32F401xC) && !defined(STM32F401xE) && !defined(STM32F410Tx) && !defined(STM32F410Cx) && \
-    !defined(STM32F410Rx) && !defined(STM32F411xE) && !defined(STM32F446xx) && !defined(STM32F469xx) && \
-    !defined(STM32F479xx) && !defined(STM32F412Cx) && !defined(STM32F412Rx) && !defined(STM32F412Vx) && \
-    !defined(STM32F412Zx) && !defined(STM32F413xx) && !defined(STM32F423xx)
+#if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx) || \
+    defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx) || \
+    defined(STM32F401xC) || defined(STM32F401xE) || defined(STM32F410Tx) || defined(STM32F410Cx) || \
+    defined(STM32F410Rx) || defined(STM32F411xE) || defined(STM32F446xx) || defined(STM32F469xx) || \
+    defined(STM32F479xx) || defined(STM32F412Cx) || defined(STM32F412Rx) || defined(STM32F412Vx) || \
+    defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
+/*!
+ * \brief Define STM32xx as the STM32 family being used.
+ * \details This macro is defined based on the specific STM32F4xx device that is
+ * being targeted. It allows the code to conditionally compile based on the
+ * STM32 family, enabling support for multiple devices within the same codebase.
+ * By defining STM32xx, the code can include the appropriate headers and use the
+ * correct definitions for the specific device being used, ensuring
+ * compatibility and proper functionality across different STM32F4xx variants.
+ */
 #  define STM32xx F4
 #endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx || STM32F427xx || STM32F437xx ||  \
            STM32F429xx || STM32F439xx || STM32F401xC || STM32F401xE || STM32F410Tx || STM32F410Cx || \
