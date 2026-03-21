@@ -18,10 +18,23 @@ int should_register_and_retrieve_opaques(void) {
   return 0;
 }
 
+int should_query_unregistered_opaques(void) {
+  void *opaques[16] = {NULL};
+  struct RegisteredOpaques registered_opaques = {
+      .ppvOpaques = opaques, .xNumberOfOpaques = DIM_OF(opaques), .pxHashOfOpaqueFunction = NULL};
+  assert(!xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
+  assert(xRegisteredCardinalOfOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0);
+  assert(xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
+  assert(xUnregisterOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0);
+  assert(!xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
+  return 0;
+}
+
 int main(void) {
   (void)printf("Hello, World from %s!!!\n", "registered_opaques_test");
 
   assert(should_register_and_retrieve_opaques() == 0);
+  assert(should_query_unregistered_opaques() == 0);
 
   _exit(0);
   return 0;
