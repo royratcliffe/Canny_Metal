@@ -3,11 +3,15 @@
  */
 
 /*!
- * \file
- *
- * The link to FreeRTOS is tenuous. Only the asserts utilise FreeRTOS \c
- * configASSERT for memory overruns. The naming conventions echo FreeRTOS
- * Hungarian naming conventions.
+ * \file registered_opaques.h
+ * \brief Header file for the RegisteredOpaques module.
+ * \details Provides a mechanism for registering opaque pointers and querying
+ * their registration status. The RegisteredOpaques structure maintains a
+ * registry of opaque pointers, allowing for efficient lookup and management of
+ * these pointers. The functions provided by this module include registering an
+ * opaque pointer and checking if an opaque pointer is already registered. The
+ * module is designed to be flexible and extensible, allowing for the creation
+ * of complex registries with various opaque pointers and behaviours.
  */
 
 #ifndef REGISTERED_OPAQUES_H
