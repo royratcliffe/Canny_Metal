@@ -10,8 +10,8 @@
 /*
  * arm_math.h for float32_t type
  */
-#include "arm_math.h"
-#include "ring_buf.h"
+#include <arm_math.h>
+#include <ring_buf.h>
 
 /*!
  * \brief Correlate float32_t structure.
