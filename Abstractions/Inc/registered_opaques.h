@@ -65,4 +65,13 @@ ptrdiff_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, vo
  */
 bool xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
 
+/*!
+ * \brief Unregisters an opaque pointer.
+ * \param xRegisteredOpaques The registry of opaque pointers.
+ * \param pvOpaque The opaque pointer to unregister.
+ * \retval The cardinal of the opaque pointer in the registry if it was successfully unregistered.
+ * \retval -EINVAL if the opaque pointer was not found in the registry.
+ */
+ptrdiff_t xUnregisterOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
+
 #endif /* REGISTERED_OPAQUES_H */
