@@ -11,6 +11,7 @@ target_sources(Canny_Metal PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/cons.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/cons_node.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/clock64.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Abstractions/Src/registered_opaques.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_circ.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Src/ring_buf_item.c
