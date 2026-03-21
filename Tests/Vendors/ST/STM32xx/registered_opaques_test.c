@@ -7,7 +7,7 @@
 #include <registered_opaques.h>
 #include <dimof.h>
 
-int a_test(void) {
+int should_register_and_retrieve_opaques(void) {
   void *opaques[1] = {NULL};
   struct RegisteredOpaques registered_opaques = {
       .ppvOpaques = opaques, .xNumberOfOpaques = DIM_OF(opaques), .pxHashOfOpaqueFunction = NULL};
@@ -20,7 +20,7 @@ int a_test(void) {
 int main(void) {
   (void)printf("Hello, World from %s!!!\n", "registered_opaques_test");
 
-  assert(a_test() == 0);
+  assert(should_register_and_retrieve_opaques() == 0);
 
   _exit(0);
   return 0;
