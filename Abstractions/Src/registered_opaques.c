@@ -37,7 +37,7 @@ static void **ppvRegisteredOpaque(RegisteredOpaques_t xRegisteredOpaques, void *
 static size_t xRegisteredHashOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
 
 ptrdiff_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque) {
-  size_t xCardinal = xRegisteredHashOfOpaque(xRegisteredOpaques, pvOpaque);
+  const size_t xCardinal = xRegisteredHashOfOpaque(xRegisteredOpaques, pvOpaque);
   void **ppvOpaque = ppvRegisteredOpaque(xRegisteredOpaques, pvOpaque, xCardinal);
   if (ppvOpaque == NULL) {
     ppvOpaque = ppvRegisteredOpaque(xRegisteredOpaques, NULL, xCardinal);
@@ -54,7 +54,7 @@ ptrdiff_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, vo
 }
 
 bool xOpaqueIsRegistered(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque) {
-  size_t xCardinal = xRegisteredHashOfOpaque(xRegisteredOpaques, pvOpaque);
+  const size_t xCardinal = xRegisteredHashOfOpaque(xRegisteredOpaques, pvOpaque);
   return ppvRegisteredOpaque(xRegisteredOpaques, pvOpaque, xCardinal) != NULL;
 }
 
