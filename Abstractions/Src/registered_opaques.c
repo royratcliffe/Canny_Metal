@@ -16,8 +16,7 @@
 /*!
  * \brief Searches for an opaque pointer.
  * \details The implementation design optimises for quickly finding a
- * previously-registered opaque. For example, it would be possible to collate
- * the \c NULL opaques while iterating.
+ * previously-registered opaque by applying the hash function, if available.
  * \param xCardinal Starting cardinal typically based on the opaque's hash. Must
  * always be less than the number of opaque pointers.
  * \returns Pointer to opaque pointer.
