@@ -143,6 +143,9 @@ uint64_t clock64_ticks_per_us(struct clock64 *clock);
  * \brief Accessor for the current time in microseconds of a clock64 instance.
  * \param clock The clock64 instance to access.
  * \retval The current time in microseconds.
+ * \note Rounds down to the nearest microsecond. This is because the current
+ * time in ticks is divided by the number of ticks per microsecond using 64-bit
+ * integer arithmetic.
  */
 uint64_t clock64_now_us(struct clock64 *clock);
 

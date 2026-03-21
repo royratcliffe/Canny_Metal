@@ -69,13 +69,13 @@ uint64_t clock64_ticks_per_us(struct clock64 *clock) {
 
 uint64_t clock64_now_us(struct clock64 *clock) { return clock64_now(clock) / clock64_ticks_per_us(clock); }
 
-uint64_t clock64_now_ms(struct clock64 *clock) { return clock64_now_us(clock) / 1000UL; }
+uint64_t clock64_now_ms(struct clock64 *clock) { return clock64_now_us(clock) / 1000ULL; }
 
 uint64_t clock64_ticks(struct clock64 *clock) { return clock->ticks; }
 
 uint64_t clock64_ticks_us(struct clock64 *clock) { return clock64_ticks(clock) / clock64_ticks_per_us(clock); }
 
-uint64_t clock64_ticks_ms(struct clock64 *clock) { return clock64_ticks_us(clock) / 1000UL; }
+uint64_t clock64_ticks_ms(struct clock64 *clock) { return clock64_ticks_us(clock) / 1000ULL; }
 
 void clock64_select(struct clock64 *clock, struct clock64 *src) {
   /*
