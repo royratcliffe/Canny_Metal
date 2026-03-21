@@ -111,10 +111,25 @@ struct clock64 *clock64_src(struct clock64 *clock);
  */
 uint64_t clock64_now(struct clock64 *clock);
 
+/*!
+ * \brief Accessor for the number of ticks per microsecond of a clock64 instance.
+ * \param clock The clock64 instance to access.
+ * \retval The number of ticks per microsecond.
+ */
 uint64_t clock64_ticks_per_us(struct clock64 *clock);
 
+/*!
+ * \brief Accessor for the current time in microseconds of a clock64 instance.
+ * \param clock The clock64 instance to access.
+ * \retval The current time in microseconds.
+ */
 uint64_t clock64_now_us(struct clock64 *clock);
 
+/*!
+ * \brief Accessor for the current time in milliseconds of a clock64 instance.
+ * \param clock The clock64 instance to access.
+ * \retval The current time in milliseconds.
+ */
 uint64_t clock64_now_ms(struct clock64 *clock);
 
 /*!
@@ -128,8 +143,18 @@ uint64_t clock64_now_ms(struct clock64 *clock);
  */
 uint64_t clock64_ticks(struct clock64 *clock);
 
+/*!
+ * \brief Answers the ticks of the clock in microseconds at the last synchronisation.
+ * \param clock The clock to query.
+ * \retval The number of ticks in microseconds at the last synchronisation.
+ */
 uint64_t clock64_ticks_us(struct clock64 *clock);
 
+/*!
+ * \brief Answers the ticks of the clock in milliseconds at the last synchronisation.
+ * \param clock The clock to query.
+ * \retval The number of ticks in milliseconds at the last synchronisation.
+ */
 uint64_t clock64_ticks_ms(struct clock64 *clock);
 
 /*!
@@ -146,6 +171,11 @@ uint64_t clock64_ticks_ms(struct clock64 *clock);
  */
 void clock64_select(struct clock64 *clock, struct clock64 *src);
 
+/*!
+ * \brief Sets the tick function for a clock64 instance.
+ * \param clock The clock64 instance to configure.
+ * \param tick The tick function to associate with the clock64 instance.
+ */
 void clock64_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock));
 
 /*!
