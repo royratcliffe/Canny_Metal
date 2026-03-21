@@ -1,3 +1,14 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2026, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
+/*!
+ * \file clock64.c
+ * \brief Implementation of the clock64 module.
+ * \details This file implements the functions declared in clock64.h for the
+ * clock64 module.
+ */
 #include <clock64.h>
 
 #include <containerof.h>

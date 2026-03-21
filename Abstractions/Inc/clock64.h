@@ -1,3 +1,24 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2026, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
+/*!
+ * \file clock64.h
+ * \brief Header file for the clock64 module.
+ * \details This header file defines the structures and function prototypes for
+ * the clock64 module, which provides a 64-bit clock implementation. The clock64
+ * module allows for the creation of clocks that can provide the current time in
+ * ticks, as well as the number of ticks per microsecond. The clock64 structure
+ * includes a cons node for linking clocks in a hierarchy, an optional
+ * implementation for providing time functions, and an optional tick function
+ * that can be called on time changes. The clock64 module is designed to be
+ * flexible and extensible, allowing for the creation of complex clock
+ * hierarchies with various time sources and behaviours.
+ */
+#ifndef CLOCK64_H
+#define CLOCK64_H
+
 #include <cons_node.h>
 
 /*
@@ -188,3 +209,5 @@ void clock64_tick(struct clock64 *clock, void (*tick)(struct clock64 *clock));
  * clocks rooted at this clock is synchronised.
  */
 void clock64_sync(struct clock64 *clock);
+
+#endif /* CLOCK64_H */
