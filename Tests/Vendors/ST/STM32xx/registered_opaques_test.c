@@ -18,14 +18,16 @@ int should_register_and_retrieve_opaques(void) {
   return 0;
 }
 
+size_t xHashOfOpaque(void *pvOpaque) { return (size_t)pvOpaque; }
+
 int should_query_unregistered_opaques(void) {
   void *opaques[16] = {NULL};
   struct RegisteredOpaques registered_opaques = {
-      .ppvOpaques = opaques, .xNumberOfOpaques = DIM_OF(opaques), .pxHashOfOpaqueFunction = NULL};
+      .ppvOpaques = opaques, .xNumberOfOpaques = DIM_OF(opaques), .pxHashOfOpaqueFunction = xHashOfOpaque};
   assert(!xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
-  assert(xRegisteredCardinalOfOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0);
+  assert(xRegisteredCardinalOfOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0xf);
   assert(xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
-  assert(xUnregisterOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0);
+  assert(xUnregisterOpaque(&registered_opaques, (void *)0xdeadbeefUL) == 0xf);
   assert(!xOpaqueIsRegistered(&registered_opaques, (void *)0xdeadbeefUL));
   return 0;
 }
