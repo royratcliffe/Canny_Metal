@@ -1,5 +1,14 @@
 /*!
  * \file stm32xx.h
+ * \brief Common header for STM32xx devices.
+ * \details This header file serves as a common include for all STM32xx devices,
+ * providing a unified interface for including the appropriate device-specific
+ * headers based on the target device being used. It defines macros to identify
+ * the STM32 family and specific device, allowing for conditional compilation
+ * and ensuring that the correct definitions and configurations are applied for
+ * the target hardware. By including this header, developers can write code that
+ * is portable across different STM32xx variants without needing to manually
+ * change include statements or configurations for each specific device.
  */
 #pragma once
 
