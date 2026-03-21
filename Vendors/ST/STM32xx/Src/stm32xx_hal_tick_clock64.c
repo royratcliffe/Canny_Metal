@@ -32,7 +32,13 @@ static uint64_t now() {
 
 static uint64_t ticks_per_us() { return HAL_GetTickFreq() * 1000ULL; }
 
-static struct clock64_impl hal_tick_clock64_impl = {.now = now, .ticks_per_us = ticks_per_us};
+/*
+ * Provide a 64-bit clock source based on the HAL tick. The "now" function
+ * calculates elapsed ticks since the last call, whilst "ticks_per_us" returns
+ * ticks per microsecond. The implementation is const to prevent modification
+ * and to live in flash memory as a fixed configuration.
+ */
+static const struct clock64_impl hal_tick_clock64_impl = {.now = now, .ticks_per_us = ticks_per_us};
 
 static struct clock64 hal_tick_clock64 = {.impl = &hal_tick_clock64_impl};
 
