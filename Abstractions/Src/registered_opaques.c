@@ -8,15 +8,24 @@
 
 #include "registered_opaques.h"
 
+#include <errno.h>
+
 static void **ppvRegisteredOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque, size_t xCardinal);
 
 static size_t xRegisteredHashOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque);
 
-size_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque) {
+ptrdiff_t xRegisteredCardinalOfOpaque(RegisteredOpaques_t xRegisteredOpaques, void *pvOpaque) {
   size_t xCardinal = xRegisteredHashOfOpaque(xRegisteredOpaques, pvOpaque);
   void **ppvOpaque = ppvRegisteredOpaque(xRegisteredOpaques, pvOpaque, xCardinal);
   if (ppvOpaque == NULL) {
     ppvOpaque = ppvRegisteredOpaque(xRegisteredOpaques, NULL, xCardinal);
+    if (ppvOpaque == NULL) {
+      /*
+       * The registry is full. This should never happen if the caller always
+       * provides sufficient space for registered opaque pointers.
+       */
+      return -ENOMEM;
+    }
     *ppvOpaque = pvOpaque;
   }
   return ppvOpaque - xRegisteredOpaques->ppvOpaques;
