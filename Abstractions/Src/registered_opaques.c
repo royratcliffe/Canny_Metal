@@ -6,7 +6,7 @@
  * of \c NULL pointers.
  */
 
-#include "registered_opaques.h"
+#include <registered_opaques.h>
 
 #include <errno.h>
 
