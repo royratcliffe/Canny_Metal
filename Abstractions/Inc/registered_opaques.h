@@ -1,7 +1,3 @@
-/*
- * registered_opaques.h (Abstractions)
- */
-
 /*!
  * \file registered_opaques.h
  * \brief Header file for the RegisteredOpaques module.
