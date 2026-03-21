@@ -4,11 +4,11 @@
  * \details Implements functions for correlating float32_t data using CMSIS-DSP.
  */
 
-#include "correlate_f32.h"
+#include <correlate_f32.h>
 
-#include "fepsiloneq.h"
-#include "ring_buf.h"
-#include "ring_buf_circ.h"
+#include <fepsiloneq.h>
+#include <ring_buf.h>
+#include <ring_buf_circ.h>
 
 #include <errno.h>
 
