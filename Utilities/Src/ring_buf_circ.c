@@ -1,6 +1,12 @@
 /*
- * slip.h
- * Copyright (c) 2023, Roy Ratcliffe, Northumberland, United Kingdom
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2024, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+/*!
+ * \file ring_buf_circ.c
+ * \brief Circular ring buffer function implementations.
+ * \details Implements functions for putting data into a circular ring buffer.
+ * \copyright 2024, 2025, Roy Ratcliffe, Northumberland, United Kingdom
  *
  * Permission is hereby granted, free of charge,  to any person obtaining a
  * copy  of  this  software  and    associated   documentation  files  (the
@@ -22,14 +28,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "ring_buf_circ.h"
+#include "ring_buf.h"
 
-#ifndef slipMAX_PACKET_LEN
-#define slipMAX_PACKET_LEN 256U
-#endif
-
-#define SLIP_END 0300U
-#define SLIP_ESC 0333U
-
-#define SLIP_ESC_END 0334U
-#define SLIP_ESC_ESC 0335U
+/*
+ * Add a new item to the ring buffer. If the circular buffer is full, remove the
+ * oldest item first.
+ *
+ * Fail if the new data will not fit. This should not happen if the buffer is
+ * sized correctly. It will never happen if the buffer size is a multiple of the
+ * data size.
+ */
+int ring_buf_put_circ(struct ring_buf *buf, void *data, size_t size) {
+  if (ring_buf_is_full(buf))
+    (void)ring_buf_get_ack(buf, ring_buf_get(buf, NULL, size));
+  if (size > ring_buf_free_space(buf))
+    return -EMSGSIZE;
+  return ring_buf_put_ack(buf, ring_buf_put(buf, data, size));
+}

@@ -1,6 +1,14 @@
 /*
- * slip.h
- * Copyright (c) 2023, Roy Ratcliffe, Northumberland, United Kingdom
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2024, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+/*!
+ * \file ring_buf_item.c
+ * \brief Implementation of ring buffer item functions.
+ * \details This file contains the definitions for functions that handle
+ * putting and getting items in a ring buffer, where each item is prefixed with
+ * its length.
+ * \copyright 2024, 2025, Roy Ratcliffe, Northumberland, United Kingdom
  *
  * Permission is hereby granted, free of charge,  to any person obtaining a
  * copy  of  this  software  and    associated   documentation  files  (the
@@ -22,14 +30,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "ring_buf_item.h"
 
-#ifndef slipMAX_PACKET_LEN
-#define slipMAX_PACKET_LEN 256U
-#endif
+int ring_buf_item_put(struct ring_buf *buf, const void *item,
+                      ring_buf_item_length_t length) {
+  if (sizeof(length) + length > ring_buf_free_space(buf))
+    return -EMSGSIZE;
+  const ring_buf_size_t claim = ring_buf_put(buf, &length, sizeof(length));
+  return claim + ring_buf_put(buf, item, length);
+}
 
-#define SLIP_END 0300U
-#define SLIP_ESC 0333U
-
-#define SLIP_ESC_END 0334U
-#define SLIP_ESC_ESC 0335U
+int ring_buf_item_get(struct ring_buf *buf, void *item,
+                      ring_buf_item_length_t *length) {
+  if (ring_buf_is_empty(buf))
+    return -EAGAIN;
+  const ring_buf_size_t claim = ring_buf_get(buf, length, sizeof(*length));
+  return claim + ring_buf_get(buf, item, *length);
+}

@@ -1,9 +1,10 @@
 // Copyright (c) Roy Ratcliffe, Northumberland, United Kingdom
 // SPDX-License-Identifier: MIT
 
-#pragma once
+#ifndef COBS_H
+#define COBS_H
 
-#include <stdlib.h>
+#include <stddef.h>
 
 ptrdiff_t xCOBSStuff(const void *pvData, size_t xDataLengthBytes, void *pvCOBS);
 
@@ -37,3 +38,5 @@ ptrdiff_t xCOBSUnStuff(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData
  * is not \c NULL.
  */
 size_t xCOBSMemUnStuff(const void *pvCOBS, size_t xCOBSLengthBytes, void *pvData);
+
+#endif /* COBS_H */

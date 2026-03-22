@@ -4,8 +4,8 @@
 #pragma once
 
 /*!
- * \file macros.h
- * \brief Useful generic C macros.
+ * \file dimof.h
+ * \brief Macro for computing the dimension of an array.
  */
 
 /*!

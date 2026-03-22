@@ -22,7 +22,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#ifndef HAND_SIDE_H
+#define HAND_SIDE_H
 
 #include <stdarg.h>
 
@@ -113,18 +114,18 @@ void *vfor_left_and_right_hand_side(struct hand_side **top, void *(*and)(void *l
 void *right_for_left_hand_side(struct hand_side **top, void *left);
 
 /*!
- * \brief Right for lefthand side by case-insensitive comparison
+ * \brief Right for lefthand side by case-sensitive comparison
  * \param top Pointer to top of chain
  * \param left Pointer to null-terminated lefthand side string
  *
- * Right for left also supports insensitive string comparison where matching
- * utilises \c stricmp for comparing the left-hand side with the given string.
+ * Right for left supports case-sensitive string comparison where matching
+ * utilises \c strcmp for comparing the left-hand side with the given string.
  * This naturally assumes that the left-hand sides represent pointers to
  * null-terminated strings. The implementation throws away the \c const
  * correctness by casting to the very generalised non-constant void pointer
  * type.
  */
-void *right_for_left_stricmp_hand_side(struct hand_side **top, const char *left);
+void *right_for_left_strcmp_hand_side(struct hand_side **top, const char *left);
 
 /*!
  * \brief Left for righthand side
@@ -137,3 +138,5 @@ void *right_for_left_stricmp_hand_side(struct hand_side **top, const char *left)
  * answering the string for some given pointer.
  */
 void *left_for_right_hand_side(struct hand_side **top, void *right);
+
+#endif /* HAND_SIDE_H */
