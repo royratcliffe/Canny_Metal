@@ -10,7 +10,7 @@ target_include_directories(Canny_Metal_STM32xx PUBLIC
 )
 target_sources(Canny_Metal_STM32xx PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/stm32xx_hal_tick_clock64.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Src/cm4_dwt_cyc_clock64.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/core_dwt_cyc_clock64.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/correlate_f32.c
 )
 target_link_libraries(Canny_Metal_STM32xx PUBLIC

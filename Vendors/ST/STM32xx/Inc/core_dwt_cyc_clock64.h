@@ -4,10 +4,10 @@
  */
 
 /*!
- * \file cm4_dwt_cyc_clock64.h
+ * \file core_dwt_cyc_clock64.h
  */
-#ifndef CM4_DWT_CYC_CLOCK64_H
-#define CM4_DWT_CYC_CLOCK64_H
+#ifndef CORE_DWT_CYC_CLOCK64_H
+#define CORE_DWT_CYC_CLOCK64_H
 
 #include <clock64.h>
 
@@ -16,17 +16,17 @@
  * \details This function enables the DWT cycle counter, which is necessary for
  * the clock to function correctly. The DWT cycle counter is typically disabled
  * by default, so it must be explicitly enabled before using this clock. This
- * function should be called before using the \c cm4_dwt_cyc_clock64 function to
+ * function should be called before using the \c core_dwt_cyc_clock64 function to
  * ensure that the DWT cycle counter is properly configured and ready to provide
  * tick counts for the clock.
  * \note The DWT cycle counter is a hardware feature of the Cortex-M4 that
  * provides a high-resolution tick count based on the number of CPU cycles.
- * Enabling the DWT cycle counter allows the \c cm4_dwt_cyc_clock64
+ * Enabling the DWT cycle counter allows the \c core_dwt_cyc_clock64
  * implementation to provide accurate timing information based on the CPU's
  * clock frequency, making it suitable for performance measurements and precise
  * timing applications.
  */
-void cm4_dwt_cyc_clock64_init(void);
+void core_dwt_cyc_clock64_init(void);
 
 /*!
  * \brief A 64-bit tick clock implementation based on the DWT cycle counter.
@@ -42,6 +42,6 @@ void cm4_dwt_cyc_clock64_init(void);
  * \c ticks_per_us function returns a value reflecting this resolution, which
  * affects the precision of timing calculations.
  */
-struct clock64 *cm4_dwt_cyc_clock64(void);
+struct clock64 *core_dwt_cyc_clock64(void);
 
-#endif /* CM4_DWT_CYC_CLOCK64_H */
+#endif /* CORE_DWT_CYC_CLOCK64_H */

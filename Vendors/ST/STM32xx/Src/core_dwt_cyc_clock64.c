@@ -4,9 +4,9 @@
  */
 
 /*!
- * \file cm4_dwt_cyc_clock64.c
+ * \file core_dwt_cyc_clock64.c
  */
-#include <cm4_dwt_cyc_clock64.h>
+#include <core_dwt_cyc_clock64.h>
 #include <stm32xx.h>
 
 static volatile uint32_t ulTick = 0UL;
@@ -40,7 +40,7 @@ static const struct clock64_impl dwt_cyc_clock64_impl = {.now = now, .ticks_per_
 
 static struct clock64 dwt_cyc_clock64 = {.impl = &dwt_cyc_clock64_impl};
 
-void cm4_dwt_cyc_clock64_init(void) {
+void core_dwt_cyc_clock64_init(void) {
   /*
    * Enable the DWT cycle counter. This is necessary for the clock to function
    * correctly, as it relies on the DWT cycle counter to provide the tick count.
@@ -52,4 +52,4 @@ void cm4_dwt_cyc_clock64_init(void) {
   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; /* Enable the cycle counter. */
 }
 
-struct clock64 *cm4_dwt_cyc_clock64(void) { return &dwt_cyc_clock64; }
+struct clock64 *core_dwt_cyc_clock64(void) { return &dwt_cyc_clock64; }
