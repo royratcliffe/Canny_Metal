@@ -205,10 +205,10 @@ struct cons **cons_find(struct cons **list, void *cell);
  * \return Pointer to the deleted cons cell, or \c CONS_NIL if no matching cell
  * was found.
  * \details This function traverses the list of cons cells, looking for the
- * first cell whose \c car field matches the specified value. If such a cell is
- * found, it is removed from the list by updating the \c cdr pointer of the
- * previous cell (or the head pointer if the cell to delete is the first cell)
- * to point to the next cell, effectively bypassing the deleted cell. The
+ * first cell whose \c car field matches the specified pointer value. If such a
+ * cell is found, it is removed from the list by updating the \c cdr pointer of
+ * the previous cell (or the head pointer if the cell to delete is the first
+ * cell) to point to the next cell, effectively bypassing the deleted cell. The
  * function then returns a pointer to the deleted cell. If no matching cell is
  * found after traversing the entire list, the function returns \c CONS_NIL to
  * indicate that no deletion occurred. This operation is destructive because it
