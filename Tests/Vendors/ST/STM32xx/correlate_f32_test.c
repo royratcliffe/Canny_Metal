@@ -83,7 +83,6 @@ int correlate_f32_test(void) {
 }
 
 int main(void) {
-  initialise_monitor_handles();
   (void)printf("Hello, World from %s!!!\n", "correlate_f32_test");
 
   assert(correlate_f32_test() == 0);
