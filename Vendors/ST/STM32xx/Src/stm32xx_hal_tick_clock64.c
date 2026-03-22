@@ -3,6 +3,14 @@
  * SPDX-FileCopyrightText: 2026, Roy Ratcliffe, Northumberland, United Kingdom
  */
 
+#include <stm32xx_hal.h>
+
+/*
+ * There is no HAL_TICK_MODULE_ENABLED, but the HAL driver is only used if
+ * USE_HAL_DRIVER is defined. Therefore check for that.
+ */
+#if defined(USE_HAL_DRIVER)
+
 /*!
  * \file stm32xx_hal_tick_clock64.c
  * \brief Provides a 64-bit tick clock implementation based on the HAL tick.
@@ -13,14 +21,6 @@
  * this resolution, which may affect the precision of timing calculations that
  * use this clock.
  */
-#include <stm32xx_hal.h>
-
-/*
- * There is no HAL_TICK_MODULE_ENABLED, but the HAL driver is only used if
- * USE_HAL_DRIVER is defined. Therefore check for that.
- */
-#if defined(USE_HAL_DRIVER)
-
 #  include <stm32xx_hal_tick_clock64.h>
 #  include <stm32xx_hal.h>
 
