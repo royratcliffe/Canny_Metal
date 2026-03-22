@@ -286,12 +286,12 @@ struct cons *cons_nth(struct cons *cell, size_t nth);
 
 /*!
  * \brief Returns the \e first cons cell in a linked list of cons cells whose \c car
- * field matches the specified value.
+ * field matches the specified pointer value.
  * \param cell The head of the list to search, or \c CONS_NIL for an empty list.
- * \param car The value to match in the \c car field of the cons cells.
+ * \param car The pointer value to match in the \c car field of the cons cells.
  * \return Pointer to the \e first matching cons cell, or \c CONS_NIL if no match is found.
  * \details Iteratively traverses the linked list of cons cells, comparing the
- * \c car field of each cell with the specified value. If a match is found, a
+ * \c car field of each cell with the specified pointer value. If a match is found, a
  * pointer to the matching cell is returned. If the end of the list is reached
  * \e without finding a match, \c CONS_NIL is returned.
  */
