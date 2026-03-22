@@ -2,7 +2,6 @@
 #include "correlate_f32.h"
 #include "fcvtf.h"
 #include "fepsiloneq.h"
-#include "monitor_handles.h"
 
 #include <assert.h>
 #include <stdio.h>
