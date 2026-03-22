@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2023, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
 /*!
  * \file stm32xx.h
  * \brief Common header for STM32xx devices.

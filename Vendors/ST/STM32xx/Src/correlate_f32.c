@@ -1,9 +1,13 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2023, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
 /*!
  * \file correlate_f32.c
  * \brief Float32 correlation function definitions.
  * \details Implements functions for correlating float32_t data using CMSIS-DSP.
  */
-
 #include <correlate_f32.h>
 
 #include <fepsiloneq.h>
