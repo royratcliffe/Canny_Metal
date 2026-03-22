@@ -85,3 +85,7 @@
 #elif defined(STM32F423xx)
 #  define STM32F4xx F423xx
 #endif
+
+#if STM32xx == F4
+#  include "stm32f4xx.h"
+#endif /* STM32xx == F4 */
