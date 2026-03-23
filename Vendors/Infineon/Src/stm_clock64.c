@@ -19,6 +19,18 @@
  */
 #define STM_TIM_TICKS_PER_US 300ULL
 
+/*
+ * On TriCore with optimisation enabled, the "now" function for STM0
+ * becomes a pair of word loads from the TIM0 and CAP registers, which
+ * are then combined to form the 64-bit time value. The assembly code
+ * for the stm0_tim_now function looks like this:
+ *
+ * stm0_tim_now:
+ *      .type   func
+ *      ld.w    d2,0xf0001010
+ *      ld.w    d3,0xf000102c
+ *      ret
+ */
 static uint64_t stm0_tim_now(void) { return IfxStm_get(&MODULE_STM0); }
 static uint64_t stm1_tim_now(void) { return IfxStm_get(&MODULE_STM1); }
 static uint64_t stm2_tim_now(void) { return IfxStm_get(&MODULE_STM2); }
