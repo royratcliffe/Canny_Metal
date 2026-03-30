@@ -112,6 +112,10 @@ struct clock64_impl {
   uint64_t (*ticks_per_us)(void); /*!< Function to access the number of ticks per microsecond. */
 };
 
+void clock64_impl(struct clock64 *clock, const struct clock64_impl *impl);
+
+void clock64_copy_impl(struct clock64 *clock, struct clock64 *other);
+
 /*!
  * \brief Accessor for the source clock of a clock64 instance.
  * \param clock The clock64 instance to access.
