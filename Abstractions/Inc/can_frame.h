@@ -6,6 +6,8 @@
  * includes fields for the CAN identifier, payload length, and the payload data
  * itself.
  */
+#ifndef CAN_FRAME_H
+#define CAN_FRAME_H 1
 
 #include <stdint.h>
 
@@ -56,3 +58,5 @@ static inline bool can_frame_len8_dlc_valid(const struct can_frame *frame) { ret
 static inline uint8_t can_frame_dlc(const struct can_frame *frame) {
   return frame->len == CAN_MAX_DLEN && can_frame_len8_dlc_valid(frame) ? frame->len8_dlc : frame->len;
 }
+
+#endif /* CAN_FRAME_H */
