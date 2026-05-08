@@ -8,36 +8,29 @@
  * ##__VA_ARGS__ which removes the comma if there are no arguments.
  */
 #if !defined(__CCRX__)
-#define VA_NARGS(...) _VA_NARG(_0, ##__VA_ARGS__, _VA_RSEQ())
+#define VA_NARGS(...) _VA_NARGS(_0, ##__VA_ARGS__, _VA_RSEQ())
 #else
-#define VA_NARGS(...) _VA_NARG(_0, __VA_ARGS__, _VA_RSEQ())
+#define VA_NARGS(...) _VA_NARGS(_0, __VA_ARGS__, _VA_RSEQ())
 #endif
 
 /*!
  * \brief Get the number of variadic arguments.
- * \details This macro is used to get the number of variadic arguments. It is
- * implemented by using the _VA_NTHARG macro to get the Nth argument from the
- * variadic arguments. The Nth argument is determined by the position of the
- * arguments. For example, if there are 3 arguments, the 3rd position will be 3,
- * and the 4th position will be 2, and so on. This is achieved by using the
- * reverse sequential numbers from 62 to 0 as padding. The Nth position will
- * correspond to the number of arguments. For example, if there are 3 arguments,
- * the 3rd position will be 3, and the 4th position will be 2, and so on.
- * \param ... Variadic arguments.
+ * \details This macro is implemented by using the _VA_NTHARG macro to get the
+ * Nth argument from the variadic arguments. Reverse sequential numbers from 62
+ * to 0 are used as padding so that the Nth position corresponds to the number
+ * of arguments.
+ * \param ... Variadic arguments padded with reverse sequential numbers.
  * \return Number of variadic arguments.
  */
-#define _VA_NARG(...) _VA_NTHARG(__VA_ARGS__)
+#define _VA_NARGS(...) _VA_NTHARG(__VA_ARGS__)
 
 /*!
  * \brief Get the Nth argument from the variadic arguments.
  * \details This macro is used to get the Nth argument from the variadic
  * arguments. The Nth argument is determined by the position of the arguments.
- * For example, if there are 3 arguments, the 3rd position will be 3, and the
- * 4th position will be 2, and so on. This is achieved by using the reverse
- * sequential numbers from 62 to 0 as padding. The Nth position will correspond
- * to the number of arguments. For example, if there are 3 arguments, the 3rd
- * position will be 3, and the 4th position will be 2, and so on.
- * \param ... Variadic arguments.
+ * Achieved by using reverse sequential numbers from 62 to 0 as padding.
+ * The Nth position will correspond to the number of arguments.
+ * \param ... Variadic arguments padded with reverse sequential numbers.
  * \return The Nth argument from the variadic arguments.
  */
 #define _VA_NTHARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29,     \
