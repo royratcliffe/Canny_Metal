@@ -1,3 +1,19 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2026, Roy Ratcliffe, Northumberland, United Kingdom
+ */
+
+/*!
+ * \file va.h
+ * \brief Header file for variadic argument counting macros.
+ * \details This file contains macros for counting the number of variadic
+ * arguments passed to a macro. It can count up to 63 arguments and returns the
+ * count as a compile-time constant. If there are no arguments, it returns 0. If
+ * there are more than 63 arguments, it returns 63.
+ */
+#ifndef VA_H
+#define VA_H
+
 /*!
  * \brief Count number of variadic arguments.
  * \details This macro can count up to 63 arguments. If the number of arguments
@@ -48,3 +64,5 @@
 #define _VA_RSEQ()                                                                                                                                            \
   62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, \
       23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+
+#endif /* VA_H */
