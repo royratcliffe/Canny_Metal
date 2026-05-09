@@ -29,12 +29,11 @@
  * \note The maximum number of arguments that can be counted is 63 due to the
  * use of reverse sequential numbers from 62 to 0 as padding. If more than 63
  * arguments are provided, the count will be capped at 63.
- * \note Why the initial argument is _0: This is a placeholder to ensure that
- * the counting starts from the correct position. The actual variadic arguments
- * will be placed after this placeholder, and the reverse sequential numbers
- * will follow them. This allows the counting mechanism to correctly identify
- * the number of variadic arguments based on their position relative to the
- * placeholder and the padding.
+ * \note Why the initial argument is _0: The pasting operator \c ## concatenates
+ * the initial argument _0 with the variadic arguments. This ensures that when
+ * there are no variadic arguments, the macro still expands correctly and
+ * returns 0. If there were no initial argument, the macro would not expand
+ * correctly when no arguments are provided, leading to a compilation error.
  */
 #if !defined(__CCRX__)
 #define VA_NARGS(...) _VA_NARGS(_0, ##__VA_ARGS__, _VA_RSEQ63())
