@@ -66,7 +66,7 @@ void test_VA_NARGS(void) {
 }
 
 int main(void) {
-  (void)printf("Hello, World from %s!!!\n", "pp_test");
+  (void)printf("Hello, World from %s!!!\n", "va_test");
 
   test_VA_NARGS();
 
