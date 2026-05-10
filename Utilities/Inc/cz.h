@@ -108,6 +108,22 @@ static inline uint32_t lszb32(uint32_t x) { return ~x & (x + 1); }
 static inline uint64_t lszb64(uint64_t x) { return ~x & (x + 1); }
 
 /*!
+ * \brief Finds the least significant bit (LSB) in a 32-bit unsigned integer.
+ * \param x The 32-bit unsigned integer to find the LSB in.
+ * \return A 32-bit unsigned integer with only the LSB of `x` set, or 0
+ * if `x` is zero.
+ */
+static inline uint32_t lsb32(uint32_t x) { return x & -x; }
+
+/*!
+ * \brief Finds the least significant bit (LSB) in a 64-bit unsigned integer.
+ * \param x The 64-bit unsigned integer to find the LSB in.
+ * \return A 64-bit unsigned integer with only the LSB of `x` set, or 0
+ * if `x` is zero.
+ */
+static inline uint64_t lsb64(uint64_t x) { return x & -x; }
+
+/*!
  * \brief Find the most significant bit (MSB) in a 32-bit unsigned integer.
  * \param x The 32-bit unsigned integer to find the MSB in.
  * \return A 32-bit unsigned integer with only the MSB of `x` set, or 0
